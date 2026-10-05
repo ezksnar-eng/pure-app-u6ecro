@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     private static final boolean LIGHT_STATUS = false;
     private static final String STATUS_COLOR = "#c81466";
     private static final String LIVE_BASE = "";
-    private static final long BUNDLED_VERSION = 1791218343L;
+    private static final long BUNDLED_VERSION = 1791218889L;
     private static final String ENTRY = "index.html";
     private static final String ASSET_HOST = "appassets.androidplatform.net";
     private static final int FILE_REQ = 4242;
