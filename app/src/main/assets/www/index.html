@@ -82,7 +82,7 @@ input,textarea{font-size:16px;color:var(--txt);font-family:inherit}
 .dl{cursor:pointer;opacity:.5;margin-inline-start:4px}.dl:hover{opacity:1}
 .emo{display:none;flex-wrap:wrap;gap:2px;padding:8px;background:var(--bg);max-height:150px;overflow:auto}.emo.on{display:flex}.emo button{font-size:24px;width:40px;height:40px}
 @media(max-width:760px){#side{width:100%;border:0}#main{display:none}#app.chat #side{display:none}#app.chat #main{display:flex}#back{display:flex}}
-</style>
+.btn{margin-bottom:8px}textarea.in{resize:none;font-size:12px}</style>
 </head>
 <body>
 <div id="auth"><div class="box">
@@ -106,6 +106,7 @@ input,textarea{font-size:16px;color:var(--txt);font-family:inherit}
 <div id="drw"><div class="ov"></div><div class="pn">
 <div class="pf"><div class="av" id="dAv" style="width:64px;height:64px;font-size:26px;margin-bottom:10px"></div><div class="nm" id="dNm" style="font-size:18px"></div><div class="sb" id="dMl" dir="ltr" style="text-align:right"></div></div>
 <button class="mi" id="mAddB">👤 <span>إضافة صديق</span></button>
+<button class="mi" id="mNetB">🔗 <span>اتصال مباشر / رمزي</span></button>
 <button class="mi" id="mSetB">⚙️ <span>الإعدادات</span></button>
 <button class="mi" id="mOut">🚪 <span>تسجيل الخروج</span></button>
 </div></div>
@@ -114,15 +115,30 @@ input,textarea{font-size:16px;color:var(--txt);font-family:inherit}
 <div class="lb" id="fLb"></div>
 <input class="in" id="fVal" dir="auto" autocomplete="off">
 <div class="err" id="fErr"></div>
-<button class="btn" id="fGo">إضافة</button><button class="btn g" data-close>إلغاء</button></div></div>
+<button class="btn" id="fGo">إضافة</button><button class="btn g" id="fNet">لدي رمز صديق / اتصال مباشر</button><button class="btn g" data-close>إلغاء</button></div></div>
 
 <div class="mod" id="mSet"><div class="card"><h2>الإعدادات</h2>
-<div class="lb">اسمك</div><input class="in" id="sName" maxlength="40"><div class="lb">إضافة الأصدقاء تكون على</div>
+<button class="btn g" id="sAv">📷 تغيير الصورة</button>
+<div class="lb">اسمك</div><input class="in" id="sName" maxlength="40">
+<div class="lb">إيميلك</div><input class="in" id="sMail" dir="ltr">
+<label class="lb" style="display:block;margin-bottom:12px"><input type="checkbox" id="sStun"> اتصال عبر الإنترنت (يستخدم STUN عام مجاني؛ أطفئه للشبكة المحلية فقط)</label><div class="lb">إضافة الأصدقاء تكون على</div>
 <div class="opt"><label><input type="radio" name="mode" value="email"><span>الإيميل</span></label><label><input type="radio" name="mode" value="name"><span>الاسم</span></label></div>
 <div class="lb">المظهر</div>
 <div class="opt"><label><input type="radio" name="theme" value="auto"><span>تلقائي</span></label><label><input type="radio" name="theme" value="light"><span>فاتح</span></label><label><input type="radio" name="theme" value="dark"><span>داكن</span></label></div>
 <button class="btn" data-close>تم</button></div></div>
 
+<div class="mod" id="mNet"><div class="card"><h2>اتصال مباشر بدون سيرفر</h2>
+<div class="lb">رمزك / الرد (انسخه أو شاركه لصديقك)</div>
+<textarea class="in" id="nOut" rows="3" dir="ltr" readonly></textarea>
+<button class="btn" id="nMk">إنشاء رمز اتصال</button>
+<button class="btn g" id="nMy">رمزي لإضافتي كصديق</button>
+<button class="btn g" id="nPk">📦 حزمة رسائل هذه المحادثة (بلوتوث/ملف)</button>
+<button class="btn g" id="nCp">نسخ</button><button class="btn g" id="nSh">مشاركة</button>
+<div class="lb">ألصق الرمز اللي وصلك</div>
+<textarea class="in" id="nIn" rows="3" dir="ltr"></textarea>
+<button class="btn" id="nGo">تطبيق</button><button class="btn g" id="nFl">📂 من ملف</button>
+<div class="err" id="nSt"></div><button class="btn g" data-close>إغلاق</button></div></div>
+<input type="file" id="avf" accept="image/*" hidden><input type="file" id="nFile" hidden>
 <div class="mod" id="mPv"><div class="card"><h2>إرسال صورة</h2>
 <img id="pvImg" alt="">
 <input class="in" id="pvCp" placeholder="أضف وصف (اختياري)" maxlength="500">
@@ -144,7 +160,7 @@ const ini=n=>(n||'?').trim().charAt(0).toUpperCase();
 const tm=t=>new Date(t).toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
 const G=['#ff885e,#ff516a','#ffcd6a,#ffa85c','#82b1ff,#665fff','#a0de7e,#54cb68','#53edd6,#28c9b7','#72d5fd,#2a9ef1','#e0a2f3,#d669ed'];
 function avatar(u,sz){let h=0;for(const c of u.email)h=(h*31+c.charCodeAt(0))>>>0;
-  const a=el('div','av',ini(u.name));a.style.cssText=`width:${sz}px;height:${sz}px;font-size:${sz*.42}px;background:linear-gradient(${G[h%G.length]})`;return a}
+  const a=el('div','av',ini(u.name));a.style.cssText=`width:${sz}px;height:${sz}px;font-size:${sz*.42}px;background:linear-gradient(${G[h%G.length]})`;if(u.av){a.textContent='';a.style.background=`url(${u.av}) center/cover`}return a}
 // theme
 function theme(){const t=ld('jr_theme','light');if(t==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}theme();
 // image store (IndexedDB)
@@ -162,7 +178,7 @@ $('#aGo').onclick=()=>{
   const name=$('#aName').value.trim(),email=$('#aMail').value.trim().toLowerCase();
   if(!name||!/^\S+@\S+\.\S+$/.test(email)){$('#aErr').textContent='اكتب اسم وإيميل صحيح';return}
   const us=users();const u=us.find(x=>x.email===email);
-  if(!u)us.push({email,name});else u.name=name;
+  if(!u)us.push({email,name,id:rid()});else{u.name=name;u.id=u.id||rid()}
   if(!sv('jr_users',us)){$('#aErr').textContent='التخزين غير متاح في هذا المتصفح';return}
   me=email;sv('jr_me',me);start();
 };
@@ -178,18 +194,18 @@ const closeAll=()=>{document.querySelectorAll('.mod,#drw').forEach(m=>m.classLis
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeAll);
 $('#drw .ov').onclick=closeAll;
 $('#bMenu').onclick=()=>$('#drw').classList.add('on');
-function openAdd(){closeAll();const em=mode()==='email';$('#fLb').textContent=em?'اكتب إيميل صديقك':'اكتب اسم صديقك كما سجله';$('#fVal').dir=em?'ltr':'auto';$('#fVal').value='';$('#fErr').textContent='';$('#mAdd').classList.add('on');setTimeout(()=>$('#fVal').focus(),60)}
+function openAdd(){closeAll();const em=mode()==='email';$('#fLb').textContent=em?'اكتب إيميل صديقك':'اكتب اسم صديقك';$('#fVal').dir=em?'ltr':'auto';$('#fVal').value='';$('#fErr').textContent='';$('#mAdd').classList.add('on');setTimeout(()=>$('#fVal').focus(),60)}
 $('#fab').onclick=openAdd;$('#mAddB').onclick=openAdd;
-$('#mSetB').onclick=()=>{closeAll();$('#sName').value=uOf(me).name;document.querySelectorAll('[name=mode]').forEach(r=>r.checked=r.value===mode());document.querySelectorAll('[name=theme]').forEach(r=>r.checked=r.value===ld('jr_theme','light'));$('#mSet').classList.add('on')};
+$('#mSetB').onclick=()=>{closeAll();$('#sName').value=uOf(me).name;$('#sMail').value=me;$('#sStun').checked=!!ld('jr_stun',1);document.querySelectorAll('[name=mode]').forEach(r=>r.checked=r.value===mode());document.querySelectorAll('[name=theme]').forEach(r=>r.checked=r.value===ld('jr_theme','light'));$('#mSet').classList.add('on')};
 document.querySelectorAll('[name=mode]').forEach(r=>r.onchange=()=>{const s=sets();s[me]=r.value;sv('jr_set',s)});
 document.querySelectorAll('[name=theme]').forEach(r=>r.onchange=()=>{sv('jr_theme',r.value);theme()});
 $('#fGo').onclick=()=>{
-  const v=$('#fVal').value.trim(),err=t=>$('#fErr').textContent=t;if(!v)return;
-  const f=mode()==='email'?users().filter(u=>u.email===v.toLowerCase()):users().filter(u=>u.name.toLowerCase()===v.toLowerCase());
-  if(!f.length)return err('ما لقيت أحد بهذا '+(mode()==='email'?'الإيميل':'الاسم'));
-  if(f.length>1)return err('أكثر من شخص بنفس الاسم، غيّر الإعدادات للإضافة بالإيميل');
-  const e=f[0].email;if(e===me)return err('هذا حسابك أنت');
-  const c=cons();c[me]=c[me]||[];if(c[me].includes(e))return err('هذا الشخص مضاف من قبل');
+  const v=$('#fVal').value.trim(),err=t=>$('#fErr').textContent=t;if(!v)return;const em=mode()==='email';
+  if(em&&!/^\S+@\S+\.\S+$/.test(v))return err('اكتب إيميل صحيح');
+  const k=em?v.toLowerCase():'~'+v.toLowerCase();if(k===me||(!em&&uOf(me).name.toLowerCase()===v.toLowerCase()))return err('هذا حسابك أنت');
+  const us=users();let u=us.find(x=>x.email===k)||(em?null:us.find(x=>x.name.toLowerCase()===v.toLowerCase()&&x.email!==me));
+  if(!u){u={email:k,name:em?v.split('@')[0]:v,id:''};us.push(u);sv('jr_users',us)}
+  const e=u.email,c=cons();c[me]=c[me]||[];if(c[me].includes(e))return err('هذا الشخص مضاف من قبل');
   c[me].push(e);sv('jr_cons',c);closeAll();cur=e;renderList();renderMain();$('#app').classList.add('chat');
 };
 $('#fVal').onkeydown=e=>{if(e.key==='Enter')$('#fGo').click()};
@@ -198,11 +214,11 @@ function myList(){const s=new Set(cons()[me]||[]);msgs().forEach(m=>{if(m.to===m
 const thread=o=>msgs().filter(m=>(m.from===me&&m.to===o)||(m.from===o&&m.to===me));
 const preview=m=>m?((m.img?'🖼 ':'')+(m.text||(m.img?'صورة':''))):'';
 function markRead(){if(!cur||document.hidden)return;const inc=thread(cur).filter(m=>m.from===cur);if(!inc.length)return;
-  const last=inc[inc.length-1].t,r=reads(),k=me+'|'+cur;if((r[k]||0)>=last)return;r[k]=last;sv('jr_read',r)}
+  const last=inc[inc.length-1].t,r=reads(),k=me+'|'+cur;if((r[k]||0)>=last)return;r[k]=last;sv('jr_read',r);send(cur,{t:'r',ts:last})}
 function renderList(){
   const L=$('#list'),q=$('#q').value.trim().toLowerCase();L.innerHTML='';
   let items=myList().map(u=>{const t=thread(u.email),last=t[t.length-1],r=reads()[me+'|'+u.email]||0;
-    return{u,last,un:t.filter(m=>m.from===u.email&&m.t>r).length,seen:last&&last.from===me&&(reads()[u.email+'|'+me]||0)>=last.t}});
+    return{u,last,un:t.filter(m=>m.from===u.email&&m.t>r).length,seen:last&&last.from===me&&((reads()[u.email+'|'+me]||0)>=last.t||!!last.d)}});
   document.title=(items.reduce((t,i)=>t+i.un,0)?'('+items.reduce((t,i)=>t+i.un,0)+') ':'')+'جيرون';if(q)items=items.filter(i=>i.u.name.toLowerCase().includes(q)||i.u.email.includes(q));
   items.sort((a,b)=>(b.last?.t||0)-(a.last?.t||0));
   if(!items.length){const e=el('div','empty');e.innerHTML=q?'لا توجد نتائج':'لا توجد محادثات بعد<br>اضغط على زر القلم لإضافة صديق';L.appendChild(e);return}
@@ -210,7 +226,7 @@ function renderList(){
     const r=el('div','row'+(cur===u.email?' act':''));r.appendChild(avatar(u,54));
     const mid=el('div','mid');mid.appendChild(el('div','nm',u.name));
     const sb=el('div','sb');if(last&&last.from===me){const k=el('span','tk',seen?'✓✓ ':'✓ ');sb.appendChild(k)}
-    sb.appendChild(document.createTextNode(last?preview(last):u.email));mid.appendChild(sb);r.appendChild(mid);
+    sb.appendChild(document.createTextNode(last?preview(last):disp(u)));mid.appendChild(sb);r.appendChild(mid);
     const meta=el('div','meta');meta.appendChild(el('div','tm',last?tm(last.t):''));if(un)meta.appendChild(el('div','bd',un));r.appendChild(meta);
     r.onclick=()=>{cur=u.email;markRead();renderList();renderMain();$('#app').classList.add('chat')};
     L.appendChild(r);
@@ -223,7 +239,7 @@ function renderMain(){
   const u=uOf(cur);
   const hd=el('div','hd');const back=el('button','ib');back.id='back';back.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 4l-1.4 1.4 5.6 5.6H4v2h12.2l-5.6 5.6L12 20l8-8z"/></svg>';
   back.onclick=()=>{cur=null;$('#app').classList.remove('chat');renderList();renderMain()};
-  const mid=el('div','mid');mid.appendChild(el('div','nm',u.name));const s=el('div','sb',u.email);s.dir='ltr';s.style.textAlign='right';mid.appendChild(s);
+  const mid=el('div','mid');mid.appendChild(el('div','nm',u.name));const s=el('div','sb',peers[u.email]?'🟢 متصل مباشرة':disp(u));s.id='hsub';s.dir='ltr';s.style.textAlign='right';mid.appendChild(s);
   const mb=el('button','ib','⋮');mb.style.fontSize='22px';const dd=el('div','dd');
   const i1=el('button','mi','🧹 مسح الرسائل'),i2=el('button','mi','🗑 حذف الصديق والمحادثة');dd.append(i1,i2);
   mb.onclick=e=>{e.stopPropagation();dd.classList.toggle('on')};
@@ -255,7 +271,7 @@ function drawMsgs(){
     if(m.img){const im=document.createElement('img');im.style.aspectRatio=m.w+'/'+m.h;im.style.width=Math.min(300,m.w)+'px';im.style.maxWidth='100%';im.alt='صورة';
       imgUrl(m.img).then(u=>{if(u){im.src=u;im.onclick=()=>{$('#lbImg').src=u;$('#lb').classList.add('on')}}});b.appendChild(im)}
     if(m.text)b.appendChild(el('div',m.img?'cp':'',m.text));
-    const f=el('div','ft');f.appendChild(el('span','',tm(m.t)));if(m.from===me){f.appendChild(el('span','',m.t<=seenT?'✓✓':'✓'));const x=el('span','dl','✕');x.title='حذف';x.onclick=()=>{if(confirm('حذف هذه الرسالة؟')){sv('jr_msgs',msgs().filter(q=>q.id!==m.id));if(m.img)idbDel(m.img);drawMsgs();renderList()}};f.appendChild(x)}
+    const f=el('div','ft');f.appendChild(el('span','',tm(m.t)));if(m.from===me){f.appendChild(el('span','',(m.t<=seenT||m.d)?'✓✓':'✓'));const x=el('span','dl','✕');x.title='حذف';x.onclick=()=>{if(confirm('حذف هذه الرسالة؟')){sv('jr_msgs',msgs().filter(q=>q.id!==m.id));if(m.img)idbDel(m.img);drawMsgs();renderList()}};f.appendChild(x)}
     b.appendChild(f);B.appendChild(b);
   });
   if(keep||!B.dataset.i){B.scrollTop=B.scrollHeight;B.dataset.i=1}
@@ -263,7 +279,7 @@ function drawMsgs(){
 $('#lb').onclick=closeAll;
 function addMsg(o){
   const a=msgs();a.push({id:Date.now()+Math.random().toString(36).slice(2,6),from:me,to:cur,t:Date.now(),...o});
-  if(!sv('jr_msgs',a)){alert('مساحة التخزين ممتلئة');return false}
+  if(!sv('jr_msgs',a)){alert('مساحة التخزين ممتلئة');return false}if(peers[cur])push(cur,a[a.length-1]);
   const c=cons();c[cur]=c[cur]||[];if(!c[cur].includes(me)){c[cur].push(me);sv('jr_cons',c)}
   const B=$('#msgs');if(B)B.dataset.i='';drawMsgs();renderList();return true;
 }
@@ -290,6 +306,71 @@ document.addEventListener('click',()=>document.querySelectorAll('.dd').forEach(d
 // sync
 window.addEventListener('storage',e=>{if(!me||!e.key||!e.key.startsWith('jr_'))return;if(e.key==='jr_theme')theme();markRead();renderList();drawMsgs()});
 document.addEventListener('visibilitychange',()=>{if(me&&!document.hidden){markRead();renderList()}});
+
+// ===== P2P بدون سيرفر (WebRTC) + حزم رسائل للنقل بلوتوث/ملف =====
+const rid=()=>Math.random().toString(36).slice(2,10),peers={};let pendO=null;
+const disp=u=>u.email[0]==='~'?'غير مرتبط بعد':u.email;
+const myCard=()=>{let u=uOf(me);if(!u.id){const us=users();us.find(x=>x.email===me).id=rid();sv('jr_users',us);u=uOf(me)}return{id:u.id,name:u.name,email:me}};
+const send=(e,o)=>{const d=peers[e];if(d&&d.readyState==='open'){d.send(JSON.stringify(o));return true}return false};
+const b64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(',')[1]);f.readAsDataURL(b)});
+const fromB64=s=>fetch('data:image/jpeg;base64,'+s).then(r=>r.blob());
+async function enc(o){const u=new Uint8Array(await new Response(new Blob([JSON.stringify(o)]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());let b='';u.forEach(x=>b+=String.fromCharCode(x));return btoa(b)}
+async function dec(t){const u=Uint8Array.from(atob(t.replace(/\s/g,'')),c=>c.charCodeAt(0));return JSON.parse(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate'))).text())}
+function remap(a,b){if(a===b)return;['jr_msgs','jr_users','jr_cons','jr_read','jr_set'].forEach(k=>{const t=localStorage.getItem(k);if(t)localStorage.setItem(k,t.split('"'+a+'"').join('"'+b+'"').split('|'+a+'"').join('|'+b+'"').split('"'+a+'|').join('"'+b+'|'))})}
+function know(c){
+  if(c.email===me||c.id===uOf(me).id)return null;
+  let us=users(),u=us.find(x=>x.id&&x.id===c.id)||us.find(x=>x.email===c.email)||us.find(x=>x.email[0]==='~'&&x.name.toLowerCase()===c.name.toLowerCase());
+  if(!u){us.push({email:c.email,name:c.name,id:c.id})}
+  else{if(u.email!==c.email){sv('jr_users',us);remap(u.email,c.email);us=users();u=us.find(x=>x.email===c.email)}u.name=c.name;u.id=c.id;if(c.av)u.av=c.av}
+  sv('jr_users',us);const cs=cons();cs[me]=cs[me]||[];if(!cs[me].includes(c.email)){cs[me].push(c.email);sv('jr_cons',cs)}
+  return c.email}
+function ui(){renderList();if(cur){drawMsgs();const s=$('#hsub');if(s)s.textContent=peers[cur]?'🟢 متصل مباشرة':disp(uOf(cur))}}
+const mkpc=()=>new RTCPeerConnection({iceServers:ld('jr_stun',1)?[{urls:'stun:stun.l.google.com:19302'}]:[]});
+const gathered=pc=>new Promise(r=>{if(pc.iceGatheringState==='complete')return r();pc.addEventListener('icegatheringstatechange',()=>pc.iceGatheringState==='complete'&&r());setTimeout(r,4000)});
+async function mkOffer(){const pc=mkpc();wire(pc.createDataChannel('j'));await pc.setLocalDescription(await pc.createOffer());await gathered(pc);pendO=pc;return enc({k:'o',s:pc.localDescription.sdp,c:myCard()})}
+async function mkAnswer(o){const pc=mkpc();pc.ondatachannel=e=>wire(e.channel);await pc.setRemoteDescription({type:'offer',sdp:o.s});await pc.setLocalDescription(await pc.createAnswer());await gathered(pc);return enc({k:'a',s:pc.localDescription.sdp,c:myCard()})}
+function got(p,o,img){const a=msgs();if(!a.some(m=>m.id===o.id)){a.push({id:o.id,from:p,to:me,t:o.t0,text:o.text||'',...(img?{img,w:o.w,h:o.h}:{})});sv('jr_msgs',a)}send(p,{t:'a',id:o.id});if(cur===p)markRead();ui()}
+function wire(dc){let who=null;const rx={};
+  dc.onopen=()=>dc.send(JSON.stringify({t:'hi',c:{...myCard(),av:uOf(me).av||''}}));
+  dc.onclose=()=>{if(who&&peers[who]===dc){delete peers[who];ui()}};
+  dc.onmessage=async ev=>{try{const o=JSON.parse(ev.data);
+    if(o.t==='hi'){who=know(o.c);if(!who)return;peers[who]=dc;$('#nSt').textContent='✅ تم الاتصال مع '+o.c.name;ui();flush(who);return}
+    if(!who)return;
+    if(o.t==='m'){if(o.n)rx[o.id]={o,p:[]};else got(who,o)}
+    else if(o.t==='c'){const x=rx[o.id];if(!x)return;x.p.push(o.d);if(x.p.length===x.o.n){delete rx[o.id];const id='i'+rid()+rid();await idbPut(id,await fromB64(x.p.join('')));got(who,x.o,id)}}
+    else if(o.t==='a'){const a=msgs(),m=a.find(q=>q.id===o.id);if(m&&!m.d){m.d=1;sv('jr_msgs',a);ui()}}
+    else if(o.t==='r'){const r=reads();r[who+'|'+me]=o.ts;sv('jr_read',r);ui()}
+  }catch(e){}}}
+async function push(to,m){
+  if(!m.img)return send(to,{t:'m',id:m.id,t0:m.t,text:m.text});
+  const s=await b64(await idbGet(m.img)),n=Math.ceil(s.length/12000);
+  if(!send(to,{t:'m',id:m.id,t0:m.t,text:m.text,w:m.w,h:m.h,n}))return;
+  for(let i=0;i<n;i++){const d=peers[to];if(!d)return;while(d.bufferedAmount>1e6)await new Promise(r=>setTimeout(r,50));send(to,{t:'c',id:m.id,i,d:s.slice(i*12000,(i+1)*12000)})}}
+async function flush(w){for(const m of msgs())if(m.from===me&&m.to===w&&!m.d)await push(w,m)}
+async function mkPack(){const out=[];for(const m of msgs().filter(m=>m.from===me&&m.to===cur&&!m.d)){const o={id:m.id,t0:m.t,text:m.text};if(m.img){o.w=m.w;o.h=m.h;o.b=await b64(await idbGet(m.img))}out.push(o)}return enc({k:'p',c:myCard(),m:out})}
+async function takePack(o){const w=know(o.c);if(!w)return 0;let n=0;const a=msgs();for(const x of o.m){if(a.some(m=>m.id===x.id))continue;let img;if(x.b){img='i'+rid()+rid();await idbPut(img,await fromB64(x.b))}a.push({id:x.id,from:w,to:me,t:x.t0,text:x.text||'',...(img?{img,w:x.w,h:x.h}:{})});n++}sv('jr_msgs',a);return n}
+// واجهة الاتصال
+const openNet=()=>{closeAll();$('#nSt').textContent='';$('#mNet').classList.add('on')};
+$('#mNetB').onclick=openNet;$('#fNet').onclick=openNet;
+const st=t=>$('#nSt').textContent=t;
+$('#nMk').onclick=async()=>{st('جاري التحضير…');$('#nOut').value=await mkOffer();st('أرسل الرمز لصديقك، ولما يرجعلك رده ألصقه تحت واضغط تطبيق')};
+$('#nMy').onclick=async()=>{$('#nOut').value=await enc({k:'f',c:myCard()});st('أرسل هذا الرمز لصديقك ليضيفك')};
+$('#nPk').onclick=async()=>{if(!cur)return st('افتح محادثة أول');$('#nOut').value=await mkPack();st('شارك الملف عبر بلوتوث/أي تطبيق، وصديقك يلصقه أو يفتحه عنده')};
+$('#nCp').onclick=()=>navigator.clipboard.writeText($('#nOut').value).then(()=>st('تم النسخ'));
+$('#nSh').onclick=async()=>{const t=$('#nOut').value;if(!t)return;try{const f=new File([t],'jeron.txt',{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:'جيرون'});else{const a=el('a');a.href=URL.createObjectURL(f);a.download='jeron.txt';a.click()}}catch(e){}};
+$('#nFl').onclick=()=>$('#nFile').click();
+$('#nFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f){$('#nIn').value=await f.text();$('#nGo').click()}};
+$('#nGo').onclick=async()=>{try{const o=await dec($('#nIn').value);
+  if(o.k==='o'){$('#nOut').value=await mkAnswer(o);st('أرسل هذا الرد لصديقك، وبعدها يتصلون تلقائيًا')}
+  else if(o.k==='a'){if(!pendO)return st('أنشئ رمز اتصال أول');await pendO.setRemoteDescription({type:'answer',sdp:o.s});pendO=null;st('جاري الربط…')}
+  else if(o.k==='f'){st(know(o.c)?'تمت إضافة '+o.c.name:'هذا رمزك أنت');ui()}
+  else if(o.k==='p'){const n=await takePack(o);ui();st('وصلت '+n+' رسالة جديدة')}
+  $('#nIn').value=''}catch(e){st('الرمز غير صالح')}};
+// تعديل الحساب
+$('#sMail').onchange=()=>{const v=$('#sMail').value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(v)||users().some(u=>u.email===v)){$('#sMail').value=me;return alert('إيميل غير صالح أو مستخدم')}remap(me,v);me=v;sv('jr_me',me);prof();renderList();renderMain()};
+$('#sStun').onchange=e=>sv('jr_stun',e.target.checked?1:0);
+$('#sAv').onclick=()=>$('#avf').click();
+$('#avf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const c=document.createElement('canvas');c.width=c.height=96;const z=Math.min(i.naturalWidth,i.naturalHeight);c.getContext('2d').drawImage(i,(i.naturalWidth-z)/2,(i.naturalHeight-z)/2,z,z,0,0,96,96);URL.revokeObjectURL(u);const us=users();us.find(q=>q.email===me).av=c.toDataURL('image/jpeg',.8);sv('jr_users',us);prof();renderList();renderMain()};i.src=u};
 if(me&&uOf(me))start();
 </script>
 </body>
