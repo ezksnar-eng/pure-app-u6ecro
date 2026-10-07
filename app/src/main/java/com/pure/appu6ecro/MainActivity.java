@@ -1,14 +1,20 @@
 package com.pure.appu6ecro;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -31,7 +37,7 @@ public class MainActivity extends Activity {
     private static final boolean LIGHT_STATUS = false;
     private static final String STATUS_COLOR = "#c81466";
     private static final String LIVE_BASE = "https://raw.githubusercontent.com/ezksnar-eng/pure-app-u6ecro/main/live/";
-    private static final long BUNDLED_VERSION = 1791267873L;
+    private static final long BUNDLED_VERSION = 1791355176L;
     private static final String ENTRY = "index.html";
     private static final String ASSET_HOST = "appassets.androidplatform.net";
     private static final int FILE_REQ = 4242;
@@ -46,6 +52,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestRuntimePerms();
 
         liveDir = new File(getFilesDir(), "live");
         liveDir.mkdirs();
@@ -103,6 +110,23 @@ public class MainActivity extends Activity {
                 }
                 return true;
             }
+
+            @Override
+            public void onPermissionRequest(final PermissionRequest request) {
+                java.util.List<String> grant = new java.util.ArrayList<String>();
+                for (String res : request.getResources()) {
+                    if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(res) && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        grant.add(res);
+                    } else if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(res) && checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                        grant.add(res);
+                    }
+                }
+                if (!grant.isEmpty()) {
+                    request.grant(grant.toArray(new String[0]));
+                } else {
+                    request.deny();
+                }
+            }
         });
 
         webView.setDownloadListener(new DownloadListener() {
@@ -154,6 +178,26 @@ public class MainActivity extends Activity {
         });
         t.setDaemon(true);
         t.start();
+    }
+
+    private void requestRuntimePerms() {
+        java.util.List<String> need = new java.util.ArrayList<String>();
+        for (String p : new String[]{"android.permission.POST_NOTIFICATIONS"}) {
+            if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                need.add(p);
+            }
+        }
+        if (!need.isEmpty()) {
+            requestPermissions(need.toArray(new String[0]), 7);
+        }
+        if (false && Build.VERSION.SDK_INT >= 30 && !Environment.isExternalStorageManager()) {
+            try {
+                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                i.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(i);
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     private boolean handleUrl(Uri uri) {
