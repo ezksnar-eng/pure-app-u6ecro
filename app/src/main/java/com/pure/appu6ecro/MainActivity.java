@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     private static final boolean LIGHT_STATUS = false;
     private static final String STATUS_COLOR = "#c81466";
     private static final String LIVE_BASE = "https://raw.githubusercontent.com/ezksnar-eng/pure-app-u6ecro/main/live/";
-    private static final long BUNDLED_VERSION = 1791355176L;
+    private static final long BUNDLED_VERSION = 1791492116L;
     private static final String ENTRY = "index.html";
     private static final String ASSET_HOST = "appassets.androidplatform.net";
     private static final int FILE_REQ = 4242;
