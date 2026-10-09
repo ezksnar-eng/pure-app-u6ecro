@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     private static final boolean LIGHT_STATUS = false;
     private static final String STATUS_COLOR = "#c81466";
     private static final String LIVE_BASE = "https://raw.githubusercontent.com/ezksnar-eng/pure-app-u6ecro/main/live/";
-    private static final long BUNDLED_VERSION = 1791492116L;
+    private static final long BUNDLED_VERSION = 1791532067L;
     private static final String ENTRY = "index.html";
     private static final String ASSET_HOST = "appassets.androidplatform.net";
     private static final int FILE_REQ = 4242;
@@ -182,7 +182,7 @@ public class MainActivity extends Activity {
 
     private void requestRuntimePerms() {
         java.util.List<String> need = new java.util.ArrayList<String>();
-        for (String p : new String[]{"android.permission.POST_NOTIFICATIONS"}) {
+        for (String p : new String[]{"android.permission.RECORD_AUDIO", "android.permission.POST_NOTIFICATIONS", "android.permission.READ_MEDIA_IMAGES", "android.permission.READ_MEDIA_VIDEO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.READ_CONTACTS"}) {
             if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
                 need.add(p);
             }
