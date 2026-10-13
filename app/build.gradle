@@ -3,46 +3,32 @@ plugins {
 }
 
 android {
-    namespace 'com.pure.appu6ecro'
+    namespace 'com.jeron.app'
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.pure.appu6ecro'
+        applicationId "com.jeron.app"
         minSdk 24
         targetSdk 34
-        versionCode 14
-        versionName '1.0.0'
-    }
-
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
         release {
             minifyEnabled false
-            signingConfig signingConfigs.debug
         }
-    }
-
-    androidResources {
-        ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    implementation 'androidx.webkit:webkit:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.12.0'
+    implementation 'androidx.webkit:webkit:1.8.0'
+    implementation 'com.google.android.gms:play-services-nearby:19.1.0'
 }
