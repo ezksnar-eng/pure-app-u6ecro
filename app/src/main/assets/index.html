@@ -134,7 +134,11 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 .sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:50vh;overflow:auto;margin-top:10px}.sgrid img{width:100%;aspect-ratio:1;object-fit:contain;background:var(--bg2);border-radius:10px;cursor:pointer}.sadd{aspect-ratio:1;border:2px dashed var(--line);border-radius:10px;color:var(--pri);display:grid;place-items:center}
 .stk-b{display:inline-flex;align-items:center;gap:2px;color:#f97316;font-size:12px;margin-inline-start:6px}
 .pmb{align-items:center;gap:8px;background:var(--bg);padding:6px 12px;font-size:13px;color:var(--sub);border-bottom:1px solid var(--line);cursor:pointer}.pmb span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mnt{gap:6px;padding:6px 10px;background:var(--bg);overflow-x:auto}.mnt button{padding:6px 12px;background:var(--bg2);border-radius:14px;white-space:nowrap}.gs{font-size:12px;font-weight:700;color:var(--pri);margin-bottom:2px}</style></head><body>
+.mnt{gap:6px;padding:6px 10px;background:var(--bg);overflow-x:auto}.mnt button{padding:6px 12px;background:var(--bg2);border-radius:14px;white-space:nowrap}.gs{font-size:12px;font-weight:700;color:var(--pri);margin-bottom:2px}
+.stabs{display:flex;justify-content:space-around;padding:4px 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}.stabs button{width:48px;height:44px;border-radius:12px;color:var(--sub);display:grid;place-items:center}.stabs button.on{background:var(--bg2);color:var(--pri)}
+.sbody{max-height:52vh;overflow-y:auto;padding:0 6px}.egrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}.egrid button{font-size:26px;height:42px;border-radius:8px}.egrid button:active{background:var(--bg2)}
+.poll{min-width:230px}.po{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer}.po i{position:absolute;inset:0 auto 0 0;background:var(--pri);opacity:.18;transition:width .3s}.po.me{border-color:var(--pri)}.po span,.po b{position:relative}
+.gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}</style></head><body>
 <div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>اكتب إيميلك وكلمة سرك وابدأ المراسلة</p>
 <input class="in" id="aName" placeholder="الاسم (لأول مرة فقط)" maxlength="40">
 <input class="in" id="aMail" type="email" dir="ltr" placeholder="الإيميل" style="text-align:right" autocomplete="email">
@@ -146,6 +150,7 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 <div id="drw"><div class="ov"></div><div class="pn"><div class="pf"><div class="av" id="dAv"></div><div class="nm" id="dNm" style="font-size:18px"></div><div class="sb" id="dMl"></div></div>
 <button class="mi" id="mFindB"><span class="ico" data-i="edit"></span>إضافة صديق</button>
 <button class="mi" id="mGrpB"><span class="ico" data-i="users"></span>مجموعة جديدة</button>
+<button class="mi" id="mDiscB"><span class="ico" data-i="users"></span>اكتشاف المجموعات</button>
 <button class="mi" id="mNetB"><span class="ico" data-i="wifi"></span>اتصال مباشر بدون إنترنت</button>
 <button class="mi" id="mArcB"><span class="ico" data-i="archive"></span>المحادثات المؤرشفة</button>
 <button class="mi" id="mStarB"><span class="ico" data-i="star"></span>الرسائل المميّزة</button>
@@ -169,12 +174,12 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 <div class="mod" id="mAdm"><div class="card" style="max-width:480px"><div id="admBox"></div></div></div>
 <div class="mod" id="mSql"><div class="card"><h2>SQL تحديث قاعدة البيانات</h2><p class="hint">انسخه والصقه بـ Supabase ← SQL Editor ← Run. مرة وحدة، وآمن تعيده.</p><textarea class="in" id="sqlT" rows="8" dir="ltr" readonly style="font-size:11px"></textarea><button class="btn" id="sqlCp">نسخ</button><button class="btn g" data-close>إغلاق</button></div></div>
 <div class="mod" id="mG"><div class="card"><div id="gBox"></div></div></div>
-<div class="mod" id="mStk"><div class="card"><div id="stkBox"></div></div></div>
+<div class="mod sh" id="mStk"><div class="card"><div id="stkBox"></div></div></div>
 <div class="mod top" id="mAsk"><div class="card"><h2 id="kT"></h2><textarea class="in" id="kV" rows="3"></textarea><button class="btn" id="kOk">حفظ</button><button class="btn g" id="kNo">إلغاء</button></div></div>
 <div class="mod top" id="mYN"><div class="card"><p id="yT" style="margin-bottom:14px;line-height:1.7;white-space:pre-wrap"></p><button class="btn" id="yOk">تأكيد</button><button class="btn g" id="yNo">إلغاء</button></div></div>
 <div class="mod top" id="mCrop"><div class="card"><h2 id="cTitle">ضبط الصورة</h2><div style="display:flex;justify-content:center"><canvas id="cv"></canvas></div><input type="range" id="cz" min="1" max="4" step="0.01" value="1" style="width:100%;margin:14px 0"><p class="hint">اسحب الصورة لتحريكها وكبّرها بالمنزلق أو بإصبعين.</p><button class="btn" id="cOk">حفظ</button><button class="btn g" id="cNo">إلغاء</button></div></div>
 <div class="mod" id="lb"><img id="lbImg" alt=""></div><div id="toast"></div>
-<input type="file" id="file" accept="image/*" hidden><input type="file" id="fdoc" hidden><input type="file" id="fcam" accept="image/*" capture="environment" hidden><input type="file" id="fpk" accept="image/*" hidden>
+<input type="file" id="file" accept="image/*" multiple hidden><input type="file" id="fdoc" hidden><input type="file" id="fcam" accept="image/*" capture="environment" hidden><input type="file" id="fpk" accept="image/*" hidden>
 <script>
 // ====== إعداد قاعدة البيانات الموحدة ======
 const SB_URL='https://tpnslpmstlsnwszxrpel.supabase.co';
@@ -188,10 +193,10 @@ const ib=(n,s,c)=>{const b=el('button',c||'ib');b.innerHTML=ic(n,s);return b};
 document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=ic(e.dataset.i,+e.dataset.s||22));
 const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3200)};
 
-Object.assign(IC,{bellOff:'<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4M3 3l18 18"/>',star:'<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/>',fwd:'<path d="M15 14l5-5-5-5M20 9H9a5 5 0 00-5 5v6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',badge:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',download:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',down:'<path d="M6 9l6 6 6-6"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 010 7M22 20c0-2.5-1.5-4-4-4.8"/>',megaphone:'<path d="M3 10v4h4l8 4V6L7 10zM19 8a5 5 0 010 8"/>',chart:'<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3"/>',crown:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',archive:'<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12h14V8M10 12h4"/>',plus:'<path d="M12 5v14M5 12h14"/>',wrench:'<path d="M14 6a4 4 0 005 5l-9 9a2.8 2.8 0 01-4-4z"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',file:'<path d="M6 3h8l4 4v14H6zM14 3v4h4"/>',play:'<path d="M7 4l13 8-13 8z"/>',pause:'<path d="M8 4v16M16 4v16"/>',sticker:'<path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4M8 14c1 2 5 2 6 0"/>',flame:'<path d="M12 3c1 3 5 5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>',headset:'<path d="M4 14v-2a8 8 0 0116 0v2M4 14h3v5H4zM17 14h3v5h-3z"/>',camera2:'<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="3.5"/>'});
+Object.assign(IC,{bellOff:'<path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4M3 3l18 18"/>',star:'<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z"/>',fwd:'<path d="M15 14l5-5-5-5M20 9H9a5 5 0 00-5 5v6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',badge:'<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/>',flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',download:'<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>',down:'<path d="M6 9l6 6 6-6"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5M16 4.5a3.5 3.5 0 010 7M22 20c0-2.5-1.5-4-4-4.8"/>',megaphone:'<path d="M3 10v4h4l8 4V6L7 10zM19 8a5 5 0 010 8"/>',chart:'<path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3"/>',crown:'<path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/>',archive:'<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12h14V8M10 12h4"/>',plus:'<path d="M12 5v14M5 12h14"/>',wrench:'<path d="M14 6a4 4 0 005 5l-9 9a2.8 2.8 0 01-4-4z"/>',db:'<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',file:'<path d="M6 3h8l4 4v14H6zM14 3v4h4"/>',play:'<path d="M7 4l13 8-13 8z"/>',pause:'<path d="M8 4v16M16 4v16"/>',sticker:'<path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4M8 14c1 2 5 2 6 0"/>',flame:'<path d="M12 3c1 3 5 5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>',headset:'<path d="M4 14v-2a8 8 0 0116 0v2M4 14h3v5H4zM17 14h3v5h-3z"/>',smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14c1 2 7 2 8 0M9 9.5v.5M15 9.5v.5"/>',camera2:'<path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="3.5"/>'});
 document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=ic(e.dataset.i,+e.dataset.s||22));
 // ====== إعدادات الشكل ======
-const SET0={sound:1,vib:1,preview:1,showOnline:1,showRead:1,ai:1,bg:0,mesh:0,trOn:0,lang:'ar',trLang:'ar',accent:'pink',wall:'dots',fs:15};
+const SET0={sound:1,vib:1,preview:1,showOnline:1,showRead:1,ai:1,bg:0,mesh:0,stealth:0,secure:0,onlineNotify:0,trOn:0,lang:'ar',trLang:'ar',accent:'pink',wall:'dots',fs:15};
 const setg=()=>({...SET0,...ld('jr_set2',{})}),setS=(k,v)=>{const s=setg();s[k]=v;lsv('jr_set2',s);applyLook()};
 const ACC={purple:['#8b5cf6','#a78bfa','#6d28d9','#ede9fe','#5b21b6'],blue:['#3b82f6','#60a5fa','#1d4ed8','#dbeafe','#1e40af'],green:['#10b981','#34d399','#047857','#d1fae5','#065f46'],orange:['#f97316','#fb923c','#c2410c','#ffedd5','#9a3412']};
 function applyLook(){const t=ld('jr_theme','light'),r=document.documentElement,dark=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
@@ -210,7 +215,7 @@ const other=m=>m.gid?'g:'+m.gid:(m.sender===me.id?m.receiver:m.sender);
 const LS=k=>({get:()=>me?ld(k+me.id,[]):[],has:id=>ld(k+me.id,[]).includes(id),tog:id=>{const a=ld(k+me.id,[]),i=a.indexOf(id);i>=0?a.splice(i,1):a.push(id);lsv(k+me.id,a);return i<0}});
 const MARKU=LS('jr_mku_'),FAV=LS('jr_fav_'),STAR=LS('jr_star_'),HID=LS('jr_hid_'),MUTE=LS('jr_mute_'),ARC=LS('jr_arc_'),PIN=LS('jr_pin_');
 const clrMap=()=>me?ld('jr_clr_'+me.id,{}):{};
-const thread=id=>{const c=clrMap()[id]||0,g=typeof id==='string'&&id.startsWith('g:')?id.slice(2):null;return msgs.filter(m=>(g?(m.gid===g&&m.receiver===me.id):(!m.gid&&other(m)===id))&&+new Date(m.created_at)>c).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))};
+const thread=id=>{const c=clrMap()[id]||0,g=typeof id==='string'&&id.startsWith('g:')?id.slice(2):null;return msgs.filter(m=>(g?(m.gid===g&&m.receiver===me.id):(!m.gid&&other(m)===id))&&+new Date(m.created_at)>c&&(!m.expires_at||new Date(m.expires_at)>Date.now())).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))};
 const prev=m=>m.deleted?'رسالة محذوفة':m.kind==='audio'?'رسالة صوتية':m.kind==='image'?(m._p||'صورة'):m.kind==='file'?'ملف: '+String(m._p||'').split('|')[0]:m.kind==='loc'?'موقع':m._p===null?'رسالة مشفرة':(m._p||'');
 const uuid=()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&3|8).toString(16)});
 const isNet=e=>!navigator.onLine||(e&&!e.code&&/fetch|network|load failed|timeout/i.test(e.message||''));
@@ -289,7 +294,7 @@ async function boot(u,fast){booting=true;try{let p=null;const c=ld('jr_c_'+u.id,
   setBotProfile();msgs.push(...ld('jr_bot_'+me.id,[]));
   for(const r of outbox())if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_t:1});
   for(const r of ld('jr_fail_'+me.id,[]))if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_f:1});
-  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();remTick();setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets()},1500);return true}finally{booting=false}}
+  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();remTick();applySecure();if(NATIVE){$('#mNetB').style.display='none';if(ld('jr_set2',{}).mesh===undefined){setS('mesh',1);NATIVE.requestPermissions('mesh')}}setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets();syncDevices();llmHint()},1500);return true}finally{booting=false}}
 async function connectBg(){if(connecting||!me)return;connecting=true;try{if(!await needSB())return;
   let{data:{session}}=await sb.auth.getSession();
   if(!session){const j=ld('jr_sess',null);if(j){try{const r=await sb.auth.setSession({access_token:j.a,refresh_token:j.r});session=r.data&&r.data.session}catch(e){}}}
@@ -341,11 +346,11 @@ async function flush(){if(flushing||!me||!sb||!navigator.onLine)return;flushing=
   catch(e){}finally{flushing=false}if(cur)draw();renderList();saveCache();banner()}
 async function enqueue(o,blob,to){to=to||cur;if(!to||!me)return;if(to==='bot'){if(o.text)botUser(o.text);return}if(isG(to))return enqueueGroup(o,blob,to);
   if(!P[to]||!P[to].pubkey)return toast('هذا الشخص ما فعّل التشفير بعد. لازم يسجّل دخول بالنسخة الجديدة');
-  const row={id:uuid(),sender:me.id,receiver:to,kind:o.kind||'text',created_at:new Date().toISOString(),body:o.text?await encT(to,o.text):''};if(rp&&to===cur)row.reply_to=rp.id;if(o.fwd)row.fwd=true;let e={...row};
+  const row={id:uuid(),sender:me.id,receiver:to,kind:o.kind||'text',created_at:new Date().toISOString(),body:o.text?await encT(to,o.text):''};if(rp&&to===cur)row.reply_to=rp.id;if(o.fwd)row.fwd=true;{const ex=expiryFor(to);if(ex)row.expires_at=ex}let e={...row};
   if(blob){row.media=me.id+'/'+row.id+(o.tag?'_'+o.tag:'')+'.'+o.ext;e={...row,_k:'b'+row.id};await bPut(e._k,new Blob([await encB(to,new Uint8Array(await blob.arrayBuffer()))]));murl[row.media]=URL.createObjectURL(blob)}
-  setOut([...outbox(),e]);msgs.push({...row,_t:1,_p:o.text||''});if(to===cur){rp=null;bar();draw()}renderList();banner();flush();lpush(to,e);if(meshOn()&&!blob&&(row.kind==='text'||row.kind==='loc'))meshOut(row)}
+  setOut([...outbox(),e]);msgs.push({...row,_t:1,_p:o.text||''});if(to===cur){rp=null;bar();draw()}renderList();banner();flush();lpush(to,e);if(meshOn()&&!blob&&(row.kind==='text'||row.kind==='loc'))meshOut(row,o.text)}
 function banner(){const n=$('#nb');if(!n||!me)return;const c=outbox().length;
-  if(!navigator.onLine){n.style.display='block';n.textContent='لا يوجد اتصال'+(c?' — '+c+' رسالة بانتظار الإرسال وتنرسل تلقائيًا':' — تكدر تكتب وتنرسل أول ما يرجع النت')}
+  if(!navigator.onLine){const mi=meshInfo();n.style.display='block';n.textContent=mi?'لا يوجد اتصال — رسائلك راح تنتقل عبر الأجهزة القريبة تلقائيًا ('+(mi.peers||0)+' جهاز قريب'+(mi.perms===false?' • ناقص إذن البلوتوث':'')+')':'لا يوجد اتصال'+(c?' — '+c+' رسالة بانتظار الإرسال وتنرسل تلقائيًا':' — تكدر تكتب وتنرسل أول ما يرجع النت')}
   else if(c){n.style.display='block';n.textContent='جاري إرسال '+c+' رسالة…'}else n.style.display='none'}
 // الإشعارات: تدعم متصفح الويب + جسور الـAPK الشائعة
 function nativeNotify(t,b,tag){let ok=false;const w=window;try{
@@ -357,7 +362,7 @@ function nativeNotify(t,b,tag){let ok=false;const w=window;try{
 async function askNotifPerm(){let r='unsupported';try{const w=window;if(NATIVE){NATIVE.requestPermissions('notifications');return JSON.parse(NATIVE.permStatus()).notifications?'granted':'asked'}
   if(w.Capacitor&&w.Capacitor.Plugins&&w.Capacitor.Plugins.LocalNotifications){const x=await w.Capacitor.Plugins.LocalNotifications.requestPermissions();r=x.display||'granted'}
   else if(w.Notification)r=await Notification.requestPermission();else for(const n of['Android','AndroidInterface','AndroidBridge','NativeBridge']){const o=w[n];if(o&&typeof o.requestNotificationPermission==='function'){o.requestNotificationPermission();r='asked';break}}}catch(e){}return r}
-function notify(m){const key=m.gid?'g:'+m.gid:m.sender;if(MUTE.has(key))return;const here=!document.hidden&&cur===key;if(!here)ping();if(here)return;const p=P[key]||P[m.sender];let title=p?p.name:'جيرون';if(m.gid&&P[m.sender])title+=' • '+P[m.sender].name;const mention=m.gid&&m._p&&m._p.includes('@'+me.name);nativeNotify(title,setg().preview?(mention?'ذكرك: ':'')+prev(m):'رسالة جديدة',key)}
+function notify(m){const key=m.gid?'g:'+m.gid:m.sender;if(MUTE.has(key)&&!isMentioned(m))return;const here=!document.hidden&&cur===key;if(!here)ping();if(here)return;const p=P[key]||P[m.sender];let title=p?p.name:'جيرون';if(m.gid&&P[m.sender])title+=' • '+P[m.sender].name;const mention=isMentioned(m);nativeNotify(title,setg().preview?(mention?'ذكرك: ':'')+prev(m):'رسالة جديدة',key)}
 function ntBar(){const b=$('#ntp');const need=NATIVE?!JSON.parse(NATIVE.permStatus()).notifications:(window.Notification&&Notification.permission==='default');if(!need||ld('jr_ntd',0))return;b.textContent='فعّل الإشعارات حتى توصلك الرسائل. اضغط هنا';b.style.display='block';b.style.cursor='pointer';b.onclick=async()=>{b.style.display='none';lsv('jr_ntd',1);await askNotifPerm()}}
 function stat(id){const p=P[id];if(!p)return'';if(p._group)return p.members.length+' عضو';if(id==='bot')return typ.bot&&Date.now()-typ.bot<3000?'يكتب…':'مساعد جيرون';if(typ[id]&&Date.now()-typ[id]<3000)return'يكتب…';if(lan[id])return'متصل مباشرة (بدون إنترنت)';
   if(p.last_seen){const d=new Date(p.last_seen);if(Date.now()-d<100000)return'متصل';return'آخر ظهور '+(d.toDateString()===new Date().toDateString()?'':d.toLocaleDateString(lang,{day:'numeric',month:'short'})+' ')+tm(d)}return'@'+p.username}
@@ -371,8 +376,8 @@ async function markRead(){if(!cur||document.hidden)return;
   if(cur==='bot'){const un=msgs.filter(m=>m._bot&&m.sender==='bot'&&!m.read_at);if(un.length){const t=new Date().toISOString();un.forEach(m=>m.read_at=t);saveBot();renderList()}return}
   const un=thread(cur).filter(m=>m.sender!==me.id&&!isRead(m)&&!m.deleted);if(!un.length)return;
   const last=Math.max(...un.map(m=>+new Date(m.created_at))),s=seenMap();s[cur]=last;lsv('jr_seen_'+me.id,s);renderList();
-  if(isG(cur))return;const srv=un.filter(m=>!m._l&&!m._t);if(setg().showRead&&sb&&navigator.onLine&&srv.length){const t=new Date().toISOString();srv.forEach(m=>m.read_at=t);await sb.from('messages').update({read_at:t}).eq('sender',cur).eq('receiver',me.id).is('read_at',null);bcast(cur,'u')}}
-async function beat(){if(!me||!sb||!navigator.onLine||document.hidden||!setg().showOnline)return;sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',me.id).then(()=>{})}
+  if(isG(cur))return;const srv=un.filter(m=>!m._l&&!m._t);if(setg().showRead&&!setg().stealth&&sb&&navigator.onLine&&srv.length){const t=new Date().toISOString();srv.forEach(m=>m.read_at=t);await sb.from('messages').update({read_at:t}).eq('sender',cur).eq('receiver',me.id).is('read_at',null);bcast(cur,'u')}}
+async function beat(){if(!me||!sb||!navigator.onLine||document.hidden||!setg().showOnline||setg().stealth)return;sb.from('profiles').update({last_seen:new Date().toISOString()}).eq('id',me.id).then(()=>{})}
 document.addEventListener('visibilitychange',()=>{if(!me)return;if(document.hidden){hiddenAt=Date.now();beat()}
   else{if(localStorage.getItem('jr_pin')&&Date.now()-hiddenAt>30000)lockNow();connectBg();pull();markRead();refreshPeer();beat()}});
 window.addEventListener('online',async()=>{banner();if(me&&await needSB()){connectBg();heal(false)}});window.addEventListener('offline',banner);
@@ -412,7 +417,8 @@ function botSys(){const kb=cfg.kb||DEF_KB;let s='أنت «'+(cfg.name||'امبد
 async function botAI(t){const hist=thread('bot').slice(-9,-1).map(m=>({role:m.sender==='bot'?'assistant':'user',content:m._p||''})).filter(x=>x.content);return aiAsk([{role:'system',content:botSys()},...hist,{role:'user',content:t}])}
 let noClaim=false,aiBusy=false,aiBuf=[];
 async function groupBot(text,to){const g=P[to];if(!g||setg().ai===0||!navigator.onLine)return;const q=text.replace(/@(امبد|embed)/ig,'').trim();const hist=thread(to).slice(-14).map(m=>(P[m.sender]||{name:'؟'}).name+': '+(m._p||'')).join('\n');
-  const a=await aiAsk([{role:'system',content:'أنت «'+(cfg.name||'امبد')+'» مساعد داخل مجموعة دردشة اسمها «'+g.name+'». رد بلهجة عراقية مختصرة وودية. إذا طُلب تلخيص النقاش فلخّصه بنقاط قصيرة. لا تذكر تفاصيل التطبيق الداخلية.\n'+(cfg.kb||DEF_KB)},{role:'user',content:'آخر الرسائل بالمجموعة:\n'+hist+'\n\nالمطلوب منك: '+(q||'لخّص النقاش')}]);
+  const gsys='أنت «'+(cfg.name||'امبد')+'» مساعد داخل مجموعة دردشة اسمها «'+g.name+'». رد بلهجة عراقية مختصرة وودية. إذا طُلب تلخيص النقاش فلخّصه بنقاط قصيرة. لا تذكر تفاصيل التطبيق الداخلية.\n'+(cfg.kb||DEF_KB),gq='آخر الرسائل بالمجموعة:\n'+hist+'\n\nالمطلوب منك: '+(q||'لخّص النقاش');
+  const a=llmReady()?await llmAsk(gsys,[],gq):await aiAsk([{role:'system',content:gsys},{role:'user',content:gq}]);
   if(a)enqueueGroup({text:BOTM+a},null,to)}
 async function botReply(t){typ.bot=Date.now();upStat();const iv=setInterval(()=>{typ.bot=Date.now();upStat()},2000);try{const n=nz(t);
   if(!noClaim&&t.length<=40&&sb&&navigator.onLine){try{const r=await sb.rpc('claim_admin',{p:t.replace(/\s+/g,' ').trim()});
@@ -422,9 +428,13 @@ async function botReply(t){typ.bot=Date.now();upStat();const iv=setInterval(()=>
   if(/^(مساعده|help|\?)$/.test(n))return botSay(adm()?HELP:'أكدر أسولف وياك بأي موضوع، أذكّرك بمواعيدك (ذكرني بعد 10 دقائق ...)، أسجّل مهامك (مهمة: ...)، وأعلّمك التبييض والتحرير والترجمة للمانهوا.');
   if(/^(فحص|افحص|اصلاح|اصلح)/.test(n)){botSay('جاري الفحص…');const r=await heal(true);return botSay(adm()?(r.length?r.map(x=>'• '+x).join('\n'):'فحصت الجلسة والاتصال والرسائل والتشفير والتخزين وقاعدة البيانات، وكلشي سليم.'):'فحصت حسابك وأصلحت اللازم.')}
   if(/^(اداره|لوحه الاداره)/.test(n)&&adm())return openAdmin();
+  const sup=ld('jr_sup_'+me.id,null);if(sup==='await'){lsv('jr_sup_'+me.id,null);return supportSend(t)}
+  const rt=t.match(/^\s*تقييم\s*([1-5])/),pr=ld('jr_rate_'+me.id,null);if(rt&&pr&&sb){await sb.rpc('ticket_rate',{tid:pr,r:+rt[1]});lsv('jr_rate_'+me.id,null);return botSay('شكرًا لتقييمك، يساعدنا نتحسن.')}
+  if(/^(دعم|الدعم|ابي دعم|اريد دعم|مشكله|عندي مشكله|ابلاغ عن مشكله|مساعده فنيه|اتصل بالدعم)/.test(n)){lsv('jr_sup_'+me.id,'await');return botSay('تمام، شنو المشكلة؟ اكتبها برسالة وحدة بالتفصيل وأوصلها للدعم الفني.')}
   const tk=botTasks(t);if(tk)return botSay(tk);
   const tr=t.match(/^\s*ترجم\s*[:：]?\s*(.+)$/s);if(tr){const o=await translateText(tr[1],scriptOf(tr[1])==='ar'?'en':'ar');return botSay(o||'ما كدرت أترجم هسه، جرّب بعد شوي.')}
   const r1=botRule(t);if(r1)return botSay(r1);
+  if(setg().ai!==0&&await botLocal(t))return;
   if(setg().ai!==0&&navigator.onLine){if(aiBusy){aiBuf.push(t);return}aiBusy=true;try{let q=t,a=await botAI(q);while(true){if(a)botSay(a);if(!aiBuf.length)break;q=aiBuf.splice(0).join('\n');a=await botAI(q)}if(a)return}finally{aiBusy=false}}
   botSay(botAnswer(t)||(navigator.onLine?'انشغلت شوي، جرّب ترسل مرة ثانية.':'ما أكدر أفكر بدون نت، بس أنفّذ التذكيرات والمهام. اكتب «مساعدة».'))}finally{clearInterval(iv);typ.bot=0;upStat()}}
 function welcome(){if(ld('jr_wel_'+me.id,0)||me.welcomed)return;lsv('jr_wel_'+me.id,1);botSay(cfg.welcome||DEF_WELCOME);if(sb&&navigator.onLine)sb.from('profiles').update({welcomed:true}).eq('id',me.id).then(()=>{})}
@@ -509,7 +519,7 @@ function renderMain(){const M=$('#main');M.innerHTML='';if(!cur||!P[cur]){const 
   item('user',isG(cur)?'معلومات المجموعة':'عرض الملف',openInfo);item('search','بحث في المحادثة',()=>{chatQ=chatQ||' ';$('#cs').style.display='flex';$('#csq').focus()});
   item('pin',PIN.has(cur)?'إلغاء التثبيت':'تثبيت المحادثة',()=>{PIN.tog(cur);renderList()});item('star',FAV.has(cur)?'إزالة من المفضلة':'إضافة للمفضلة',()=>{FAV.tog(cur);toast(FAV.has(cur)?'أُضيفت للمفضلة':'أُزيلت من المفضلة')});
   item(MUTE.has(cur)?'bell':'bellOff',MUTE.has(cur)?'إلغاء الكتم':'كتم الإشعارات',()=>{MUTE.tog(cur);renderList();toast(MUTE.has(cur)?'تم الكتم':'تم إلغاء الكتم')});
-  item('info','تعليم كغير مقروءة',()=>{MARKU.tog(cur);cur=null;$('#app').classList.remove('chat');renderList();renderMain()});
+  item('clock','رسائل مؤقتة',disMenu);item('info','تعليم كغير مقروءة',()=>{MARKU.tog(cur);cur=null;$('#app').classList.remove('chat');renderList();renderMain()});
   if(cur!=='bot')item('archive','أرشفة المحادثة',()=>{ARC.tog(cur);cur=null;$('#app').classList.remove('chat');renderList();renderMain()});
   item('download','تصدير المحادثة كنص',exportChat);item('eraser','مسح المحادثة (عندي فقط)',async()=>{if(await yn('مسح المحادثة من عندك فقط؟','مسح')){const c=clrMap();c[cur]=Date.now();lsv('jr_clr_'+me.id,c);draw();renderList()}});
   if(cur!=='bot'&&!isG(cur))item('ban','حظر',async()=>{if(await yn('حظر '+u.name+'؟','حظر'))block(cur)},'dng');
@@ -517,7 +527,7 @@ function renderMain(){const M=$('#main');M.innerHTML='';if(!cur||!P[cur]){const 
   // شريط التحديد
   const sbar=el('div','hd');sbar.id='selbar';sbar.style.display='none';const sx=ib('x',22);sx.onclick=selClear;const sc=el('div','nm','0');sc.id='selcnt';sc.style.flex='1';const act=(id,i,f)=>{const b=ib(i,21);b.id=id;b.onclick=f;return b};
   const s2=ib('more',22),dd2=el('div','dd');const it2=(i,t,f)=>{const b=el('button','mi');b.innerHTML='<span class="ico">'+ic(i,20)+'</span>'+t;b.onclick=()=>{dd2.classList.remove('on');f()};dd2.appendChild(b)};
-  it2('pin','تثبيت الرسالة',()=>{const m=selMsgs()[0];if(m&&sel.size===1){selClear();pinMsg(m)}});it2('info','معلومات',()=>{const m=selMsgs()[0];if(m&&sel.size===1)showInfo(m)});it2('pen','تعديل',()=>{const m=selMsgs()[0];if(m&&sel.size===1&&m.sender===me.id&&!m.media&&!m._bot&&m.kind==='text'){selClear();startEdit(m)}else toast('التعديل لرسالتك النصية فقط')});it2('download','حفظ الوسائط',()=>{const m=selMsgs()[0];if(m&&m.media)saveMedia(m)});
+  it2('sticker','تحويل لملصق',()=>{const m=selMsgs()[0];if(m&&m.kind==='image'){selClear();toSticker(m)}else toast('اختر رسالة صورة')});it2('pin','تثبيت الرسالة',()=>{const m=selMsgs()[0];if(m&&sel.size===1){selClear();pinMsg(m)}});it2('info','معلومات',()=>{const m=selMsgs()[0];if(m&&sel.size===1)showInfo(m)});it2('pen','تعديل',()=>{const m=selMsgs()[0];if(m&&sel.size===1&&m.sender===me.id&&!m.media&&!m._bot&&m.kind==='text'){selClear();startEdit(m)}else toast('التعديل لرسالتك النصية فقط')});it2('download','حفظ الوسائط',()=>{const m=selMsgs()[0];if(m&&m.media)saveMedia(m)});
   s2.onclick=e=>{e.stopPropagation();dd2.classList.toggle('on')};
   sbar.append(sx,sc,act('sbReply','reply',()=>{const m=selMsgs()[0];selClear();if(m)setReply(m)}),act('sbStar','star',()=>{selMsgs().forEach(m=>STAR.tog(m.id));selClear();toast('تم')}),act('sbCopy','copy',()=>{copyText(selMsgs().map(m=>m._p).filter(Boolean).join('\n'));selClear()}),act('sbFwd','fwd',()=>openFwd(selMsgs())),act('sbDel','trash',selDelete),s2,dd2);
   const rxb=el('div','rxr');rxb.id='rxbar';rxb.style.display='none';rxb.style.background='var(--bg)';REACT.forEach(e=>{const b=el('button','',e);b.onclick=()=>{const m=selMsgs()[0];selClear();if(m)react(m,e)};rxb.appendChild(b)});
@@ -527,13 +537,13 @@ function renderMain(){const M=$('#main');M.innerHTML='';if(!cur||!P[cur]){const 
   const rb2=el('div','rpb');rb2.id='rpb';const rpt=el('span');rpt.id='rpt';const rx=ib('x',18);rx.onclick=()=>{if(ed)$('#txt').value='';rp=ed=null;bar();sIcon()};rb2.append(rpt,rx);
   const pmb=el('div','pmb');pmb.id='pmb';pmb.style.display='none';pmb.innerHTML=ic('pin',16)+'<span id="pmt"></span>';const mnt=el('div','mnt');mnt.id='mnt';mnt.style.display='none';const comp=el('div','comp'),pill=el('div','pill');pill.id='pl';const att=ib('clip',22);const noBot=()=>cur==='bot'&&(toast('امبد يفهم النص فقط'),true);
   const am=el('div','dd am');const ai=(i,t,f)=>{const b=el('button','mi');b.innerHTML='<span class="ico">'+ic(i,20)+'</span>'+t;b.onclick=()=>{am.classList.remove('on');if(!noBot())f()};am.appendChild(b)};
-  ai('image','الصور',()=>$('#file').click());ai('camera','الكاميرا',()=>$('#fcam').click());ai('file','مستند',()=>$('#fdoc').click());ai('sticker','ملصق',()=>openStickers());ai('pin','الموقع',sendLoc);att.onclick=e=>{e.stopPropagation();am.classList.toggle('on')};
+  ai('image','الصور',()=>$('#file').click());ai('camera','الكاميرا',()=>$('#fcam').click());ai('file','مستند',()=>$('#fdoc').click());ai('sticker','ملصق',()=>openStickers());ai('chart','استطلاع',newPoll);ai('pin','الموقع',sendLoc);att.onclick=e=>{e.stopPropagation();am.classList.toggle('on')};
   const ta=document.createElement('textarea');ta.id='txt';ta.placeholder='اكتب رسالة';ta.rows=1;ta.maxLength=1400;const dr0=ld('jr_dr_'+me.id,{});if(dr0[cur])ta.value=dr0[cur];
-  ta.oninput=()=>{ta.style.height='44px';ta.style.height=Math.min(ta.scrollHeight,120)+'px';sIcon();mentionUi(ta);const d=ld('jr_dr_'+me.id,{});if(ta.value&&!ed)d[cur]=ta.value;else delete d[cur];lsv('jr_dr_'+me.id,d);if(Date.now()-tLast>2500&&ta.value&&cur!=='bot'&&sb){tLast=Date.now();bcast(cur,'t',{from:me.id})}};
+  ta.oninput=()=>{ta.style.height='44px';ta.style.height=Math.min(ta.scrollHeight,120)+'px';sIcon();mentionUi(ta);const d=ld('jr_dr_'+me.id,{});if(ta.value&&!ed)d[cur]=ta.value;else delete d[cur];lsv('jr_dr_'+me.id,d);if(Date.now()-tLast>2500&&ta.value&&cur!=='bot'&&sb&&!setg().stealth&&!isG(cur)){tLast=Date.now();bcast(cur,'t',{from:me.id})}};
   ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi|Android/i.test(navigator.userAgent)){e.preventDefault();sendText()}};
   ta.onpaste=e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'));if(f){e.preventDefault();pick(f)}};pill.append(att,ta);
   const rb=el('div','pill');rb.id='rb';const rt=el('span');rt.id='rt';const rc=ib('x',20);rc.onclick=()=>recStop(true);rb.append(rt,rc);
-  const sd=el('button','snd');sd.id='sd';sd.onclick=()=>rec?recStop():($('#txt').value.trim()?sendText():noBot()||recStart());comp.append(am,pill,rb,sd);M.append(hd,sbar,rxb,cs,pmb,wrap,rb2,mnt,comp);sIcon();bar();drawNow()}
+  const sd=el('button','snd');sd.id='sd';sd.onclick=()=>rec?recStop():($('#txt').value.trim()?sendText():noBot()||recStart());comp.append(am,pill,rb,sd);M.append(hd,sbar,rxb,cs,pmb,wrap,rb2,mnt,comp);sIcon();bar();composerLock();drawNow()}
 function gbUpd(near){const g=$('#gb');if(!g)return;g.style.display=near?'none':'flex';if(near)newCnt=0;g.querySelectorAll('b').forEach(x=>x.remove());if(!near&&newCnt){g.appendChild(el('b','',newCnt))}}
 const EMO=/^[\p{Extended_Pictographic}\u200d\ufe0f\s]{1,12}$/u,REACT=['❤️','👍','😂','😮','😢','🙏'];
 function fmt(t){const f=document.createDocumentFragment(),re=/(\*[^*\n]+\*|_[^_\n]+_|~[^~\n]+~|`[^`\n]+`)/g;let i=0,m;while((m=re.exec(t))){if(m.index>i)f.appendChild(rich(t.slice(i,m.index)));const k=m[0][0],x=m[0].slice(1,-1),e=el(k==='*'?'b':k==='_'?'i':k==='~'?'s':'code');e.textContent=x;f.appendChild(e);i=m.index+m[0].length}if(i<t.length)f.appendChild(rich(t.slice(i)));return f}
@@ -548,11 +558,12 @@ function waveEl(m,url){const pk=(m.media.match(/_p(\d{28})\./)||[])[1]||'5352535
   pb.onclick=async e=>{e.stopPropagation();if(!au){try{au=new Audio(await mediaURL(m))}catch(x){return toast('تعذر تحميل الصوت')}au.playbackRate=rate;au.onloadedmetadata=()=>{if(isFinite(au.duration))du.textContent=fmtT(au.duration)};au.ontimeupdate=()=>{prog();du.textContent=fmtT(au.currentTime)};au.onended=()=>{pb.innerHTML=ic('play',22);au.currentTime=0;prog()}}
     if(au.paused){if(window.__au&&window.__au!==au)window.__au.pause();window.__au=au;au.play();pb.innerHTML=ic('pause',22)}else{au.pause();pb.innerHTML=ic('play',22)}};
   sp.onclick=e=>{e.stopPropagation();rate=rate===1?1.5:rate===1.5?2:1;sp.textContent=rate+'×';if(au)au.playbackRate=rate};return w}
-function sigOf(m){const t=TR[m.id];return[m.deleted?1:0,(P[m.sender]||{}).name,m._p,m.edited_at,m.read_at?1:0,isRead(m)?1:0,m._t?1:0,m._f?1:0,m._lan?1:0,JSON.stringify(m.reactions||''),STAR.has(m.id)?1:0,sel.has(m.id)?1:0,t?(showOrig.has(m.id)?'o':'t'):0,m.media||'',m.fwd?1:0,m.reply_to||''].join('|')}
+function sigOf(m){const t=TR[m.id];return[m.deleted?1:0,(P[m.sender]||{}).name,m.kind==='poll'?JSON.stringify(votes[m.mid||m.id]||[]):'',m._p,m.edited_at,m.read_at?1:0,isRead(m)?1:0,m._t?1:0,m._f?1:0,m._lan?1:0,JSON.stringify(m.reactions||''),STAR.has(m.id)?1:0,sel.has(m.id)?1:0,t?(showOrig.has(m.id)?'o':'t'):0,m.media||'',m.fwd?1:0,m.reply_to||''].join('|')}
 function mkBubble(m){const mine=m.sender===me.id,b=el('div','b'+(mine?' me':'')+(sel.has(m.id)?' sel':''));b.dataset.id=m.id;if(!sel.size&&Date.now()-new Date(m.created_at)<2500)b.classList.add('pop');
   if(m.deleted){b.appendChild(el('div','','تم حذف هذه الرسالة'));b.style.opacity=.6}
   else{if(isG(cur)&&!mine){const gp=P[m.sender]||{name:'؟'},bm=m._p&&m._p.startsWith(BOTM),gs=el('div','gs',bm?(cfg.name||'امبد')+' • عبر '+gp.name:gp.name);b.appendChild(gs)}if(m.fwd){const f=el('div','fw');f.innerHTML=ic('fwd',12)+'تمت إعادة توجيهها';b.appendChild(f)}
     if(m.reply_to){const qm=msgs.find(x=>x.mid===m.reply_to||x.id===m.reply_to),qb=el('div','qt',qm?(qm.sender===me.id?'أنت':(P[qm.sender]||{}).name||'')+': '+prev(qm):'رسالة غير متوفرة');qb.onclick=e=>{e.stopPropagation();const t=document.querySelector('[data-id="'+(qm?qm.id:m.reply_to)+'"]');if(t)t.scrollIntoView({block:'center'})};b.appendChild(qb)}
+    if(m.kind==='poll'&&m._p)b.appendChild(pollEl(m));
     if(m.media){if(m._f)b.appendChild(el('div','','فشل الإرسال'));
       else if(m.kind==='audio'){if(m._t)b.appendChild(el('div','','جاري إرسال الصوت…'));else b.appendChild(waveEl(m))}
       else if(m.kind==='sticker'){b.classList.add('stkb');const w=el('div','stk'),im=document.createElement('img');w.appendChild(im);b.appendChild(w);mediaURL(m).then(u=>{im.src=u;im.onclick=e=>{e.stopPropagation();if(Date.now()-lpT<700||sel.size)return;if(!m._t){const l=stkList();bGet('stk:'+m.id).then(x=>{if(!x)fetch(u).then(r=>r.blob()).then(bl=>{bPut('stk:'+m.id,bl);l.unshift({id:m.id});lsv('jr_stk_'+me.id,l);toast('أُضيف لملصقاتي')})})}}}).catch(()=>w.replaceWith(mediaRetry(m)))}
@@ -560,7 +571,7 @@ function mkBubble(m){const mine=m.sender===me.id,b=el('div','b'+(mine?' me':'')+
       else{const d=(m.media.match(/_(\d+)x(\d+)\./)||[]),w=el('div','imw');if(d[1]){w.style.aspectRatio=d[1]+'/'+d[2]}const im=document.createElement('img');w.appendChild(im);b.appendChild(w);
         mediaURL(m).then(u=>{im.src=u;im.onload=()=>w.classList.add('ld');im.onclick=e=>{e.stopPropagation();if(Date.now()-lpT<700||sel.size)return;$('#lbImg').src=u;$('#lb').classList.add('on')}}).catch(()=>w.replaceWith(mediaRetry(m)))}}
     if(m.kind==='loc'&&m._p){const c=(m._p||'').split(','),a=el('a','fc');a.href='https://www.openstreetmap.org/?mlat='+c[0]+'&mlon='+c[1]+'#map=16/'+c[0]+'/'+c[1];a.target='_blank';a.rel='noopener';a.style.cssText='color:inherit;text-decoration:none';a.innerHTML=ic('pin',26);const w=el('div');w.append(el('div','nm','موقعي الحالي'),el('div','sb',m._p));a.appendChild(w);b.appendChild(a)}
-    else if(m.kind!=='file'&&m.kind!=='sticker'&&m._p){let txt=m._p,tr=TR[m.id];if(txt.startsWith(BOTM))txt=txt.slice(BOTM.length);if(tr&&!showOrig.has(m.id))txt=tr;const t=el('div');t.appendChild(fmt(txt));if(EMO.test(txt)&&!/\d/.test(txt))t.style.fontSize='34px';b.appendChild(t);
+    else if(m.kind!=='file'&&m.kind!=='sticker'&&m.kind!=='poll'&&m._p){let txt=m._p,tr=TR[m.id];if(txt.startsWith(BOTM))txt=txt.slice(BOTM.length);if(tr&&!showOrig.has(m.id))txt=tr;const t=el('div');t.appendChild(fmt(txt));if(EMO.test(txt)&&!/\d/.test(txt))t.style.fontSize='34px';b.appendChild(t);
       if(tr){const tg=el('div','trt',showOrig.has(m.id)?'عرض الترجمة':'مترجمة • اضغط لعرض الأصل');tg.onclick=e=>{e.stopPropagation();showOrig.has(m.id)?showOrig.delete(m.id):showOrig.add(m.id);nodeCache.delete(m.id);draw()};b.appendChild(tg)}}
     else if(m._p===null)b.appendChild(el('div','','تعذر فك تشفير الرسالة'));
     const rxs=m.reactions||{},cnt={};Object.values(rxs).forEach(e=>cnt[e]=(cnt[e]||0)+1);if(Object.keys(cnt).length){const r=el('div','rxc');for(const e in cnt){const c=el('span','rx'+(rxs[me.id]===e?' mine':''),e+(cnt[e]>1?' '+cnt[e]:''));c.onclick=ev=>{ev.stopPropagation();react(m,e)};r.appendChild(c)}b.appendChild(r)}}
@@ -569,15 +580,15 @@ function mkBubble(m){const mine=m.sender===me.id,b=el('div','b'+(mine?' me':'')+
   b.appendChild(f);gest(b,m);return b}
 const draw=()=>{if(drawQ)return;drawQ=setTimeout(()=>{drawQ=0;drawNow()},30)};
 function drawNow(){const B=$('#msgs');if(!B||!cur)return;const first=!B.dataset.i,dist=B.scrollHeight-B.scrollTop-B.clientHeight,keep=first||dist<90;const hid=HID.get(),q=chatQ.trim().toLowerCase(),nodes=[];
-  const sec=el('div','sec');sec.innerHTML=ic('shield',16)+(cur==='bot'?'محادثة محلية مع المساعد':'الرسائل مشفرة من طرف لطرف');nodes.push(sec);
+  const sec=el('div','sec');sec.innerHTML=ic('shield',16)+(cur==='bot'?'محادثة محلية مع المساعد':'الرسائل مشفرة من طرف لطرف');nodes.push(sec);if(isG(cur)){const gc=groupCard();if(gc)nodes.push(gc)}
   let list=thread(cur).filter(m=>!hid.includes(m.id));if(q)list=list.filter(m=>m._p&&m._p.toLowerCase().includes(q));
   if(!keep&&list.length>lastLen)newCnt+=list.length-lastLen;lastLen=list.length;let day='',dvEl=null;const today=new Date().toDateString(),yest=new Date(Date.now()-864e5).toDateString();
   list.forEach(m=>{const d=new Date(m.created_at).toDateString();if(d!==day){day=d;nodes.push(el('div','dt',d===today?'اليوم':d===yest?'أمس':new Date(m.created_at).toLocaleDateString(lang,{day:'numeric',month:'long',year:'numeric'})))}
     if(divId&&m.id===divId){dvEl=el('div','dv','رسائل جديدة');nodes.push(dvEl)}
-    const sg=sigOf(m);let c=nodeCache.get(m.id);if(!c||c.sg!==sg){c={sg,el:mkBubble(m)};nodeCache.set(m.id,c)}nodes.push(c.el);if(trWant(m))queueTr(m)});
+    const sg=sigOf(m);let c=nodeCache.get(m.id);if(!c||c.sg!==sg){c={sg,el:mkBubble(m)};nodeCache.set(m.id,c)}nodes.push(c.el);if(trWant(m))queueTr(m)});{const pp=list.filter(m=>m.kind==='poll').map(m=>m.mid||m.id).filter(p=>!(p in votes));if(pp.length)loadVotes(pp)}
   B.replaceChildren(...nodes);
   if(first&&dvEl)dvEl.scrollIntoView({block:'center'});else if(keep)B.scrollTop=B.scrollHeight;else B.scrollTop=B.scrollHeight-B.clientHeight-dist;B.dataset.i=1;gbUpd(keep||first);selUi();pmUi()}
-function mentionUi(ta){const b=$('#mnt');if(!b)return;if(!isG(cur)){b.style.display='none';return}const m=ta.value.slice(0,ta.selectionStart).match(/@([^\s@]*)$/);if(!m){b.style.display='none';return}const q=m[1].toLowerCase(),names=[...(P[cur].members||[]).filter(u=>u!==me.id&&P[u]).map(u=>P[u].name),cfg.name||'امبد'].filter(n=>n.toLowerCase().startsWith(q)).slice(0,6);if(!names.length){b.style.display='none';return}b.innerHTML='';names.forEach(n=>{const c=el('button','',n);c.onclick=()=>{const pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@([^\s@]*)$/,'@'+n+' ');ta.value=before+ta.value.slice(pos);ta.focus();b.style.display='none';sIcon()};b.appendChild(c)});b.style.display='flex'}
+function mentionUi(ta){const b=$('#mnt');if(!b)return;if(!isG(cur)){b.style.display='none';return}const m=ta.value.slice(0,ta.selectionStart).match(/@([^\s@]*)$/);if(!m){b.style.display='none';return}const q=m[1].toLowerCase(),names=[...(P[cur].members||[]).filter(u=>u!==me.id&&P[u]).map(u=>P[u].name),cfg.name||'امبد','الكل','المشرفين'].filter(n=>n.toLowerCase().startsWith(q)).slice(0,6);if(!names.length){b.style.display='none';return}b.innerHTML='';names.forEach(n=>{const c=el('button','',n);c.onclick=()=>{const pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@([^\s@]*)$/,'@'+n+' ');ta.value=before+ta.value.slice(pos);ta.focus();b.style.display='none';sIcon()};b.appendChild(c)});b.style.display='flex'}
 function mediaRetry(m){const d=el('div','','تعذر تحميل الوسائط. اضغط للمحاولة');d.style.cssText='cursor:pointer;padding:20px';d.onclick=e=>{e.stopPropagation();delete murl[m.media];nodeCache.delete(m.id);draw()};return d}
 async function mediaURL(m){const key=m.media;if(murl[key])return murl[key];let ct=await bGet('m:'+key);
   if(!ct){let r=null;try{r=await fetch(URL_+'/storage/v1/object/public/media/'+key)}catch(e){}
@@ -605,7 +616,7 @@ async function prepFast(file,max,q){max=max||1280;let d=null,bmp=null;try{d=imgD
   if(d&&Math.max(d[0],d[1])>max){try{bmp=await createImageBitmap(file,d[0]>=d[1]?{resizeWidth:max,resizeQuality:'medium',imageOrientation:'from-image'}:{resizeHeight:max,resizeQuality:'medium',imageOrientation:'from-image'})}catch(e){}}
   if(!bmp)bmp=await bitmap(file);const s=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*s),h=Math.round(bmp.height*s),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
   return new Promise((res,rej)=>c.toBlob(b=>b?res({blob:b,w,h}):rej(),'image/jpeg',q||.8))}
-$('#file').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};$('#fcam').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};
+$('#file').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;if(fs.length===1)return pick(fs[0]);if(!cur||cur==='bot')return;const to=cur;toast('جاري إرسال '+Math.min(fs.length,10)+' صور…');for(const f of fs.slice(0,10)){try{const{blob,w,h}=await prepFast(f);await enqueue({kind:'image',ext:'jpg',tag:w+'x'+h},blob,to)}catch(x){}}};$('#fcam').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};
 function pick(f){if(!cur||cur==='bot')return;if(!f.type.startsWith('image/'))return toast('اختر صورة فقط');pend={p:prepFast(f)};pend.p.catch(()=>{});$('#pvImg').src=URL.createObjectURL(f);$('#pvCp').value='';$('#mPv').classList.add('on')}
 $('#pvNo').onclick=()=>{pend=null;closeAll()};$('#pvCp').onkeydown=e=>{if(e.key==='Enter')$('#pvGo').click()};
 $('#pvGo').onclick=async()=>{if(!pend||!cur)return;const x=pend,to=cur,cap=$('#pvCp').value.trim();pend=null;closeAll();try{const{blob,w,h}=await x.p;enqueue({kind:'image',ext:'jpg',tag:w+'x'+h,text:cap},blob,to)}catch(e){toast('تعذر معالجة الصورة')}};
@@ -650,12 +661,13 @@ function openSettings(){closeAll();pf={avatar:undefined,banner:undefined};const 
   B.appendChild(el('div','lb','لون التطبيق'));const ac=el('div','seg');[['pink','#ec4899'],['purple','#8b5cf6'],['blue','#3b82f6'],['green','#10b981'],['orange','#f97316']].forEach(([v,c])=>{const d=el('button','dot'+(setg().accent===v?' on':''));d.style.background=c;d.onclick=()=>{setS('accent',v);ac.querySelectorAll('.dot').forEach(x=>x.classList.remove('on'));d.classList.add('on')};ac.appendChild(d)});B.appendChild(ac);
   B.appendChild(el('div','lb','خلفية المحادثة'));seg('wall',[['dots','منقطة'],['soft','ناعمة'],['plain','سادة']]);B.appendChild(el('div','lb','حجم الخط'));seg('fs',[[13,'صغير'],[15,'متوسط'],[17,'كبير'],[19,'أكبر']]);
   const nt=(t,key,fn,sub)=>{const r=row(t,sub),sw=el('div','sw'+(setg()[key]?' on':''));sw.appendChild(el('i'));sw.onclick=()=>{const v=!setg()[key];sw.classList.toggle('on',v);fn(v)};r.appendChild(sw)};
-  H('الدعم والمجتمع');btn('الدعم الفني',openSupport,1);btn('مجموعة جديدة',openNewGroup,1);btn('صنع ملصق',openStickerMaker,1);
+  H('الدعم والمجتمع');btn('مجموعة جديدة',openNewGroup,1);btn('اكتشاف المجموعات',openDiscover,1);btn('صنع ملصق',openStickerMaker,1);
   H('الإشعارات');if(NATIVE){nt('الاستلام بالخلفية (إشعارات حتى والتطبيق مسكّر)','bg',setBg,'يعرض إشعارًا دائمًا صغيرًا، وتحتاج جلسة سارية');nt('الشبكة القريبة (بلوتوث/واي فاي) بدون نت','mesh',setMesh,'رسائل مشفرة تقفز بين أجهزة التطبيق القريبة لين توصل للشخص');btn('حالة الشبكة القريبة',()=>{try{const s=JSON.parse(NATIVE.meshStatus());toast('الأجهزة القريبة: '+(s.peers||0)+' • محمولة: '+(s.carry||0)+' • وصلت: '+(s.delivered||0)+(s.perms?'':' • ناقص إذن'))}catch(e){toast('غير متاح')}},1)}btn('طلب إذن الإشعارات',async()=>{const r=await askNotifPerm();toast(r==='unsupported'?'هذا الجهاز لا يدعم الإشعارات':r==='granted'?'تم تفعيل الإشعارات':'النتيجة: '+r)},1);btn('فحص الإشعارات',diagNotif,1);tog('صوت الرسائل','sound');tog('الاهتزاز','vib');tog('إظهار محتوى الرسالة بالإشعار','preview');
   H('اللغة');B.appendChild(el('div','lb','لغة التطبيق'));const lg=el('div','seg');LANGS.forEach(([v,t])=>{const b=el('button',lang===v?'on':'',t);b.onclick=()=>{setS('lang',v);toast('جاري تغيير اللغة…');setTimeout(()=>location.reload(),600)};lg.appendChild(b)});B.appendChild(lg);
   tog('ترجمة الرسائل الواردة تلقائيًا','trOn','يرسل نص الرسالة الواردة لخدمة ترجمة خارجية، وهذا يخرج عن التشفير الكامل لتلك الرسالة. متوقف افتراضيًا.');B.appendChild(el('div','lb','ترجم الرسائل إلى'));seg('trLang',LANGS.map(l=>[l[0],l[1]]),()=>{Object.keys(TR).forEach(k=>delete TR[k]);trTried.clear();lsv('jr_tr',TR);nodeCache.clear();draw()});
   tog('ردود امبد بالذكاء الاصطناعي','ai','يرسل نص كلامك مع امبد فقط لخدمة مجانية مفتوحة المصدر.');
-  H('الخصوصية');tog('إرسال علامة «تمت القراءة»','showRead');tog('إظهار حالة «متصل» و«آخر ظهور»','showOnline','يتطبق بعد إعادة فتح التطبيق');btn(localStorage.getItem('jr_pin')?'تغيير/إلغاء قفل التطبيق':'تفعيل قفل التطبيق',openLockSet,1);
+  H('امبد المحلي (ردود فورية بدون نت)');{const st=el('div','hint',llmText());st.id='llmSt';B.appendChild(st)}btn('تنزيل النموذج (حوالي 2.6 جيجا، يفضّل واي فاي)',()=>{if(!NATIVE)return toast('يحتاج تطبيق الأندرويد');llmDl={pct:0,state:'run'};NATIVE.llmDownload(llmUrl());toast('بدأ التنزيل');setTimeout(()=>{const e=$('#llmSt');if(e)e.textContent=llmText()},800)},1);btn('إلغاء التنزيل',()=>NATIVE&&NATIVE.llmCancel(),1);btn('حذف النموذج من الجهاز',async()=>{if(NATIVE&&await yn('حذف النموذج المحلي؟','حذف')){NATIVE.llmDelete();const e=$('#llmSt');if(e)e.textContent=llmText()}},1);
+  H('الخصوصية');tog('وضع التخفي (بدون علامة قراءة ولا آخر ظهور ولا «يكتب»)','stealth');if(NATIVE)nt('منع لقطة الشاشة وتسجيلها','secure',v=>{setS('secure',v?1:0);applySecure()});tog('إشعار لما يصير المفضّلين متصلين','onlineNotify','يشتغل والتطبيق مفتوح');tog('إرسال علامة «تمت القراءة»','showRead');tog('إظهار حالة «متصل» و«آخر ظهور»','showOnline','يتطبق بعد إعادة فتح التطبيق');btn(localStorage.getItem('jr_pin')?'تغيير/إلغاء قفل التطبيق':'تفعيل قفل التطبيق',openLockSet,1);
   H('البيانات والإصلاح');btn('فحص وإصلاح تلقائي (امبد)',async()=>{toast('جاري الفحص…');const r=await heal(true);toast(r.length?r[0]:'كلشي سليم')},1);
   btn('مسح كاش الوسائط من الجهاز',async()=>{if(await yn('مسح الصور المخزنة محليًا؟ تنحمل من جديد عند الحاجة.','مسح')){const d=await idb;d.transaction('b','readwrite').objectStore('b').openCursor().onsuccess=e=>{const c=e.target.result;if(c){if(String(c.key).startsWith('m:'))c.delete();c.continue()}};Object.keys(murl).forEach(k=>delete murl[k]);toast('تم المسح')}},1);
   if(me.is_admin||ld('jr_schema_bad',0))btn('فحص قاعدة البيانات',async()=>{toast('جاري الفحص…');const m=await schemaCheck();toast(m.length?'ناقص: '+m.join('، '):'قاعدة البيانات مكتملة')},1);
@@ -699,7 +711,7 @@ function openAdmin(){if(!me||!me.is_admin)return;admModal('لوحة الإدار
   arow(b,'wrench','وضع الصيانة',async()=>{await saveCfg({maintenance:!cfg.maintenance});openAdmin()},cfg.maintenance?'مفعّل':'متوقف');
   arow(b,'plus','التسجيل الجديد',async()=>{await saveCfg({reg_open:cfg.reg_open===false});openAdmin()},cfg.reg_open===false?'مغلق':'مفتوح');
   arow(b,'bell','شريط إعلان أعلى القائمة',async()=>{const v=await ask('نص الشريط (فاضي لإخفائه)',cfg.notice||'',true);if(v!==null){await saveCfg({notice:v.trim()});openAdmin()}},cfg.notice?'مفعّل':'متوقف');
-  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'gear','تشغيل/إيقاف المزايا',admFlags);arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
+  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف المزايا',admFlags);arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
   arow(b,'download','تصدير قائمة المستخدمين (نسخ)',admExport)})}
 async function admStats(){const{data,error}=await sb.rpc('admin_stats');admModal('إحصائيات المنصة',b=>{if(error)return b.appendChild(el('div','empty',error.message));
   [['المستخدمون',data.users],['الرسائل الكلية',data.messages],['رسائل آخر 24 ساعة',data.today],['المشرفون',data.admins],['المحظورون',data.banned],['البلاغات',data.reports]].forEach(([k,v])=>{const r=el('div','str');r.append(el('div','',k),el('b','',String(v)));b.appendChild(r)})},openAdmin)}
@@ -734,7 +746,7 @@ function banNote(){const b=me.banned||(me.banned_until&&new Date(me.banned_until
 async function logAct(a,t){try{await sb.from('admin_log').insert({admin:me.id,action:a,target:t||null})}catch(e){}}
 async function admTickets(){const{data,error}=await sb.from('tickets').select('*').order('created_at',{ascending:false}).limit(30);if(data){const ids=[...new Set(data.map(t=>t.user_id))].filter(i=>!P[i]);if(ids.length)await loadPeers(ids)}
   admModal('الدعم الفني',b=>{if(error)return b.appendChild(el('div','empty',error.message));if(!data.length)b.appendChild(el('div','empty','ماكو تذاكر'));
-    data.forEach(t=>{const w=el('div');w.style.cssText='border-bottom:1px solid var(--line);padding:8px 0';w.appendChild(el('div','nm',((P[t.user_id]||{}).name||'؟')+' • '+t.subject+(t.status==='closed'?' (مغلقة)':'')));w.appendChild(el('div','sb',t.body));if(t.reply){const r=el('div','',' ↩ '+t.reply);r.style.cssText='color:var(--pri);font-size:14px;margin-top:4px';w.appendChild(r)}
+    data.forEach(t=>{const w=el('div');w.style.cssText='border-bottom:1px solid var(--line);padding:8px 0';w.appendChild(el('div','nm',((P[t.user_id]||{}).name||'؟')+' • '+t.subject+(t.status==='closed'?' (مغلقة)':'')+(t.rating?' • تقييم '+t.rating+'/5':'')));w.appendChild(el('div','sb',t.body));if(t.reply){const r=el('div','',' ↩ '+t.reply);r.style.cssText='color:var(--pri);font-size:14px;margin-top:4px';w.appendChild(r)}
       abtn(w,'رد',async()=>{const v=await ask('ردّك على التذكرة',t.reply||'',true);if(v&&v.trim()){await sb.from('tickets').update({reply:v.trim(),status:'closed',replied_at:new Date().toISOString()}).eq('id',t.id);logAct('ticket_reply',t.user_id);admTickets()}});
       abtn(w,'حذف',async()=>{await sb.from('tickets').delete().eq('id',t.id);admTickets()},1);b.appendChild(w)})},openAdmin)}
 async function admPacks(){const pk=await sb.from('sticker_packs').select('*').order('created_at'),st=await sb.from('stickers').select('*');
@@ -770,14 +782,14 @@ const isG=id=>typeof id==='string'&&id.startsWith('g:');
 const flagOn=k=>!(cfg.flags&&cfg.flags[k]===false);
 async function loadGroups(){if(!sb||!navigator.onLine||!me||!flagOn('groups'))return;try{const mm=await sb.from('group_members').select('group_id,user_id,role');if(mm.error)return;
   const gids=[...new Set(mm.data.filter(x=>x.user_id===me.id).map(x=>x.group_id))];if(!gids.length)return;const gr=await sb.from('groups').select('*').in('id',gids);if(gr.error)return;const need=new Set();
-  gr.data.forEach(g=>{const ms=mm.data.filter(x=>x.group_id===g.id);ms.forEach(x=>need.add(x.user_id));P['g:'+g.id]={id:'g:'+g.id,gid:g.id,name:g.name,avatar:g.avatar,owner:g.owner,_group:1,members:ms.map(x=>x.user_id),roles:Object.fromEntries(ms.map(x=>[x.user_id,x.role]))}});
+  gr.data.forEach(g=>{const ms=mm.data.filter(x=>x.group_id===g.id);ms.forEach(x=>need.add(x.user_id));P['g:'+g.id]={id:'g:'+g.id,gid:g.id,name:g.name,avatar:g.avatar,owner:g.owner,descr:g.descr,rules:g.rules,welcome:g.welcome,mode:g.mode,is_public:g.is_public,approval:g.approval,invite:g.invite,pinned_mid:g.pinned_mid,_group:1,members:ms.map(x=>x.user_id),roles:Object.fromEntries(ms.map(x=>[x.user_id,x.role])),perms:Object.fromEntries(ms.map(x=>[x.user_id,x.perms||{}])),muted:Object.fromEntries(ms.map(x=>[x.user_id,x.muted_until]))}});
   await loadPeers([...need]);renderList();if(cur&&isG(cur)){updHead();upStat()}saveCache()}catch(e){}}
 async function decRaw(k64,u8){const k=await crypto.subtle.importKey('raw',s2b(k64),'AES-GCM',false,['decrypt']);return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:u8.slice(0,12)},k,u8.slice(12)))}
 async function enqueueGroup(o,blob,to){const g=P[to];if(!g)return;const mem=g.members.filter(u=>u===me.id||(P[u]&&P[u].pubkey));if(mem.length<2)return toast('المجموعة تحتاج عضوين مفعّلين على الأقل');
   const mid=uuid(),created=new Date().toISOString();let mk=null,path=null;
   if(blob){const raw=crypto.getRandomValues(new Uint8Array(32)),key=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt']),iv=crypto.getRandomValues(new Uint8Array(12)),c=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new Uint8Array(await blob.arrayBuffer()))),out=new Uint8Array(12+c.length);out.set(iv);out.set(c,12);mk=b2s(raw);path=me.id+'/'+mid+(o.tag?'_'+o.tag:'')+'.'+o.ext;await bPut('b'+mid,new Blob([out]));murl[path]=URL.createObjectURL(blob)}
   const payload=JSON.stringify(mk?{t:o.text||'',k:mk}:{t:o.text||''}),rows=[];
-  for(const u of mem){const r={id:uuid(),sender:me.id,receiver:u,gid:g.gid,mid,kind:o.kind||'text',created_at:created,body:await encT(u,payload)};if(path)r.media=path;if(rp&&to===cur)r.reply_to=rp.mid||rp.id;rows.push(r)}
+  for(const u of mem){const r={id:uuid(),sender:me.id,receiver:u,gid:g.gid,mid,kind:o.kind||'text',created_at:created,body:await encT(u,payload)};{const ex=expiryFor(to);if(ex)r.expires_at=ex}if(path)r.media=path;if(rp&&to===cur)r.reply_to=rp.mid||rp.id;rows.push(r)}
   const ob=outbox();rows.forEach((r,i)=>ob.push(i===0&&blob?{...r,_k:'b'+mid}:r));setOut(ob);const mine=rows.find(r=>r.receiver===me.id);msgs.push({...mine,_t:1,_p:o.text||'',_mk:mk});
   if(to===cur){rp=null;bar();draw()}renderList();banner();flush();return mid}
 function openNewGroup(){if(!flagOn('groups'))return toast('المجموعات متوقفة حاليًا');closeAll();const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','مجموعة جديدة'));const nm=document.createElement('input');nm.className='in';nm.placeholder='اسم المجموعة';nm.maxLength=50;B.appendChild(nm);B.appendChild(el('div','lb','اختر الأعضاء (حتى 40)'));
@@ -787,18 +799,6 @@ function openNewGroup(){if(!flagOn('groups'))return toast('المجموعات م
   const ok=el('button','btn','إنشاء المجموعة');ok.onclick=async()=>{const name=nm.value.trim();if(!name)return er.textContent='اكتب اسم المجموعة';if(!chosen.size)return er.textContent='اختر عضو واحد على الأقل';if(!sb||!navigator.onLine)return er.textContent='يحتاج اتصال';
     const r=await sb.rpc('create_group',{gname:name,members:[...chosen]});if(r.error)return er.textContent=/function|create_group/.test(r.error.message)?'حدّث قاعدة البيانات (SQL) أول':r.error.message;await loadGroups();closeAll();selectChat('g:'+r.data)};
   const cn=el('button','btn g','إلغاء');cn.onclick=closeAll;B.append(ok,cn);$('#mG').classList.add('on')}
-function openGroup(id){const g=P[id];if(!g)return;closeAll();const B=$('#gBox');B.innerHTML='';const role=g.roles[me.id],adm=role==='owner'||role==='admin';
-  const a=avatar(g,84);a.style.margin='0 auto 10px';if(adm)a.style.cursor='pointer';a.onclick=async()=>{if(!adm)return;const f=await pickFile();if(!f)return;const v=await cropAv(f);if(v){await sb.rpc('group_update',{gid:g.gid,gname:g.name,gavatar:v});await loadGroups();openGroup(id)}};
-  const n=el('div','nm',g.name);n.style.cssText='text-align:center;font-size:20px;white-space:normal';const sub=el('div','sb',g.members.length+' عضو');sub.style.justifyContent='center';B.append(a,n,sub);
-  const act=el('div');act.style.cssText='margin:10px 0;text-align:center';const ab=(t,f,d)=>{const x=el('button','ab',t);if(d)x.style.color='#e53935';x.onclick=f;act.appendChild(x)};
-  if(adm){ab('تغيير الاسم',async()=>{const v=await ask('اسم المجموعة',g.name);if(v&&v.trim()){await sb.rpc('group_update',{gid:g.gid,gname:v.trim(),gavatar:g.avatar||null});await loadGroups();openGroup(id)}});ab('إضافة عضو',()=>addMemberPick(id))}
-  ab('مغادرة المجموعة',async()=>{if(await yn('مغادرة «'+g.name+'»؟','مغادرة')){const r=await sb.rpc('group_leave',{gid:g.gid});if(r.error)return toast(r.error.message);delete P[id];cur=null;$('#app').classList.remove('chat');closeAll();renderList();renderMain()}},1);B.appendChild(act);
-  B.appendChild(el('div','sh2','الأعضاء'));g.members.forEach(u=>{const p=P[u];if(!p)return;const r=el('div','rs'),w=el('div','mid'),nm=el('div','nm',p.name+(u===me.id?' (أنت)':''));nm.appendChild(bdg(p));w.append(nm,el('div','sb',({owner:'المالك',admin:'مشرف',member:'عضو'})[g.roles[u]]||'عضو'));r.append(avatar(p,40),w);
-    if(u!==me.id&&g.roles[u]!=='owner'){const w2=el('div');w2.style.cssText='display:flex;gap:4px;flex-wrap:wrap';
-      if(role==='owner'){const b=el('button','ab',g.roles[u]==='admin'?'إزالة إشراف':'ترقية');b.style.margin=0;b.onclick=async e=>{e.stopPropagation();await sb.rpc('group_role',{gid:g.gid,uid:u,r:g.roles[u]==='admin'?'member':'admin'});await loadGroups();openGroup(id)};w2.appendChild(b)}
-      if(adm){const b=el('button','ab','إزالة');b.style.cssText='margin:0;color:#e53935';b.onclick=async e=>{e.stopPropagation();if(await yn('إزالة '+p.name+' من المجموعة؟','إزالة')){await sb.rpc('group_remove',{gid:g.gid,uid:u});await loadGroups();openGroup(id)}};w2.appendChild(b)}r.appendChild(w2)}
-    r.onclick=()=>{if(u!==me.id)openUser(u)};B.appendChild(r)});
-  const cl=el('button','btn g','إغلاق');cl.style.marginTop='12px';cl.onclick=closeAll;B.appendChild(cl);$('#mG').classList.add('on')}
 function addMemberPick(id){const g=P[id],B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','إضافة عضو'));const ids=[...new Set([...msgs.map(other),...opened])].filter(i=>i!=='bot'&&!isG(i)&&P[i]&&P[i].pubkey&&!g.members.includes(i));if(!ids.length)B.appendChild(el('div','empty','ماكو أحد تضيفه'));
   ids.forEach(u=>{const r=el('div','rs');r.appendChild(avatar(P[u],38));r.appendChild(el('div','nm',P[u].name));r.onclick=async()=>{const x=await sb.rpc('group_add',{gid:g.gid,uid:u});if(x.error)return toast(x.error.message);await loadGroups();openGroup(id)};B.appendChild(r)});const b=el('button','btn g','رجوع');b.onclick=()=>openGroup(id);B.appendChild(b)}
 // ====== الملصقات ======
@@ -812,22 +812,6 @@ function stickerCompose(img,o){const S=256,tmp=document.createElement('canvas');
   const out=document.createElement('canvas');out.width=out.height=S;const x=out.getContext('2d');
   if(o.outline){const sil=document.createElement('canvas');sil.width=sil.height=S;const s=sil.getContext('2d');s.drawImage(tmp,0,0);s.globalCompositeOperation='source-in';s.fillStyle='#fff';s.fillRect(0,0,S,S);for(let a=0;a<16;a++)x.drawImage(sil,Math.cos(a*Math.PI/8)*7,Math.sin(a*Math.PI/8)*7)}
   x.drawImage(tmp,0,0);return out}
-async function openStickerMaker(){const f=await pickFile();if(!f)return;const url=await cropper(f,{aspect:1,w:256,h:256,round:false,png:true,title:'قص الملصق'});if(!url)return;const img=await loadImgUrl(url),o={shape:'round',outline:true,bg:0};
-  const B=$('#stkBox');B.innerHTML='';B.appendChild(el('h2','','صنع ملصق'));const cv=document.createElement('canvas');cv.style.cssText='width:200px;height:200px;margin:0 auto 10px;display:block;background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/16px 16px;border-radius:12px';B.appendChild(cv);
-  const redraw=()=>{const c=stickerCompose(img,o);cv.width=cv.height=256;cv.getContext('2d').clearRect(0,0,256,256);cv.getContext('2d').drawImage(c,0,0)};
-  B.appendChild(el('div','lb','الشكل'));const sg=el('div','seg');[['none','مربع'],['round','مدور'],['circle','دائرة']].forEach(([v,t])=>{const b=el('button',o.shape===v?'on':'',t);b.onclick=()=>{o.shape=v;sg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');redraw()};sg.appendChild(b)});B.appendChild(sg);
-  const ol=el('div','str');ol.appendChild(el('div','','حدود بيضاء'));const sw=el('div','sw on');sw.appendChild(el('i'));sw.onclick=()=>{o.outline=!o.outline;sw.classList.toggle('on');redraw()};ol.appendChild(sw);B.appendChild(ol);
-  B.appendChild(el('div','lb','إزالة الخلفية (تقريبية، تصلح للخلفيات البسيطة)'));const rg=document.createElement('input');rg.type='range';rg.min=0;rg.max=90;rg.value=0;rg.style.width='100%';rg.onchange=()=>{o.bg=+rg.value;redraw()};B.appendChild(rg);
-  const ok=el('button','btn','حفظ الملصق');ok.style.marginTop='12px';ok.onclick=async()=>{const c=stickerCompose(img,o),blob=await new Promise(r=>c.toBlob(r,'image/png')),id=uuid();await bPut('stk:'+id,blob);const l=stickList();l.unshift({id});lsv('jr_stk_'+me.id,l);toast('تم حفظ الملصق');openStickers()};
-  const cn=el('button','btn g','إلغاء');cn.onclick=openStickers;B.append(ok,cn);redraw();$('#mStk').classList.add('on')}
-const stickList=stkList;const loadImgUrl=u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u});
-async function sendSticker(blob){if(!cur||cur==='bot')return toast('الملصقات للمحادثات العادية');closeAll();await enqueue({kind:'sticker',ext:'png',tag:'256x256'},blob,cur)}
-async function openStickers(tab){if(!flagOn('stickers'))return toast('الملصقات متوقفة حاليًا');closeAll();tab=tab||'mine';const B=$('#stkBox');B.innerHTML='';B.appendChild(el('h2','','الملصقات'));
-  const tb=el('div','seg');[['mine','ملصقاتي'],['packs','حزم المنصة']].forEach(([v,t])=>{const b=el('button',tab===v?'on':'',t);b.onclick=()=>openStickers(v);tb.appendChild(b)});B.appendChild(tb);const grid=el('div','sgrid');B.appendChild(grid);
-  if(tab==='mine'){const add=el('button','sadd');add.innerHTML=ic('plus',28);add.onclick=openStickerMaker;grid.appendChild(add);for(const s of stickList()){const im=document.createElement('img');grid.appendChild(im);bGet('stk:'+s.id).then(b=>{if(b){const u=URL.createObjectURL(b);im.src=u;im.onclick=()=>sendSticker(b);im.oncontextmenu=async e=>{e.preventDefault();if(await yn('حذف الملصق؟','حذف')){bDel('stk:'+s.id);lsv('jr_stk_'+me.id,stickList().filter(x=>x.id!==s.id));openStickers('mine')}}}})}}
-  else{if(!sb||!navigator.onLine)grid.appendChild(el('div','empty','يحتاج اتصال'));else{try{const pk=await sb.from('sticker_packs').select('*').order('created_at'),st=await sb.from('stickers').select('*').order('created_at');if(pk.error||st.error)throw 0;
-      if(!st.data.length)grid.appendChild(el('div','empty','ماكو حزم بعد'));pk.data.forEach(p=>{const items=st.data.filter(s=>s.pack===p.id);if(!items.length)return;const h=el('div','sh2',p.name);h.style.gridColumn='1/-1';grid.appendChild(h);items.forEach(s=>{const im=document.createElement('img');im.loading='lazy';im.src=URL_+'/storage/v1/object/public/stickers/'+s.path;im.onclick=async()=>{try{sendSticker(await(await fetch(im.src)).blob())}catch(e){toast('تعذر تحميل الملصق')}};grid.appendChild(im)})})}catch(e){grid.appendChild(el('div','empty','حدّث قاعدة البيانات (SQL) أول'))}}}
-  const cl=el('button','btn g','إغلاق');cl.style.marginTop='10px';cl.onclick=closeAll;B.appendChild(cl);$('#mStk').classList.add('on')}
 // ====== الستريك ======
 function streakOf(id){if(id==='bot'||isG(id))return{n:0};const mine=new Set(),their=new Set();thread(id).forEach(m=>{if(m.deleted)return;(m.sender===me.id?mine:their).add(new Date(m.created_at).toDateString())});
   const ok=d=>mine.has(d.toDateString())&&their.has(d.toDateString());let n=0;const d=new Date(),today=ok(d);if(!today)d.setDate(d.getDate()-1);while(ok(d)){n++;d.setDate(d.getDate()-1)}return{n,today}}
@@ -839,14 +823,10 @@ function rowMenu(id){const box=$('#shBox');box.innerHTML='';const add=(i,t,f,c)=
   if(id!=='bot')add('archive',ARC.has(id)?'إلغاء الأرشفة':'أرشفة',()=>{ARC.tog(id);if(cur===id){cur=null;$('#app').classList.remove('chat');renderMain()}renderList()});
   add('eraser','مسح المحادثة (عندي فقط)',async()=>{if(await yn('مسح المحادثة من عندك فقط؟','مسح')){const c=clrMap();c[id]=Date.now();lsv('jr_clr_'+me.id,c);if(cur===id)draw();renderList()}},'dng');$('#sheet').classList.add('on')}
 const PM=()=>ld('jr_pm_'+me.id,{});
-function pinMsg(m){const p=PM();p[cur]=m.mid||m.id;lsv('jr_pm_'+me.id,p);pmUi();toast('تم تثبيت الرسالة')}
-function pmUi(){const b=$('#pmb');if(!b||!cur)return;const id=PM()[cur],m=id&&msgs.find(x=>x.mid===id||x.id===id);if(!m||m.deleted){b.style.display='none';return}b.style.display='flex';$('#pmt').textContent=prev(m);b.onclick=()=>{const t=document.querySelector('[data-id="'+m.id+'"]');if(t)t.scrollIntoView({block:'center'})}}
+function pinMsg(m){if(isG(cur)){const g=P[cur];if(!gperm(g,'pin'))return toast('التثبيت للمشرفين فقط');sb.rpc('group_pin',{gid:g.gid,mid:m.mid||m.id}).then(r=>{if(r.error)return toast(r.error.message);g.pinned_mid=m.mid||m.id;pmUi();toast('تم تثبيت الرسالة للجميع')});return}const p=PM();p[cur]=m.mid||m.id;lsv('jr_pm_'+me.id,p);pmUi();toast('تم تثبيت الرسالة')}
+function pmUi(){const b=$('#pmb');if(!b||!cur)return;const id=isG(cur)?P[cur].pinned_mid:PM()[cur],m=id&&msgs.find(x=>x.mid===id||x.id===id);if(!m||m.deleted){b.style.display='none';return}b.style.display='flex';$('#pmt').textContent=prev(m);b.onclick=()=>{const t=document.querySelector('[data-id="'+m.id+'"]');if(t)t.scrollIntoView({block:'center'})}}
 // ====== الدعم الفني ======
-async function openSupport(){closeAll();const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','الدعم الفني'));const sj=document.createElement('input');sj.className='in';sj.placeholder='عنوان المشكلة';sj.maxLength=80;const bd=document.createElement('textarea');bd.className='in';bd.rows=4;bd.placeholder='اشرح مشكلتك أو اقتراحك';bd.maxLength=1000;B.append(sj,bd);const er=el('div','err');B.appendChild(er);
-  const ok=el('button','btn','إرسال للدعم');ok.onclick=async()=>{if(!sj.value.trim()||!bd.value.trim())return er.textContent='اكتب العنوان والتفاصيل';if(!sb||!navigator.onLine)return er.textContent='يحتاج اتصال';const r=await sb.from('tickets').insert({user_id:me.id,subject:sj.value.trim(),body:bd.value.trim()});if(r.error)return er.textContent=/relation|tickets/.test(r.error.message)?'خدمة الدعم غير جاهزة بعد':r.error.message;toast('وصلت رسالتك للدعم');openSupport()};B.appendChild(ok);
-  try{const t=await sb.from('tickets').select('*').eq('user_id',me.id).order('created_at',{ascending:false}).limit(10);if(t.data&&t.data.length){B.appendChild(el('div','sh2','تذاكري'));t.data.forEach(x=>{const w=el('div');w.style.cssText='border-top:1px solid var(--line);padding:8px 0';w.appendChild(el('div','nm',x.subject+' • '+(x.status==='closed'?'مغلقة':'مفتوحة')));if(x.reply){const rp2=el('div','',x.reply);rp2.style.cssText='background:var(--bg2);border-radius:8px;padding:6px 10px;margin-top:4px;font-size:14px';w.appendChild(rp2)}B.appendChild(w)})}}catch(e){}
-  const cl=el('button','btn g','إغلاق');cl.onclick=closeAll;B.appendChild(cl);$('#mG').classList.add('on')}
-let ticketSeen=ld('jr_tk_seen',{});async function syncTickets(){if(!sb||!me||!navigator.onLine)return;try{const t=await sb.from('tickets').select('id,subject,reply,replied_at').eq('user_id',me.id).not('reply','is',null).limit(20);(t.data||[]).forEach(x=>{if(!ticketSeen[x.id]){ticketSeen[x.id]=1;lsv('jr_tk_seen',ticketSeen);botSay('ردّ الدعم على «'+x.subject+'»:\n'+x.reply)}})}catch(e){}}
+let ticketSeen=ld('jr_tk_seen',{});async function syncTickets(){if(!sb||!me||!navigator.onLine)return;try{const t=await sb.from('tickets').select('id,subject,reply,replied_at').eq('user_id',me.id).not('reply','is',null).limit(20);(t.data||[]).forEach(x=>{if(!ticketSeen[x.id]){ticketSeen[x.id]=1;lsv('jr_tk_seen',ticketSeen);botSay('ردّ الدعم على «'+x.subject+'»:\n'+x.reply+'\n\nللتقييم اكتب: تقييم ثم رقم من 1 إلى 5');lsv('jr_rate_'+me.id,x.id)}})}catch(e){}}
 setInterval(()=>{if(me&&!document.hidden)syncTickets()},240000);
 // ====== مهام امبد: تذكيرات وقوائم ======
 const remList=()=>ld('jr_rem_'+me.id,[]),todoList=()=>ld('jr_todo_'+me.id,[]);
@@ -861,7 +841,127 @@ function botTasks(t){let m=t.match(/ذكرني\s*(?:بعد)?\s*(\d+)\s*(دقيق
   m=t.match(/^\s*(?:احذف|امسح)\s*مهم[ةه]\s*(\d+)/);if(m){const l=todoList(),i=+m[1]-1;if(!l[i])return'ما لقيت المهمة.';l.splice(i,1);lsv('jr_todo_'+me.id,l);return'حذفتها.'}
   return null}
 // ====== تحديد/إضافة ملصق مستلم + مجموعات (أزرار القائمة الجانبية) ======
-$('#mGrpB').onclick=openNewGroup;
+$('#mGrpB').onclick=openNewGroup;$('#mDiscB').onclick=openDiscover;
+
+// ====== النسخة 3: امبد المحلي، ملصقات، استطلاعات، مجموعات متقدمة، أمان ======
+// ----- امبد المحلي (Gemma 4 على الجهاز: رد فوري بدون نت ولا API) -----
+const LLM_URL_DEF='https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm';
+const llmUrl=()=>cfg.llm_url||LLM_URL_DEF;let llmDl={pct:0,state:''};
+function llmStat(){if(!NATIVE||!NATIVE.llmStatus)return null;try{return JSON.parse(NATIVE.llmStatus())}catch(e){return null}}
+const llmReady=()=>{const s=llmStat();return !!(s&&s.ready)};
+const llmCb={};window.__llmTok=(id,t)=>{const c=llmCb[id];if(c)c.tok(t)};window.__llmDone=(id,err)=>{const c=llmCb[id];if(c){delete llmCb[id];c.done(err)}};
+const llmText=()=>{const s=llmStat();if(!s)return'غير متاح (يحتاج تطبيق الأندرويد)';if(s.ready)return'جاهز ('+Math.round(s.size/1048576)+' MB)';if(s.downloading||llmDl.state==='run')return'جاري التنزيل '+(s.pct||llmDl.pct)+'%';return'غير منزّل'};
+window.__llmDl=(pct,state,err)=>{llmDl={pct,state,err};const e=$('#llmSt');if(e)e.textContent=llmText();if(state==='done')toast('تم تنزيل نموذج امبد المحلي، صار ردّه فوري');else if(state==='error')toast('فشل التنزيل: '+(err||''))};
+function llmAsk(system,history,prompt,onTok){return new Promise(res=>{const id=uuid();let out='';llmCb[id]={tok:t=>{out+=t;if(onTok)onTok(out)},done:err=>res(err?null:out.trim())};try{NATIVE.llmGenerate(id,system,JSON.stringify(history),prompt)}catch(e){delete llmCb[id];res(null)}})}
+function botDraft(){const m={id:'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:'',created_at:new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:'…'};msgs.push(m);if(cur==='bot')draw();renderList();return m}
+function botFinish(m,txt){m.body=txt;m._p=fillName(txt);saveBot();if(cur==='bot'){draw();markRead()}renderList();notify(m)}
+async function botLocal(t){if(!llmReady())return false;const hist=thread('bot').slice(-9,-1).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…'),m=botDraft();
+  const out=await llmAsk(botSys(),hist,t,txt=>{m._p=txt;draw()});if(out){botFinish(m,out);return true}const i=msgs.indexOf(m);if(i>=0)msgs.splice(i,1);draw();return false}
+function llmHint(){if(NATIVE&&!llmReady()&&!ld('jr_llm_hint',0)){lsv('jr_llm_hint',1);botSay('عشان ردودي تصير فورية وبدون إنترنت، نزّل نموذجي المحلي من الإعدادات ← امبد المحلي (حوالي 2.6 جيجا، يفضّل واي فاي).')}}
+// ----- ملصقات (شاشة مثل تيك توك) -----
+const loadImgUrl=u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u});
+const stickList=()=>ld('jr_stk_'+me.id,[]),stkRec=()=>ld('jr_stkrec_'+me.id,[]),stkFav=()=>ld('jr_stkfav_'+me.id,[]);
+const EMOJIS=Array.from('😀😃😄😁😆😅😂🤣😊😇🙂😉😍🥰😘😋😛😜🤪😎🥳😏😒😞😔😟😢😭😤😠😡🤯😳🥺😱😨😰🤗🤔🤭🤫😶😐🙄😮😴🤤🤢🤮😷👍👎👌🤞🤟👏🙌🙏💪💙💜🖤🤍💔🔥✨⭐🌹🎉🎁');
+async function stkBlob(it){if(it.k==='m')return bGet('stk:'+it.id);try{return await(await fetch(URL_+'/storage/v1/object/public/stickers/'+it.path)).blob()}catch(e){return null}}
+async function sendSticker(blob,it){if(!cur||cur==='bot')return toast('الملصقات للمحادثات العادية والمجموعات');if(it){const r=stkRec().filter(x=>JSON.stringify(x)!==JSON.stringify(it));r.unshift(it);lsv('jr_stkrec_'+me.id,r.slice(0,12))}closeAll();await enqueue({kind:'sticker',ext:'png',tag:'256x256'},blob,cur)}
+async function toSticker(m){try{const img=await loadImgUrl(await mediaURL(m)),c=stickerCompose(img,{shape:'round',outline:true,bg:0}),blob=await new Promise(r=>c.toBlob(r,'image/png')),id=uuid();await bPut('stk:'+id,blob);const l=stickList();l.unshift({id});lsv('jr_stk_'+me.id,l);toast('أضفتها لملصقاتك')}catch(e){toast('تعذر التحويل')}}
+let stkTab='mine';
+async function openStickers(tab){if(!flagOn('stickers'))return toast('الملصقات متوقفة حاليًا');closeAll();stkTab=tab||stkTab;const B=$('#stkBox');B.innerHTML='';const bar=el('div','stabs');
+  [['search','search'],['fav','star'],['hot','flame'],['emoji','smile'],['mine','sticker']].forEach(([k,i])=>{const b=el('button',stkTab===k?'on':'');b.innerHTML=ic(i,22);b.onclick=()=>openStickers(k);bar.appendChild(b)});B.appendChild(bar);const body=el('div','sbody');B.appendChild(body);
+  const cell=(it)=>{const im=document.createElement('img');im.loading='lazy';if(it.k==='m'){bGet('stk:'+it.id).then(b=>{if(b)im.src=URL.createObjectURL(b)})}else im.src=URL_+'/storage/v1/object/public/stickers/'+it.path;
+    im.onclick=async()=>{const b=await stkBlob(it);if(b)sendSticker(b,it);else toast('تعذر التحميل')};
+    const menu=e=>{e.preventDefault();const box=$('#shBox');box.innerHTML='';const fav=stkFav().some(x=>JSON.stringify(x)===JSON.stringify(it)),add=(t,f,c)=>{const b=el('button','mi'+(c?' '+c:''),t);b.onclick=()=>{closeAll();f();setTimeout(()=>openStickers(stkTab),50)};box.appendChild(b)};
+      add(fav?'إزالة من المفضلة':'إضافة للمفضلة',()=>{const l=stkFav().filter(x=>JSON.stringify(x)!==JSON.stringify(it));if(!fav)l.unshift(it);lsv('jr_stkfav_'+me.id,l)});
+      if(it.k==='m')add('حذف الملصق',()=>{bDel('stk:'+it.id);lsv('jr_stk_'+me.id,stickList().filter(x=>x.id!==it.id))},'dng');$('#sheet').classList.add('on')};
+    im.oncontextmenu=menu;let t=null;im.onpointerdown=e=>{t=setTimeout(()=>menu(e),450)};im.onpointerup=im.onpointercancel=()=>clearTimeout(t);return im};
+  const sec=(t,items,plus)=>{const h=el('div','sh2',t);body.appendChild(h);const g=el('div','sgrid');if(plus){const a=el('button','sadd');a.innerHTML=ic('plus',28);a.onclick=openStickerMaker;g.appendChild(a)}items.forEach(it=>g.appendChild(cell(it)));body.appendChild(g)};
+  if(stkTab==='mine'){sec('المستخدمة مؤخرًا',stkRec());sec('المحفوظة',stickList().map(s=>({k:'m',id:s.id})),true)}
+  else if(stkTab==='fav'){sec('المفضلة',stkFav());if(!stkFav().length)body.appendChild(el('div','empty','اضغط مطولًا على أي ملصق لإضافته للمفضلة'))}
+  else if(stkTab==='emoji'){const g=el('div','egrid');EMOJIS.forEach(e=>{const b=el('button','',e);b.onclick=()=>{const t=$('#txt');if(!t)return;t.value+=e;t.dispatchEvent(new Event('input'))};g.appendChild(b)});body.appendChild(g)}
+  else{const q=document.createElement('input');q.className='in';q.placeholder=stkTab==='search'?'ابحث باسم الحزمة':'حزم المنصة';body.appendChild(q);const out=el('div');body.appendChild(out);
+    const load=async()=>{out.innerHTML='';if(!sb||!navigator.onLine){out.appendChild(el('div','empty','يحتاج اتصال'));return}try{const pk=await sb.from('sticker_packs').select('*').order('created_at'),st=await sb.from('stickers').select('*').order('created_at');if(pk.error||st.error)throw 0;const f=q.value.trim().toLowerCase();let n=0;
+      pk.data.filter(p=>!f||p.name.toLowerCase().includes(f)).forEach(p=>{const items=st.data.filter(s=>s.pack===p.id).map(s=>({k:'p',path:s.path}));if(!items.length)return;n++;const h=el('div','sh2',p.name),g=el('div','sgrid');items.forEach(it=>g.appendChild(cell(it)));out.append(h,g)});if(!n)out.appendChild(el('div','empty','ماكو نتائج'))}catch(e){out.appendChild(el('div','empty','ماكو حزم بعد'))}};q.oninput=()=>{clearTimeout(q._t);q._t=setTimeout(load,300)};load()}
+  $('#mStk').classList.add('on')}
+async function openStickerMaker(){const f=await pickFile();if(!f)return;const url=await cropper(f,{aspect:1,w:256,h:256,round:false,png:true,title:'قص الملصق'});if(!url)return;const img=await loadImgUrl(url),o={shape:'round',outline:true,bg:0};
+  const B=$('#stkBox');B.innerHTML='';B.appendChild(el('h2','','صنع ملصق'));const cv=document.createElement('canvas');cv.style.cssText='width:200px;height:200px;margin:0 auto 10px;display:block;background:repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/16px 16px;border-radius:12px';B.appendChild(cv);
+  const redraw=()=>{const c=stickerCompose(img,o);cv.width=cv.height=256;cv.getContext('2d').clearRect(0,0,256,256);cv.getContext('2d').drawImage(c,0,0)};
+  B.appendChild(el('div','lb','الشكل'));const sg=el('div','seg');[['none','مربع'],['round','مدور'],['circle','دائرة']].forEach(([v,t])=>{const b=el('button',o.shape===v?'on':'',t);b.onclick=()=>{o.shape=v;sg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');redraw()};sg.appendChild(b)});B.appendChild(sg);
+  const ol=el('div','str');ol.appendChild(el('div','','حدود بيضاء'));const sw=el('div','sw on');sw.appendChild(el('i'));sw.onclick=()=>{o.outline=!o.outline;sw.classList.toggle('on');redraw()};ol.appendChild(sw);B.appendChild(ol);
+  B.appendChild(el('div','lb','إزالة الخلفية (تقريبية، تصلح للخلفيات البسيطة)'));const rg=document.createElement('input');rg.type='range';rg.min=0;rg.max=90;rg.value=0;rg.style.width='100%';rg.onchange=()=>{o.bg=+rg.value;redraw()};B.appendChild(rg);
+  const ok=el('button','btn','حفظ الملصق');ok.style.marginTop='12px';ok.onclick=async()=>{const c=stickerCompose(img,o),blob=await new Promise(r=>c.toBlob(r,'image/png')),id=uuid();await bPut('stk:'+id,blob);const l=stickList();l.unshift({id});lsv('jr_stk_'+me.id,l);toast('تم حفظ الملصق');openStickers('mine')};
+  const cn=el('button','btn g','إلغاء');cn.onclick=()=>openStickers('mine');B.append(ok,cn);redraw();$('#mStk').classList.add('on')}
+// ----- استطلاعات الرأي -----
+const votes={};
+async function loadVotes(pids){if(!sb||!navigator.onLine||!pids.length)return;pids.forEach(p=>{votes[p]=votes[p]||[]});try{const r=await sb.from('poll_votes').select('*').in('pid',pids);if(r.error)return;pids.forEach(p=>votes[p]=[]);(r.data||[]).forEach(v=>votes[v.pid].push(v));pids.forEach(p=>{const m=msgs.find(x=>(x.mid||x.id)===p);if(m)nodeCache.delete(m.id)});draw()}catch(e){}}
+function pollEl(m){let q;try{q=JSON.parse(m._p)}catch(e){return el('div','','استطلاع')}const pid=m.mid||m.id,vs=votes[pid]||[],tot=vs.length,w=el('div','poll');const t=el('div','nm',q.q);t.style.whiteSpace='normal';w.appendChild(t);
+  (q.o||[]).forEach((o,i)=>{const n=vs.filter(v=>v.opt===i).length,mine=vs.some(v=>v.user_id===me.id&&v.opt===i),r=el('div','po'+(mine?' me':'')),bar=el('i');bar.style.width=(tot?Math.round(n/tot*100):0)+'%';r.append(bar,el('span','',o),el('b','',String(n)));r.onclick=e=>{e.stopPropagation();if(!sel.size&&Date.now()-lpT>600)vote(m,i,mine)};w.appendChild(r)});w.appendChild(el('div','sb',tot+' صوت'));return w}
+async function vote(m,i,mine){if(!sb||!navigator.onLine)return toast('التصويت يحتاج اتصال');const pid=m.mid||m.id;votes[pid]=(votes[pid]||[]).filter(x=>x.user_id!==me.id);if(!mine){votes[pid].push({pid,user_id:me.id,opt:i});await sb.from('poll_votes').upsert({pid,user_id:me.id,opt:i})}else await sb.from('poll_votes').delete().eq('pid',pid).eq('user_id',me.id);nodeCache.delete(m.id);draw();if(isG(cur))(P[cur].members||[]).forEach(u=>u!==me.id&&bcast(u,'u'));else bcast(cur,'u')}
+function newPoll(){if(!cur||cur==='bot')return toast('الاستطلاعات للمحادثات والمجموعات');closeAll();const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','استطلاع جديد'));const q=document.createElement('input');q.className='in';q.placeholder='السؤال';q.maxLength=120;B.appendChild(q);const ins=[];for(let i=0;i<4;i++){const o=document.createElement('input');o.className='in';o.placeholder='الخيار '+(i+1)+(i>1?' (اختياري)':'');o.maxLength=60;ins.push(o);B.appendChild(o)}
+  const er=el('div','err');B.appendChild(er);const ok=el('button','btn','إرسال');ok.onclick=()=>{const o=ins.map(x=>x.value.trim()).filter(Boolean);if(!q.value.trim()||o.length<2)return er.textContent='اكتب سؤال وخيارين على الأقل';closeAll();enqueue({kind:'poll',text:JSON.stringify({q:q.value.trim(),o})})};const cn=el('button','btn g','إلغاء');cn.onclick=closeAll;B.append(ok,cn);$('#mG').classList.add('on')}
+// ----- رسائل مؤقتة -----
+const DIS=()=>me?ld('jr_dis_'+me.id,{}):{};
+function disMenu(){const box=$('#shBox');box.innerHTML='';box.appendChild(el('div','sh2','رسائل مؤقتة (تنطبق على اللي ترسله)'));[[0,'متوقفة'],[36e5,'ساعة'],[864e5,'24 ساعة'],[6048e5,'7 أيام']].forEach(([ms,t])=>{const b=el('button','mi',t+((DIS()[cur]||0)===ms?'  •':''));b.onclick=()=>{const d=DIS();if(ms)d[cur]=ms;else delete d[cur];lsv('jr_dis_'+me.id,d);closeAll();toast(ms?'الرسائل الجاية تختفي بعد '+t:'تم الإيقاف')};box.appendChild(b)});$('#sheet').classList.add('on')}
+const expiryFor=to=>{const ms=DIS()[to];return ms?new Date(Date.now()+ms).toISOString():null};
+setInterval(()=>{if(!me)return;const n=Date.now(),b=msgs.length;msgs=msgs.filter(m=>!m.expires_at||new Date(m.expires_at)>n);if(msgs.length!==b){if(cur)draw();renderList()}},30000);
+setInterval(()=>{if(me&&sb&&navigator.onLine)sb.rpc('purge_expired').then(()=>{})},600000);
+// ----- خصوصية وأمان -----
+function applySecure(){if(NATIVE&&NATIVE.setSecure)NATIVE.setSecure(!!setg().secure)}
+let onl={};async function watchOnline(){if(!setg().onlineNotify||!sb||!navigator.onLine||!me)return;const ids=[...new Set([...FAV.get(),...PIN.get()])].filter(i=>i!=='bot'&&!isG(i)&&P[i]);if(!ids.length)return;const{data}=await sb.from('profiles').select('id,last_seen').in('id',ids);(data||[]).forEach(p=>{const on=!!p.last_seen&&Date.now()-new Date(p.last_seen)<100000;if(on&&onl[p.id]===false){nativeNotify((P[p.id]||{}).name||'جيرون','صار متصل الآن','on:'+p.id);ping()}onl[p.id]=on;if(P[p.id])P[p.id].last_seen=p.last_seen})}
+setInterval(watchOnline,45000);
+const devId=()=>{let d=localStorage.getItem('jr_dev');if(!d){d=uuid();localStorage.setItem('jr_dev',d)}return d};
+const devLabel=()=>NATIVE&&NATIVE.deviceLabel?NATIVE.deviceLabel():((/Android|iPhone|Windows|Mac|Linux/.exec(navigator.userAgent)||['جهاز'])[0]+' (متصفح)');
+async function syncDevices(){if(!sb||!me||!navigator.onLine)return;try{await sb.from('devices').upsert({user_id:me.id,device_id:devId(),label:devLabel(),last_seen:new Date().toISOString()});const r=await sb.from('devices').select('*').eq('user_id',me.id);if(r.error)return;const k='jr_devs_'+me.id,seen=ld(k,null);if(!seen){lsv(k,r.data.map(d=>d.device_id));return}
+  r.data.forEach(d=>{if(!seen.includes(d.device_id)){seen.push(d.device_id);botSay('تنبيه أمني: تم تسجيل دخول لحسابك من جهاز جديد: '+(d.label||'جهاز غير معروف')+' بتاريخ '+new Date(d.created_at).toLocaleString(lang)+'. إذا مو أنت، غيّر كلمة السر فورًا من الإعدادات.');notify(msgs[msgs.length-1])}});lsv(k,seen)}catch(e){}}
+setInterval(()=>{if(me&&!document.hidden)syncDevices()},300000);
+// ----- الدعم الفني عبر امبد فقط -----
+async function supportSend(t){if(!sb||!navigator.onLine)return botSay('الدعم يحتاج اتصال بالإنترنت، جرّب بعد شوي.');const r=await sb.from('tickets').insert({user_id:me.id,subject:t.slice(0,60),body:t});return botSay(r.error?'ما كدرت أوصّل مشكلتك هسه، جرّب مرة ثانية.':'وصلت مشكلتك للدعم الفني. أول ما يردّون أخبرك هنا.')}
+// ----- مشاركة: الاكتشاف والمجموعات -----
+async function openDiscover(){closeAll();const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','اكتشاف المجموعات'));const q=document.createElement('input');q.className='in';q.placeholder='ابحث باسم المجموعة';B.appendChild(q);const L=el('div');B.appendChild(L);
+  const go=async()=>{L.innerHTML='';if(!sb||!navigator.onLine){L.appendChild(el('div','empty','يحتاج اتصال'));return}const r=await sb.rpc('public_groups',{q:q.value.trim()});if(r.error){L.appendChild(el('div','empty','حدّث قاعدة البيانات (SQL) أول'));return}if(!r.data.length)L.appendChild(el('div','empty','ماكو مجموعات عامة'));
+    r.data.forEach(g=>{const row=el('div','rs');row.appendChild(avatar({id:g.id,name:g.name,avatar:g.avatar},44));const w=el('div','mid');w.append(el('div','nm',g.name),el('div','sb',(g.descr||'')+' • '+g.members+' عضو'));const b=el('button','ab',g.approval?'طلب انضمام':'انضمام');b.onclick=async()=>{const x=await sb.rpc('group_join_public',{gid:g.id});toast(x.data==='joined'?'انضممت':x.data==='pending'?'أُرسل طلبك للمشرفين':x.data==='full'?'المجموعة ممتلئة':'تعذر الانضمام');if(x.data==='joined'){await loadGroups();closeAll();selectChat('g:'+g.id)}};row.append(w,b);L.appendChild(row)})};
+  q.oninput=()=>{clearTimeout(q._t);q._t=setTimeout(go,300)};const cl=el('button','btn g','إغلاق');cl.onclick=closeAll;B.appendChild(cl);go();$('#mG').classList.add('on')}
+async function joinByCode(code){if(!sb||!navigator.onLine)return toast('يحتاج اتصال');const x=await sb.rpc('group_join',{code});const m={joined:'انضممت للمجموعة',pending:'أُرسل طلبك للمشرفين',full:'المجموعة ممتلئة',invalid:'الرمز غير صحيح'};toast(m[x.data]||(x.error?x.error.message:'تعذر'));if(x.data==='joined'){await loadGroups();closeAll()}}
+const gperm=(g,k)=>{if(!g||!g.roles)return false;const r=g.roles[me.id];if(r==='owner'||r==='admin')return true;return !!(g.perms&&g.perms[me.id]&&g.perms[me.id][k])};
+const isAdminG=g=>g&&g.roles&&(g.roles[me.id]==='owner'||g.roles[me.id]==='admin');
+function isMentioned(m){if(!m.gid||!m._p||m.sender===me.id)return false;const g=P['g:'+m.gid];return m._p.includes('@'+me.name)||m._p.includes('@الكل')||(m._p.includes('@المشرفين')&&isAdminG(g))}
+function composerLock(){const t=$('#txt');if(!t)return;let why='';if(isG(cur)){const g=P[cur];if(g.muted&&g.muted[me.id]&&new Date(g.muted[me.id])>new Date())why='تم كتمك مؤقتًا بهذي المجموعة';else if(g.mode==='admins'&&!gperm(g,'post'))why='الكتابة بهذي المجموعة للمشرفين فقط'}t.disabled=!!why;t.placeholder=why||'اكتب رسالة'}
+function groupCard(){const g=P[cur];if(!g||!(g.descr||g.rules||g.welcome))return null;const sig=(g.descr||'')+(g.rules||'')+(g.welcome||''),k='jr_gw_'+g.gid;if(ld(k,'')===sig)return null;const c=el('div','gcard');if(g.welcome)c.appendChild(el('div','nm','أهلاً بك في «'+g.name+'»'));[g.welcome,g.descr,g.rules&&('القوانين:\n'+g.rules)].filter(Boolean).forEach(t=>{const d=el('div','',t);d.style.cssText='white-space:pre-wrap;margin-top:6px;font-size:14px';c.appendChild(d)});const x=el('button','ab','فهمت');x.onclick=()=>{lsv(k,sig);draw()};c.appendChild(x);return c}
+function openGroup(id){const g=P[id];if(!g)return;closeAll();const B=$('#gBox');B.innerHTML='';const role=g.roles[me.id],adm=isAdminG(g),own=role==='owner';
+  const a=avatar(g,84);a.style.margin='0 auto 10px';if(gperm(g,'edit'))a.style.cursor='pointer';a.onclick=async()=>{if(!gperm(g,'edit'))return;const f=await pickFile();if(!f)return;const v=await cropAv(f);if(v){await sb.rpc('group_update',{gid:g.gid,gname:g.name,gavatar:v});await loadGroups();openGroup(id)}};
+  const n=el('div','nm',g.name);n.style.cssText='text-align:center;font-size:20px;white-space:normal';const sub=el('div','sb',g.members.length+' عضو'+(g.is_public?' • عامة':'')+(g.mode==='admins'?' • للمشرفين فقط':''));sub.style.justifyContent='center';B.append(a,n,sub);
+  if(g.descr){const d=el('div','',g.descr);d.style.cssText='text-align:center;margin:8px 0;white-space:pre-wrap';B.appendChild(d)}if(g.rules){B.appendChild(el('div','sh2','قوانين المجموعة'));const r=el('div','',g.rules);r.style.cssText='white-space:pre-wrap;font-size:14px';B.appendChild(r)}
+  const act=el('div');act.style.cssText='margin:10px 0;text-align:center';const ab=(t,f,d)=>{const x=el('button','ab',t);if(d)x.style.color='#e53935';x.onclick=f;act.appendChild(x)};
+  if(gperm(g,'edit')){ab('تغيير الاسم',async()=>{const v=await ask('اسم المجموعة',g.name);if(v&&v.trim()){await sb.rpc('group_update',{gid:g.gid,gname:v.trim(),gavatar:g.avatar||null});await loadGroups();openGroup(id)}});ab('الوصف والقوانين والإعدادات',()=>groupSettings(id))}
+  if(gperm(g,'add')){ab('إضافة عضو',()=>addMemberPick(id));ab('رابط الدعوة',async()=>{const r=await sb.rpc('group_invite',{gid:g.gid});if(r.error)return toast(r.error.message);g.invite=r.data;copyText('انضم لمجموعة «'+g.name+'» على جيرون برمز الدعوة: '+r.data);toast('تم نسخ رمز الدعوة')});ab('طلبات الانضمام',()=>groupRequests(id))}
+  ab('مغادرة المجموعة',async()=>{if(await yn('مغادرة «'+g.name+'»؟','مغادرة')){const r=await sb.rpc('group_leave',{gid:g.gid});if(r.error)return toast(r.error.message);delete P[id];cur=null;$('#app').classList.remove('chat');closeAll();renderList();renderMain()}},1);B.appendChild(act);
+  B.appendChild(el('div','sh2','الأعضاء'));g.members.forEach(u=>{const p=P[u];if(!p)return;const r=el('div','rs'),w=el('div','mid'),nm=el('div','nm',p.name+(u===me.id?' (أنت)':''));nm.appendChild(bdg(p));const mu=g.muted&&g.muted[u]&&new Date(g.muted[u])>new Date();w.append(nm,el('div','sb',({owner:'المالك',admin:'مشرف',member:'عضو'})[g.roles[u]]+(mu?' • مكتوم':'')));r.append(avatar(p,40),w);
+    if(u!==me.id&&g.roles[u]!=='owner'){const w2=el('div');w2.style.cssText='display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end';const sb2=(t,f,d)=>{const b=el('button','ab',t);b.style.cssText='margin:0;'+(d?'color:#e53935':'');b.onclick=async e=>{e.stopPropagation();await f();await loadGroups();openGroup(id)};w2.appendChild(b)};
+      if(own){sb2('الصلاحيات',async()=>{permEditor(id,u);throw 0});sb2(g.roles[u]==='admin'?'إزالة إشراف':'ترقية',()=>sb.rpc('group_role',{gid:g.gid,uid:u,r:g.roles[u]==='admin'?'member':'admin'}))}
+      if(gperm(g,'mute'))sb2(mu?'فك الكتم':'كتم',async()=>{const m=mu?0:+(await ask('مدة الكتم بالدقائق','60')||0);if(mu||m>0)await sb.rpc('group_mute',{gid:g.gid,uid:u,minutes:m})});
+      if(gperm(g,'remove'))sb2('إزالة',async()=>{if(await yn('إزالة '+p.name+'؟','إزالة'))await sb.rpc('group_remove',{gid:g.gid,uid:u})},1);r.appendChild(w2)}
+    r.onclick=()=>{if(u!==me.id)openUser(u)};B.appendChild(r)});
+  const cl=el('button','btn g','إغلاق');cl.style.marginTop='12px';cl.onclick=closeAll;B.appendChild(cl);$('#mG').classList.add('on')}
+function permEditor(id,u){const g=P[id],B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','صلاحيات '+(P[u]||{}).name));const cur0={...(g.perms&&g.perms[u]||{})};
+  [['add','إضافة أعضاء وقبول الطلبات'],['remove','إزالة أعضاء'],['mute','كتم أعضاء'],['pin','تثبيت رسائل'],['edit','تعديل معلومات المجموعة'],['post','الكتابة بوضع «للمشرفين فقط»']].forEach(([k,t])=>{const r=el('div','str');r.appendChild(el('div','',t));const s=el('div','sw'+(cur0[k]?' on':''));s.appendChild(el('i'));s.onclick=()=>{cur0[k]=!cur0[k];s.classList.toggle('on')};r.appendChild(s);B.appendChild(r)});
+  const ok=el('button','btn','حفظ');ok.onclick=async()=>{const r=await sb.rpc('group_perms',{gid:g.gid,uid:u,p:cur0});if(r.error)return toast(r.error.message);await loadGroups();openGroup(id)};const bk=el('button','btn g','رجوع');bk.onclick=()=>openGroup(id);B.append(ok,bk)}
+function groupSettings(id){const g=P[id],B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','إعدادات المجموعة'));const f=(l,v,rows,max)=>{B.appendChild(el('div','lb',l));const i=document.createElement(rows?'textarea':'input');i.className='in';if(rows)i.rows=rows;i.maxLength=max;i.value=v||'';B.appendChild(i);return i};
+  const d=f('الوصف',g.descr,2,300),r=f('القوانين',g.rules,3,1000),w=f('رسالة الترحيب',g.welcome,2,500);let mode=g.mode==='admins',pub=!!g.is_public,apr=!!g.approval;
+  const tg=(t,get,set)=>{const row=el('div','str');row.appendChild(el('div','',t));const s=el('div','sw'+(get()?' on':''));s.appendChild(el('i'));s.onclick=()=>{set(!get());s.classList.toggle('on')};row.appendChild(s);B.appendChild(row)};
+  tg('الكتابة للمشرفين فقط',()=>mode,v=>mode=v);tg('مجموعة عامة (تظهر بالاكتشاف)',()=>pub,v=>pub=v);tg('الانضمام بموافقة المشرفين',()=>apr,v=>apr=v);
+  const ok=el('button','btn','حفظ');ok.onclick=async()=>{const x=await sb.rpc('group_set',{gid:g.gid,gdescr:d.value,grules:r.value,gwelcome:w.value,gmode:mode?'admins':'all',gpublic:pub,gapproval:apr});if(x.error)return toast(/function|group_set/.test(x.error.message)?'حدّث قاعدة البيانات (SQL) أول':x.error.message);await loadGroups();openGroup(id)};const bk=el('button','btn g','رجوع');bk.onclick=()=>openGroup(id);B.append(ok,bk)}
+async function groupRequests(id){const g=P[id],B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','طلبات الانضمام'));const r=await sb.from('group_requests').select('*').eq('group_id',g.gid);const ids=(r.data||[]).map(x=>x.user_id);if(ids.length)await loadPeers(ids);if(!ids.length)B.appendChild(el('div','empty','ماكو طلبات'));
+  ids.forEach(u=>{const p=P[u]||{name:'؟',id:u},row=el('div','rs');row.appendChild(avatar(p,40));const w=el('div','mid');w.appendChild(el('div','nm',p.name));row.appendChild(w);[['قبول',true],['رفض',false]].forEach(([t,ok])=>{const b=el('button','ab',t);b.style.margin='2px';b.onclick=async()=>{await sb.rpc('group_approve',{gid:g.gid,uid:u,ok});await loadGroups();groupRequests(id)};row.appendChild(b)});B.appendChild(row)});const bk=el('button','btn g','رجوع');bk.onclick=()=>openGroup(id);B.appendChild(bk)}
+// ----- بلوتوث/Mesh: يوصل بدون رموز، حتى لو المرسل جديد -----
+async function pairKeyFromPub(pubStr){const pub=await crypto.subtle.importKey('jwk',JSON.parse(pubStr),EC,false,[]),bits=await crypto.subtle.deriveBits({name:'ECDH',public:pub},myKey,256),hk=await crypto.subtle.importKey('raw',bits,'HKDF',false,['deriveKey']);return crypto.subtle.deriveKey({name:'HKDF',hash:'SHA-256',salt:new Uint8Array(32),info:te.encode('jeron-v1')},hk,{name:'AES-GCM',length:256},false,['decrypt'])}
+async function meshOut(row,text){try{const to=row.receiver,body=await encT(to,JSON.stringify({t:text||'',k:row.kind,c:{id:me.id,name:me.name,username:me.username}})),env={id:row.id,to:await H(to),s:await H(me.id),sp:me.pubkey,t:row.created_at,b:body,exp:Date.now()+259200000};if(row.reply_to)env.r=row.reply_to;NATIVE.meshPut(JSON.stringify(env))}catch(e){}}
+window.__meshIn=async json=>{try{const env=JSON.parse(json);if(!me)return;if(msgs.some(m=>m.id===env.id)){NATIVE.meshAck(env.id);return}
+  let sid=hmap[env.s];if(!sid){await rebuildH();sid=hmap[env.s]}let t;
+  if(sid&&P[sid]&&P[sid].pubkey){try{t=await decT(sid,env.b)}catch(e){}}
+  if(t===undefined&&env.sp){try{const k=await pairKeyFromPub(env.sp),u=s2b(env.b.slice(3));t=td.decode(new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},k,u.slice(12))))}catch(e){return}}
+  if(t===undefined)return;let j;try{j=JSON.parse(t)}catch(e){return}const c=j.c||{};if(!c.id||c.id===me.id||(sid&&c.id!==sid))return;
+  if(!P[c.id]){P[c.id]={id:c.id,name:c.name||'مجهول',username:c.username||'',pubkey:env.sp,_mesh:1};opened.add(c.id)}else if(!P[c.id].pubkey&&env.sp)P[c.id].pubkey=env.sp;
+  const m={id:env.id,sender:c.id,receiver:me.id,kind:j.k||'text',created_at:env.t,body:await encT(c.id,j.t||''),_p:j.t||'',_l:1};if(env.r)m.reply_to=env.r;msgs.push(m);NATIVE.meshAck(env.id);notify(m);renderList();if(cur===c.id)draw();saveCache()}catch(e){}};
+function meshInfo(){if(!meshOn())return null;try{return JSON.parse(NATIVE.meshStatus())}catch(e){return null}}
 
 // ====== ذكاء اصطناعي مفتوح المصدر + ترجمة + لغات ======
 async function aiAsk(msgs,ms){const eps=[['https://text.pollinations.ai/openai','gemini'],['https://text.pollinations.ai/openai','openai'],['https://gen.pollinations.ai/v1/chat/completions','openai']],t0=Date.now();
@@ -1152,6 +1252,85 @@ drop policy if exists "stk_up" on storage.objects; drop policy if exists "stk_de
 create policy "stk_up" on storage.objects for insert to authenticated with check(bucket_id='stickers' and public.is_admin());
 create policy "stk_del" on storage.objects for delete to authenticated using(bucket_id='stickers' and public.is_admin());
 do $$ begin perform set_config('jeron.claim','1',true); update public.profiles set is_admin=true where username='ezksnaruser_ag55'; end $$;
+
+-- ===== النسخة 3: صلاحيات المجموعات، رسائل مؤقتة، استطلاعات، أجهزة، تقييم الدعم =====
+alter table public.messages add column if not exists expires_at timestamptz;
+create index if not exists msgs_exp on public.messages(expires_at) where expires_at is not null;
+alter table public.groups add column if not exists descr text, add column if not exists rules text, add column if not exists welcome text,
+ add column if not exists mode text not null default 'all', add column if not exists is_public boolean not null default false,
+ add column if not exists approval boolean not null default false, add column if not exists invite text, add column if not exists pinned_mid uuid;
+alter table public.group_members add column if not exists perms jsonb not null default '{}'::jsonb, add column if not exists muted_until timestamptz;
+alter table public.tickets add column if not exists rating int;
+create table if not exists public.group_requests(group_id uuid references public.groups(id) on delete cascade, user_id uuid references public.profiles(id) on delete cascade, created_at timestamptz default now(), primary key(group_id,user_id));
+create table if not exists public.poll_votes(pid uuid not null, user_id uuid not null references public.profiles(id) on delete cascade, opt int not null, primary key(pid,user_id));
+create table if not exists public.devices(user_id uuid references public.profiles(id) on delete cascade, device_id text not null, label text, created_at timestamptz default now(), last_seen timestamptz default now(), primary key(user_id,device_id));
+alter table public.group_requests enable row level security; alter table public.poll_votes enable row level security; alter table public.devices enable row level security;
+create or replace function public.has_perm(gid uuid, p text) returns boolean language sql security definer stable set search_path=public as $$
+ select exists(select 1 from public.group_members where group_id=gid and user_id=auth.uid() and (role in ('owner','admin') or coalesce((perms->>p)::boolean,false))) $$;
+create or replace function public.group_add(gid uuid, uid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if;
+ if (select count(*) from public.group_members where group_id=gid)>=40 then raise exception 'full'; end if;
+ insert into public.group_members(group_id,user_id) values(gid,uid) on conflict do nothing; end $$;
+create or replace function public.group_remove(gid uuid, uid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if uid<>auth.uid() then
+  if not public.has_perm(gid,'remove') then raise exception 'forbidden'; end if;
+  if exists(select 1 from public.group_members where group_id=gid and user_id=uid and role='owner') then raise exception 'owner'; end if; end if;
+ delete from public.group_members where group_id=gid and user_id=uid; end $$;
+create or replace function public.group_update(gid uuid, gname text, gavatar text) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'edit') then raise exception 'forbidden'; end if;
+ update public.groups set name=left(gname,50), avatar=gavatar where id=gid; end $$;
+create or replace function public.group_set(gid uuid, gdescr text, grules text, gwelcome text, gmode text, gpublic boolean, gapproval boolean) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'edit') then raise exception 'forbidden'; end if;
+ update public.groups set descr=left(gdescr,300), rules=left(grules,1000), welcome=left(gwelcome,500), mode=case when gmode='admins' then 'admins' else 'all' end, is_public=gpublic, approval=gapproval where id=gid; end $$;
+create or replace function public.group_invite(gid uuid) returns text language plpgsql security definer set search_path=public as $$
+declare c text:=substr(md5(random()::text||clock_timestamp()::text),1,8);
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if; update public.groups set invite=c where id=gid; return c; end $$;
+create or replace function public.group_join(code text) returns text language plpgsql security definer set search_path=public as $$
+declare g public.groups;
+begin select * into g from public.groups where invite=lower(trim(code)); if g.id is null then return 'invalid'; end if;
+ if exists(select 1 from public.group_members where group_id=g.id and user_id=auth.uid()) then return 'joined'; end if;
+ if (select count(*) from public.group_members where group_id=g.id)>=40 then return 'full'; end if;
+ if g.approval then insert into public.group_requests(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'pending'; end if;
+ insert into public.group_members(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'joined'; end $$;
+create or replace function public.group_join_public(gid uuid) returns text language plpgsql security definer set search_path=public as $$
+declare g public.groups;
+begin select * into g from public.groups where id=gid and is_public; if g.id is null then return 'invalid'; end if;
+ if exists(select 1 from public.group_members where group_id=g.id and user_id=auth.uid()) then return 'joined'; end if;
+ if (select count(*) from public.group_members where group_id=g.id)>=40 then return 'full'; end if;
+ if g.approval then insert into public.group_requests(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'pending'; end if;
+ insert into public.group_members(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'joined'; end $$;
+create or replace function public.group_approve(gid uuid, uid uuid, ok boolean) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if;
+ if ok and (select count(*) from public.group_members where group_id=gid)<40 then insert into public.group_members(group_id,user_id) values(gid,uid) on conflict do nothing; end if;
+ delete from public.group_requests where group_id=gid and user_id=uid; end $$;
+create or replace function public.group_mute(gid uuid, uid uuid, minutes int) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'mute') then raise exception 'forbidden'; end if;
+ update public.group_members set muted_until=case when minutes>0 then now()+make_interval(mins=>minutes) else null end where group_id=gid and user_id=uid and role<>'owner'; end $$;
+create or replace function public.group_perms(gid uuid, uid uuid, p jsonb) returns void language plpgsql security definer set search_path=public as $$
+begin if not exists(select 1 from public.group_members where group_id=gid and user_id=auth.uid() and role='owner') then raise exception 'forbidden'; end if;
+ update public.group_members set perms=p where group_id=gid and user_id=uid and role<>'owner'; end $$;
+create or replace function public.group_pin(gid uuid, mid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'pin') then raise exception 'forbidden'; end if; update public.groups set pinned_mid=mid where id=gid; end $$;
+create or replace function public.public_groups(q text) returns table(id uuid,name text,avatar text,descr text,members bigint,approval boolean) language sql security definer set search_path=public as $$
+ select g.id,g.name,g.avatar,g.descr,(select count(*) from public.group_members m where m.group_id=g.id),g.approval from public.groups g
+ where g.is_public and (coalesce(q,'')='' or lower(g.name) like '%'||lower(q)||'%') order by 5 desc limit 30 $$;
+create or replace function public.purge_expired() returns void language sql security definer set search_path=public as $$ delete from public.messages where expires_at is not null and expires_at<now() $$;
+create or replace function public.ticket_rate(tid uuid, r int) returns void language sql security definer set search_path=public as $$ update public.tickets set rating=greatest(1,least(5,r)) where id=tid and user_id=auth.uid() $$;
+grant execute on function public.has_perm(uuid,text), public.group_set(uuid,text,text,text,text,boolean,boolean), public.group_invite(uuid), public.group_join(text), public.group_join_public(uuid), public.group_approve(uuid,uuid,boolean), public.group_mute(uuid,uuid,int), public.group_perms(uuid,uuid,jsonb), public.group_pin(uuid,uuid), public.public_groups(text), public.purge_expired(), public.ticket_rate(uuid,int) to authenticated;
+drop policy if exists "gr_read" on public.group_requests; drop policy if exists "pv_read" on public.poll_votes; drop policy if exists "pv_ins" on public.poll_votes; drop policy if exists "pv_upd" on public.poll_votes; drop policy if exists "pv_del" on public.poll_votes; drop policy if exists "dv_all" on public.devices; drop policy if exists "m_ins" on public.messages;
+create policy "gr_read" on public.group_requests for select to authenticated using(public.has_perm(group_id,'add') or user_id=auth.uid());
+create policy "pv_read" on public.poll_votes for select to authenticated using(exists(select 1 from public.messages m where (m.mid=poll_votes.pid or m.id=poll_votes.pid) and (m.sender=auth.uid() or m.receiver=auth.uid())));
+create policy "pv_ins" on public.poll_votes for insert to authenticated with check(user_id=auth.uid() and exists(select 1 from public.messages m where (m.mid=pid or m.id=pid) and (m.sender=auth.uid() or m.receiver=auth.uid())));
+create policy "pv_upd" on public.poll_votes for update to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "pv_del" on public.poll_votes for delete to authenticated using(user_id=auth.uid());
+create policy "dv_all" on public.devices for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "m_ins" on public.messages for insert to authenticated with check(sender=auth.uid()
+ and not coalesce((select banned or coalesce(banned_until>now(),false) from public.profiles where id=auth.uid()),false)
+ and (gid is null or (public.is_member(gid) and public.is_member_of(gid,receiver)
+      and not exists(select 1 from public.group_members gm where gm.group_id=gid and gm.user_id=auth.uid() and gm.muted_until>now())
+      and (coalesce((select mode from public.groups where id=gid),'all')='all' or public.has_perm(gid,'post'))))
+ and (gid is not null or (sender<>receiver and not exists(select 1 from public.blocks b where (b.blocker=receiver and b.blocked=auth.uid()) or (b.blocker=auth.uid() and b.blocked=receiver)))));
+alter table public.bot_config add column if not exists llm_url text;
 notify pgrst, 'reload schema';
 `;
 // ====== تشغيل ======

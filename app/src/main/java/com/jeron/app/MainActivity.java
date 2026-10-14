@@ -266,6 +266,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void js(final String code) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (web != null) web.evaluateJavascript(code, null);
+            }
+        });
+    }
+
     // ---------------- الجسر بين التطبيق (JS) والأندرويد ----------------
     class Bridge {
         @JavascriptInterface
@@ -388,6 +397,68 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 return "{}";
             }
+        }
+
+        @JavascriptInterface
+        public String deviceLabel() {
+            return Build.MANUFACTURER + " " + Build.MODEL + " (Android " + Build.VERSION.RELEASE + ")";
+        }
+
+        @JavascriptInterface
+        public void setSecure(final boolean on) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (on) getWindow().setFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE, android.view.WindowManager.LayoutParams.FLAG_SECURE);
+                    else getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE);
+                }
+            });
+        }
+
+        // ---------- امبد المحلي (Gemma 4 على الجهاز) ----------
+        @JavascriptInterface
+        public String llmStatus() {
+            return LlmEngine.status(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public void llmDownload(String url) {
+            LlmEngine.download(MainActivity.this, url, new DlCallback() {
+                @Override
+                public void onProgress(final int pct) {
+                    js("window.__llmDl&&window.__llmDl(" + pct + ",'run')");
+                }
+
+                @Override
+                public void onFinish(final String error) {
+                    js("window.__llmDl&&window.__llmDl(100,'" + (error == null ? "done" : "error") + "'," + JSONObject.quote(error == null ? "" : error) + ")");
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void llmCancel() {
+            LlmEngine.cancelDownload();
+        }
+
+        @JavascriptInterface
+        public void llmDelete() {
+            LlmEngine.delete(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public void llmGenerate(final String id, String system, String historyJson, String prompt) {
+            LlmEngine.generate(MainActivity.this, system, historyJson, prompt, new LlmCallback() {
+                @Override
+                public void onToken(String token) {
+                    js("window.__llmTok&&window.__llmTok(" + JSONObject.quote(id) + "," + JSONObject.quote(token) + ")");
+                }
+
+                @Override
+                public void onDone(String error) {
+                    js("window.__llmDone&&window.__llmDone(" + JSONObject.quote(id) + "," + JSONObject.quote(error == null ? "" : error) + ")");
+                }
+            });
         }
 
         @JavascriptInterface

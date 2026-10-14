@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -8,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.jeron.app"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -18,6 +19,10 @@ android {
         release {
             minifyEnabled false
         }
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
     }
 
     compileOptions {
@@ -31,4 +36,7 @@ dependencies {
     implementation 'androidx.core:core:1.12.0'
     implementation 'androidx.webkit:webkit:1.8.0'
     implementation 'com.google.android.gms:play-services-nearby:19.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+    // نموذج امبد المحلي (Gemma 4) عبر LiteRT-LM الرسمي من Google
+    implementation 'com.google.ai.edge.litertlm:litertlm-android:latest.release'
 }

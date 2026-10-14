@@ -203,4 +203,83 @@ drop policy if exists "stk_up" on storage.objects; drop policy if exists "stk_de
 create policy "stk_up" on storage.objects for insert to authenticated with check(bucket_id='stickers' and public.is_admin());
 create policy "stk_del" on storage.objects for delete to authenticated using(bucket_id='stickers' and public.is_admin());
 do $$ begin perform set_config('jeron.claim','1',true); update public.profiles set is_admin=true where username='ezksnaruser_ag55'; end $$;
+
+-- ===== النسخة 3: صلاحيات المجموعات، رسائل مؤقتة، استطلاعات، أجهزة، تقييم الدعم =====
+alter table public.messages add column if not exists expires_at timestamptz;
+create index if not exists msgs_exp on public.messages(expires_at) where expires_at is not null;
+alter table public.groups add column if not exists descr text, add column if not exists rules text, add column if not exists welcome text,
+ add column if not exists mode text not null default 'all', add column if not exists is_public boolean not null default false,
+ add column if not exists approval boolean not null default false, add column if not exists invite text, add column if not exists pinned_mid uuid;
+alter table public.group_members add column if not exists perms jsonb not null default '{}'::jsonb, add column if not exists muted_until timestamptz;
+alter table public.tickets add column if not exists rating int;
+create table if not exists public.group_requests(group_id uuid references public.groups(id) on delete cascade, user_id uuid references public.profiles(id) on delete cascade, created_at timestamptz default now(), primary key(group_id,user_id));
+create table if not exists public.poll_votes(pid uuid not null, user_id uuid not null references public.profiles(id) on delete cascade, opt int not null, primary key(pid,user_id));
+create table if not exists public.devices(user_id uuid references public.profiles(id) on delete cascade, device_id text not null, label text, created_at timestamptz default now(), last_seen timestamptz default now(), primary key(user_id,device_id));
+alter table public.group_requests enable row level security; alter table public.poll_votes enable row level security; alter table public.devices enable row level security;
+create or replace function public.has_perm(gid uuid, p text) returns boolean language sql security definer stable set search_path=public as $$
+ select exists(select 1 from public.group_members where group_id=gid and user_id=auth.uid() and (role in ('owner','admin') or coalesce((perms->>p)::boolean,false))) $$;
+create or replace function public.group_add(gid uuid, uid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if;
+ if (select count(*) from public.group_members where group_id=gid)>=40 then raise exception 'full'; end if;
+ insert into public.group_members(group_id,user_id) values(gid,uid) on conflict do nothing; end $$;
+create or replace function public.group_remove(gid uuid, uid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if uid<>auth.uid() then
+  if not public.has_perm(gid,'remove') then raise exception 'forbidden'; end if;
+  if exists(select 1 from public.group_members where group_id=gid and user_id=uid and role='owner') then raise exception 'owner'; end if; end if;
+ delete from public.group_members where group_id=gid and user_id=uid; end $$;
+create or replace function public.group_update(gid uuid, gname text, gavatar text) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'edit') then raise exception 'forbidden'; end if;
+ update public.groups set name=left(gname,50), avatar=gavatar where id=gid; end $$;
+create or replace function public.group_set(gid uuid, gdescr text, grules text, gwelcome text, gmode text, gpublic boolean, gapproval boolean) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'edit') then raise exception 'forbidden'; end if;
+ update public.groups set descr=left(gdescr,300), rules=left(grules,1000), welcome=left(gwelcome,500), mode=case when gmode='admins' then 'admins' else 'all' end, is_public=gpublic, approval=gapproval where id=gid; end $$;
+create or replace function public.group_invite(gid uuid) returns text language plpgsql security definer set search_path=public as $$
+declare c text:=substr(md5(random()::text||clock_timestamp()::text),1,8);
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if; update public.groups set invite=c where id=gid; return c; end $$;
+create or replace function public.group_join(code text) returns text language plpgsql security definer set search_path=public as $$
+declare g public.groups;
+begin select * into g from public.groups where invite=lower(trim(code)); if g.id is null then return 'invalid'; end if;
+ if exists(select 1 from public.group_members where group_id=g.id and user_id=auth.uid()) then return 'joined'; end if;
+ if (select count(*) from public.group_members where group_id=g.id)>=40 then return 'full'; end if;
+ if g.approval then insert into public.group_requests(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'pending'; end if;
+ insert into public.group_members(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'joined'; end $$;
+create or replace function public.group_join_public(gid uuid) returns text language plpgsql security definer set search_path=public as $$
+declare g public.groups;
+begin select * into g from public.groups where id=gid and is_public; if g.id is null then return 'invalid'; end if;
+ if exists(select 1 from public.group_members where group_id=g.id and user_id=auth.uid()) then return 'joined'; end if;
+ if (select count(*) from public.group_members where group_id=g.id)>=40 then return 'full'; end if;
+ if g.approval then insert into public.group_requests(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'pending'; end if;
+ insert into public.group_members(group_id,user_id) values(g.id,auth.uid()) on conflict do nothing; return 'joined'; end $$;
+create or replace function public.group_approve(gid uuid, uid uuid, ok boolean) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'add') then raise exception 'forbidden'; end if;
+ if ok and (select count(*) from public.group_members where group_id=gid)<40 then insert into public.group_members(group_id,user_id) values(gid,uid) on conflict do nothing; end if;
+ delete from public.group_requests where group_id=gid and user_id=uid; end $$;
+create or replace function public.group_mute(gid uuid, uid uuid, minutes int) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'mute') then raise exception 'forbidden'; end if;
+ update public.group_members set muted_until=case when minutes>0 then now()+make_interval(mins=>minutes) else null end where group_id=gid and user_id=uid and role<>'owner'; end $$;
+create or replace function public.group_perms(gid uuid, uid uuid, p jsonb) returns void language plpgsql security definer set search_path=public as $$
+begin if not exists(select 1 from public.group_members where group_id=gid and user_id=auth.uid() and role='owner') then raise exception 'forbidden'; end if;
+ update public.group_members set perms=p where group_id=gid and user_id=uid and role<>'owner'; end $$;
+create or replace function public.group_pin(gid uuid, mid uuid) returns void language plpgsql security definer set search_path=public as $$
+begin if not public.has_perm(gid,'pin') then raise exception 'forbidden'; end if; update public.groups set pinned_mid=mid where id=gid; end $$;
+create or replace function public.public_groups(q text) returns table(id uuid,name text,avatar text,descr text,members bigint,approval boolean) language sql security definer set search_path=public as $$
+ select g.id,g.name,g.avatar,g.descr,(select count(*) from public.group_members m where m.group_id=g.id),g.approval from public.groups g
+ where g.is_public and (coalesce(q,'')='' or lower(g.name) like '%'||lower(q)||'%') order by 5 desc limit 30 $$;
+create or replace function public.purge_expired() returns void language sql security definer set search_path=public as $$ delete from public.messages where expires_at is not null and expires_at<now() $$;
+create or replace function public.ticket_rate(tid uuid, r int) returns void language sql security definer set search_path=public as $$ update public.tickets set rating=greatest(1,least(5,r)) where id=tid and user_id=auth.uid() $$;
+grant execute on function public.has_perm(uuid,text), public.group_set(uuid,text,text,text,text,boolean,boolean), public.group_invite(uuid), public.group_join(text), public.group_join_public(uuid), public.group_approve(uuid,uuid,boolean), public.group_mute(uuid,uuid,int), public.group_perms(uuid,uuid,jsonb), public.group_pin(uuid,uuid), public.public_groups(text), public.purge_expired(), public.ticket_rate(uuid,int) to authenticated;
+drop policy if exists "gr_read" on public.group_requests; drop policy if exists "pv_read" on public.poll_votes; drop policy if exists "pv_ins" on public.poll_votes; drop policy if exists "pv_upd" on public.poll_votes; drop policy if exists "pv_del" on public.poll_votes; drop policy if exists "dv_all" on public.devices; drop policy if exists "m_ins" on public.messages;
+create policy "gr_read" on public.group_requests for select to authenticated using(public.has_perm(group_id,'add') or user_id=auth.uid());
+create policy "pv_read" on public.poll_votes for select to authenticated using(exists(select 1 from public.messages m where (m.mid=poll_votes.pid or m.id=poll_votes.pid) and (m.sender=auth.uid() or m.receiver=auth.uid())));
+create policy "pv_ins" on public.poll_votes for insert to authenticated with check(user_id=auth.uid() and exists(select 1 from public.messages m where (m.mid=pid or m.id=pid) and (m.sender=auth.uid() or m.receiver=auth.uid())));
+create policy "pv_upd" on public.poll_votes for update to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "pv_del" on public.poll_votes for delete to authenticated using(user_id=auth.uid());
+create policy "dv_all" on public.devices for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "m_ins" on public.messages for insert to authenticated with check(sender=auth.uid()
+ and not coalesce((select banned or coalesce(banned_until>now(),false) from public.profiles where id=auth.uid()),false)
+ and (gid is null or (public.is_member(gid) and public.is_member_of(gid,receiver)
+      and not exists(select 1 from public.group_members gm where gm.group_id=gid and gm.user_id=auth.uid() and gm.muted_until>now())
+      and (coalesce((select mode from public.groups where id=gid),'all')='all' or public.has_perm(gid,'post'))))
+ and (gid is not null or (sender<>receiver and not exists(select 1 from public.blocks b where (b.blocker=receiver and b.blocked=auth.uid()) or (b.blocker=auth.uid() and b.blocked=receiver)))));
+alter table public.bot_config add column if not exists llm_url text;
 notify pgrst, 'reload schema';

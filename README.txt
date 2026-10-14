@@ -1,14 +1,17 @@
-جيرون - مشروع أندرويد (Android Studio)
+جيرون - مشروع أندرويد (النسخة 3)
 
-الرفع على موقع بناء APK: ارفع هذا الـ ZIP كما هو (settings.gradle بالجذر). اختر JDK 17.
-- compileSdk 34 / minSdk 24 / AGP 8.2.2 / Java 17.
-- ما فيه gradle-wrapper.jar (ملف ثنائي). موقع البناء يستخدم Gradle حقه، وإذا يطلب wrapper نفّذ: gradle wrapper
+الرفع: ارفع الـ ZIP كما هو على موقع بناء APK (settings.gradle بالجذر)، واختر JDK 17.
+- AGP 8.2.2 + Kotlin 2.0.21 + minSdk 26 + compileSdk 34.
+- ما فيه gradle-wrapper.jar (ملف ثنائي). إذا الموقع طلبه نفّذ: gradle wrapper
+- المكتبة litertlm تنسحب من Google Maven بنسخة latest.release، فيحتاج البناء اتصال.
 
-قبل أول تشغيل: افتح supabase-setup.sql والصقه كله بـ Supabase > SQL Editor > Run (آمن تعيده).
-هذا السكربت يخلي حسابك ezksnaruser_ag55 مشرف مباشرة.
+قبل التشغيل: افتح supabase-setup.sql والصقه كله بـ Supabase > SQL Editor > Run (آمن تعيده).
+يخلي حسابك ezksnaruser_ag55 مشرف.
+Authentication > Settings: ارفع JWT expiry إلى 604800 حتى تشتغل الإشعارات بالخلفية.
 
-مهم للإشعارات بالخلفية: Supabase > Authentication > Settings: ارفع JWT expiry إلى 604800 (أسبوع)،
-حتى خدمة الخلفية تبقى تستلم لما التطبيق مسكّر.
+امبد المحلي (ردود فورية): من الإعدادات > امبد المحلي > تنزيل النموذج (Gemma 4 E2B، حوالي 2.6 جيجا، ترخيص Apache-2.0).
+الرابط الافتراضي: litert-community/gemma-4-E2B-it-litert-lm على Hugging Face. تغيّره من لوحة الإدارة.
+يحتاج جهاز بذاكرة 4 جيجا أو أكثر. قبل التنزيل الأول، امبد يرد من الإنترنت.
 
-الصلاحيات: الإشعارات، المايك، الموقع، والبلوتوث/Nearby (للشبكة القريبة). تنطلب عند الحاجة من الإعدادات.
-الشبكة القريبة تحتاج خدمات Google Play (Nearby Connections).
+الشبكة القريبة (بلوتوث/واي فاي): تشتغل تلقائيًا بعد الموافقة على الأذونات، بدون رموز.
+الأذونات: إشعارات، بلوتوث/أجهزة قريبة، موقع، مايك.
