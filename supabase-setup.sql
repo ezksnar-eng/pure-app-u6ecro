@@ -281,5 +281,28 @@ create policy "m_ins" on public.messages for insert to authenticated with check(
       and not exists(select 1 from public.group_members gm where gm.group_id=gid and gm.user_id=auth.uid() and gm.muted_until>now())
       and (coalesce((select mode from public.groups where id=gid),'all')='all' or public.has_perm(gid,'post'))))
  and (gid is not null or (sender<>receiver and not exists(select 1 from public.blocks b where (b.blocker=receiver and b.blocked=auth.uid()) or (b.blocker=auth.uid() and b.blocked=receiver)))));
+alter table public.key_backups add column if not exists backup2 text;
 alter table public.bot_config add column if not exists llm_url text, add column if not exists limits jsonb not null default '{}'::jsonb;
+
+-- ===== النسخة 3.2: ذاكرة امبد على السيرفر، قاعدة معرفة، استرجاع الحسابات =====
+create table if not exists public.bot_kb(id uuid primary key default gen_random_uuid(), title text not null, body text not null, tags text, created_at timestamptz default now());
+create table if not exists public.bot_msgs(user_id uuid references public.profiles(id) on delete cascade, id text not null, role text not null, body text not null default '', created_at timestamptz default now(), primary key(user_id,id));
+create table if not exists public.bot_state(user_id uuid primary key references public.profiles(id) on delete cascade, todo jsonb not null default '[]'::jsonb, rem jsonb not null default '[]'::jsonb, updated_at timestamptz default now());
+alter table public.bot_kb enable row level security; alter table public.bot_msgs enable row level security; alter table public.bot_state enable row level security;
+drop policy if exists "kb_admin" on public.bot_kb; drop policy if exists "bm_own" on public.bot_msgs; drop policy if exists "bs_own" on public.bot_state;
+create policy "kb_admin" on public.bot_kb for all to authenticated using(public.is_admin()) with check(public.is_admin());
+create policy "bm_own" on public.bot_msgs for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "bs_own" on public.bot_state for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create or replace function public.kb_search(q text) returns table(title text, body text, score int) language sql security definer set search_path=public as $$
+ select t.title,t.body,t.sc from (
+  select k.title,k.body,(select count(*)::int from (select distinct lower(x) w from regexp_split_to_table(coalesce(q,''),'[^a-zA-Z0-9'||chr(1536)||'-'||chr(1791)||']+') x where length(x)>=3) ws
+    where lower(k.title||' '||k.body||' '||coalesce(k.tags,'')) like '%'||ws.w||'%') sc from public.bot_kb k) t
+ where t.sc>0 order by t.sc desc limit 4 $$;
+create or replace function public.admin_find_account(q text) returns table(id uuid, email text, name text, username text, created_at timestamptz, last_sign_in timestamptz, banned boolean) language plpgsql security definer set search_path=public,auth as $$
+begin if not public.is_admin() then raise exception 'forbidden'; end if;
+ return query select u.id, u.email::text, p.name, p.username, u.created_at, u.last_sign_in_at, coalesce(p.banned,false)
+  from auth.users u left join public.profiles p on p.id=u.id
+  where lower(u.email) like '%'||lower(trim(q))||'%' or lower(p.username) like '%'||lower(trim(q))||'%' or lower(p.name) like '%'||lower(trim(q))||'%'
+  order by u.created_at desc limit 15; end $$;
+grant execute on function public.kb_search(text), public.admin_find_account(text) to authenticated;
 notify pgrst, 'reload schema';

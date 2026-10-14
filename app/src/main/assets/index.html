@@ -83,7 +83,7 @@ input,textarea{font-size:16px;color:var(--txt);font-family:inherit}
 
 svg{fill:none!important}
 .ico{display:inline-flex;align-items:center;justify-content:center}.mi .ico{color:var(--sub)}.logo{color:#fff}
-.btn{margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}.btn.g{border:1.5px solid var(--line)}.btn:disabled{opacity:.6}
+.btn{margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}.btn.g{border:1.5px solid var(--line)}.pill .ib{width:36px;height:36px}.btn:disabled{opacity:.6}
 .snd{color:#fff}.snd.m svg{transform:none}
 .sb{display:flex;align-items:center;gap:4px}.sb span:last-child{overflow:hidden;text-overflow:ellipsis}
 .b img{min-height:60px}.b audio{width:230px;max-width:100%;display:block}
@@ -139,11 +139,13 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 .sbody{max-height:52vh;overflow-y:auto;padding:0 6px}.egrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}.egrid button{font-size:26px;height:42px;border-radius:8px}.egrid button:active{background:var(--bg2)}
 .poll{min-width:230px}.po{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer}.po i{position:absolute;inset:0 auto 0 0;background:var(--pri);opacity:.18;transition:width .3s}.po.me{border-color:var(--pri)}.po span,.po b{position:relative}
 .gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}</style></head><body>
-<div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>اكتب إيميلك وكلمة سرك وابدأ المراسلة</p>
-<input class="in" id="aName" placeholder="الاسم (لأول مرة فقط)" maxlength="40">
+<div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>مراسلة مشفرة. حساب واحد لإيميلك، وكل محادثاتك تتبعه</p>
+<div class="seg" id="aTabs" style="justify-content:center;margin-bottom:12px"><button data-m="login" class="on">دخول</button><button data-m="reg">حساب جديد</button></div>
+<input class="in" id="aName" placeholder="الاسم" maxlength="40" style="display:none">
 <input class="in" id="aMail" type="email" dir="ltr" placeholder="الإيميل" style="text-align:right" autocomplete="email">
 <input class="in" id="aPw" type="password" dir="ltr" placeholder="كلمة السر" style="text-align:right" autocomplete="current-password">
-<div class="err" id="aErr"></div><button class="btn" id="aGo">ابدأ</button></div></div>
+<input class="in" id="aPw2" type="password" dir="ltr" placeholder="أعد كتابة كلمة السر" style="text-align:right;display:none">
+<div class="err" id="aErr"></div><button class="btn" id="aGo">دخول</button></div></div>
 <div id="lock"><div class="box"><div class="logo"><span class="ico" data-i="lock" data-s="30"></span></div><h1>التطبيق مقفل</h1><p>اكتب رمز القفل</p><input class="in" id="lpin" type="password" inputmode="numeric" dir="ltr" style="text-align:center"><div class="err" id="lerr"></div><button class="btn" id="lgo">فتح</button></div></div>
 <div id="app"><div id="side"><div class="hd"><button class="ib" id="bMenu"><span class="ico" data-i="menu"></span></button><div class="search"><input id="q" placeholder="بحث"></div></div>
 <div id="flt"><button data-f="all" class="on">الكل</button><button data-f="unread">غير المقروءة</button><button data-f="fav">المفضلة</button></div><div id="nb" class="nbn"></div><div id="ses" class="nbn" style="background:#fee2e2;color:#991b1b;cursor:pointer"></div><div id="nt" class="nbn" style="background:#e0f2fe;color:#075985"></div><div id="ntp" class="nbn" style="background:#fce7f3;color:#9d174d"></div><div id="list"></div><button id="fab"><span class="ico" data-i="edit" data-s="26"></span></button></div><div id="main"></div></div>
@@ -254,13 +256,18 @@ async function pwKey(pw,salt,use){const base=await crypto.subtle.importKey('raw'
 async function wrap(priv,pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await pwKey(pw,salt,'encrypt');return[salt,iv,new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},k,te.encode(JSON.stringify(priv))))].map(b2s).join('.')}
 async function unwrap(s,pw){const[a,b,c]=s.split('.').map(s2b),k=await pwKey(pw,a,'decrypt');return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b},k,c)))}
 const SQLMSG='الخدمة قيد التحديث، جرّب بعد شوي';
-async function ensureKeys(uid,pw,prof){const kk='jr_k_'+uid;let priv=ld(kk,null);
-  if(!priv&&pw){const{data,error:ke}=await sb.from('key_backups').select('backup').eq('user_id',uid).maybeSingle();if(ke)throw new Error(SQLMSG);
-    if(data&&data.backup){try{priv=await unwrap(data.backup,pw)}catch(e){throw new Error('تعذر استعادة مفتاح التشفير: كلمة السر لا تطابق كلمة السر القديمة')}}}
-  if(!priv){if(!pw)return false;const k=await genKeys();priv=k.priv;const e1=(await sb.from('key_backups').upsert({user_id:uid,backup:await wrap(priv,pw)})).error;prof.pubkey=JSON.stringify(k.pub);const e2=(await sb.from('profiles').update({pubkey:prof.pubkey}).eq('id',uid)).error;if(e1||e2)throw new Error(SQLMSG)}
+const RCA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',normRc=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const genRc=()=>{const a=crypto.getRandomValues(new Uint8Array(16));let o='';a.forEach((x,i)=>{o+=RCA[x%32];if(i%4===3&&i<15)o+='-'});return o};
+async function ensureKeys(uid,pw,prof){const kk='jr_k_'+uid;let priv=ld(kk,null);window.__newRc=null;
+  if(!priv&&pw){let q=await sb.from('key_backups').select('backup,backup2').eq('user_id',uid).maybeSingle();if(q.error&&/backup2/.test(q.error.message||''))q=await sb.from('key_backups').select('backup').eq('user_id',uid).maybeSingle();if(q.error)throw new Error(SQLMSG);const d=q.data;
+    if(d&&d.backup){try{priv=await unwrap(d.backup,pw)}catch(e){let ok=false;
+      if(d.backup2){const rc=await ask('كلمة السر الحالية تختلف عن القديمة. اكتب رمز الاسترجاع (اللي حفظته لما أنشأت الحساب). اتركه فاضي إذا ما عندك','');if(rc&&rc.trim()){try{priv=await unwrap(d.backup2,normRc(rc));await sb.from('key_backups').update({backup:await wrap(priv,pw)}).eq('user_id',uid);ok=true}catch(e2){throw new Error('رمز الاسترجاع غير صحيح')}}}
+      if(!ok){if(!await yn('بدون رمز الاسترجاع راح تبدأ بمفتاح تشفير جديد، وتضيع رسائلك القديمة (الحساب وجهات الاتصال تبقى). تكمل؟','ابدأ بمفتاح جديد'))throw new Error('تم الإلغاء');priv=null}}}}
+  if(!priv){if(!pw)return false;const k=await genKeys();priv=k.priv;const rc=genRc();let e1=(await sb.from('key_backups').upsert({user_id:uid,backup:await wrap(priv,pw),backup2:await wrap(priv,normRc(rc))})).error;
+    if(e1&&/backup2/.test(e1.message||''))e1=(await sb.from('key_backups').upsert({user_id:uid,backup:await wrap(priv,pw)})).error;else if(!e1)window.__newRc=rc;
+    prof.pubkey=JSON.stringify(k.pub);const e2=(await sb.from('profiles').update({pubkey:prof.pubkey}).eq('id',uid)).error;if(e1||e2)throw new Error(SQLMSG)}
   else if(!prof.pubkey){prof.pubkey=JSON.stringify({kty:priv.kty,crv:priv.crv,x:priv.x,y:priv.y,ext:true});await sb.from('profiles').update({pubkey:prof.pubkey}).eq('id',uid)}
   lsv(kk,priv);await useKey(priv);return true}
-
 
 // ====== الاتصال بـ Supabase (يتحمل عند الحاجة) ======
 const loadLib=()=>new Promise((res,rej)=>{if(window.supabase)return res();const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';s.onload=res;s.onerror=rej;document.head.appendChild(s)});
@@ -269,18 +276,23 @@ async function needSB(){if(sb)return true;if(!navigator.onLine)return false;try{
 // ====== دخول وتسجيل ======
 const aerr=t=>$('#aErr').textContent=t;
 const trErr=e=>/Invalid login/i.test(e.message)?'الإيميل أو كلمة السر غلط':/rate|too many/i.test(e.message)?'محاولات كثيرة، انتظر شوي':e.message;
-['aName','aMail','aPw'].forEach(i=>$('#'+i).onkeydown=e=>{if(e.key==='Enter')$('#aGo').click()});
+let amode='login';
+function setAmode(m){amode=m;$('#aName').style.display=m==='reg'?'block':'none';$('#aPw2').style.display=m==='reg'?'block':'none';$('#aGo').textContent=m==='reg'?'إنشاء الحساب':'دخول';document.querySelectorAll('#aTabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));aerr('')}
+document.querySelectorAll('#aTabs button').forEach(b=>b.onclick=()=>setAmode(b.dataset.m));
+const normEmail=e=>{e=e.trim().toLowerCase();const m=e.match(/^([^@+]+)(\+[^@]*)?@(gmail|googlemail)\.com$/);return m?m[1].replace(/\./g,'')+'@gmail.com':e};
+['aName','aMail','aPw','aPw2'].forEach(i=>$('#'+i).onkeydown=e=>{if(e.key==='Enter')$('#aGo').click()});
 $('#aGo').onclick=async()=>{aerr('');try{if('Notification' in window&&Notification.permission==='default')Notification.requestPermission()}catch(e){}
-  const name=$('#aName').value.trim(),email=$('#aMail').value.trim().toLowerCase(),pw=$('#aPw').value;
-  if(!/^\S+@\S+\.\S+$/.test(email)||pw.length<6)return aerr('اكتب إيميل صحيح وكلمة سر (6 أحرف على الأقل)');$('#aGo').disabled=true;
-  try{if(!await needSB())return aerr('أول دخول يحتاج اتصال بالإنترنت');pendPw=pw;
-    const{error}=await sb.auth.signInWithPassword({email,password:pw});if(!error)return;if(!/Invalid login/i.test(error.message))return aerr(trErr(error));
-    if(!name)return aerr('إذا هذا أول دخول لك اكتب اسمك، وإلا كلمة السر غلط');
+  const raw=$('#aMail').value.trim().toLowerCase(),pw=$('#aPw').value;if(!/^\S+@\S+\.\S+$/.test(raw)||pw.length<6)return aerr('اكتب إيميل صحيح وكلمة سر (6 أحرف على الأقل)');$('#aGo').disabled=true;
+  try{if(!await needSB())return aerr('أول دخول يحتاج اتصال بالإنترنت');pendPw=pw;const nm=normEmail(raw);
+    const tryIn=async()=>{let r=await sb.auth.signInWithPassword({email:raw,password:pw});if(r.error&&nm!==raw&&/Invalid login/i.test(r.error.message))r=await sb.auth.signInWithPassword({email:nm,password:pw});return r};
+    if(amode==='login'){const r=await tryIn();if(r.error)aerr(/Invalid login/i.test(r.error.message)?'الإيميل أو كلمة السر غلط. إذا ما عندك حساب اختر «حساب جديد».':trErr(r.error));return}
+    const name=$('#aName').value.trim();if(!name)return aerr('اكتب اسمك');if(pw!==$('#aPw2').value)return aerr('كلمتا السر غير متطابقتين');
+    const ex=await tryIn();if(!ex.error)return;
     try{const{data:c}=await sb.from('bot_config').select('reg_open').eq('id',1).maybeSingle();if(c&&c.reg_open===false)return aerr('التسجيل الجديد مغلق حاليًا')}catch(e){}
-    for(let i=0;i<4;i++){const un=(email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g,'')+'user').slice(0,12)+'_'+Math.random().toString(36).slice(2,6);
-      const r=await sb.auth.signUp({email,password:pw,options:{data:{name,username:un}}});
-      if(!r.error){if(!r.data.session)aerr('تم الإنشاء. فعّل الإيميل أو عطّل Confirm email من Supabase');return}
-      if(/already/i.test(r.error.message))return aerr('كلمة السر غلط');if(!/database|username|duplicate|unique/i.test(r.error.message))return aerr(trErr(r.error))}
+    for(let i=0;i<4;i++){const un=(nm.split('@')[0].replace(/[^a-z0-9_]/g,'')+'user').slice(0,12)+'_'+Math.random().toString(36).slice(2,6);
+      const r=await sb.auth.signUp({email:nm,password:pw,options:{data:{name,username:un}}});
+      if(!r.error){if(r.data.user&&r.data.user.identities&&r.data.user.identities.length===0)return aerr('هذا الإيميل مسجل من قبل. اختر «دخول» واكتب كلمة السر الصحيحة.');if(!r.data.session)aerr('تم الإنشاء. فعّل الإيميل ثم ادخل');return}
+      if(/already/i.test(r.error.message))return aerr('هذا الإيميل مسجل من قبل. اختر «دخول» واكتب كلمة السر الصحيحة.');if(!/database|username|duplicate|unique/i.test(r.error.message))return aerr(trErr(r.error))}
     aerr('تعذر إنشاء الحساب، جرّب مرة ثانية')}
   catch(e){aerr('تعذر الاتصال، تأكد من النت')}finally{$('#aGo').disabled=false}};
 // ====== التشغيل الفوري + الجلسة ======
@@ -294,13 +306,13 @@ async function boot(u,fast){booting=true;try{let p=null;const c=ld('jr_c_'+u.id,
   setBotProfile();msgs.push(...ld('jr_bot_'+me.id,[]));
   for(const r of outbox())if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_t:1});
   for(const r of ld('jr_fail_'+me.id,[]))if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_f:1});
-  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();remTick();applySecure();if(NATIVE){$('#mNetB').style.display='none';if(ld('jr_set2',{}).mesh===undefined){setS('mesh',1);NATIVE.requestPermissions('mesh')}}setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets();syncDevices();llmHint()},1500);return true}finally{booting=false}}
+  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();if(window.__newRc){showRecovery(window.__newRc);window.__newRc=null}remTick();applySecure();if(NATIVE){$('#mNetB').style.display='none';if(ld('jr_set2',{}).mesh===undefined){setS('mesh',1);NATIVE.requestPermissions('mesh')}}setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets();syncDevices();llmHint()},1500);return true}finally{booting=false}}
 async function connectBg(){if(connecting||!me)return;connecting=true;try{if(!await needSB())return;
   let{data:{session}}=await sb.auth.getSession();
   if(!session){const j=ld('jr_sess',null);if(j){try{const r=await sb.auth.setSession({access_token:j.a,refresh_token:j.r});session=r.data&&r.data.session}catch(e){}}}
   if(!session){showLost();return}$('#ses').style.display='none';sessionOK=true;if(NATIVE)NATIVE.setSession(URL_,KEY,session.access_token,me.id);
   try{const{data}=await sb.from('profiles').select('*').eq('id',me.id).single();if(data){data.pubkey=data.pubkey||me.pubkey;me=data;P[me.id]=me;fillMe();banNote()}}catch(e){}
-  loadCfg();if(!ch||ch.state==='closed'||ch.state==='errored')subscribe();await pull();flush();beat()}finally{connecting=false}}
+  loadCfg();bsPull();loadState();procBotQueue();if(!ch||ch.state==='closed'||ch.state==='errored')subscribe();await pull();flush();beat()}finally{connecting=false}}
 function showLost(){const s=$('#ses');s.textContent='انتهت جلستك. اضغط هنا لتسجيل الدخول من جديد (رسائلك محفوظة)';s.style.display='block';s.onclick=()=>{manualOut=true;logout()}}
 function logout(){localStorage.removeItem('jr_uid');localStorage.removeItem('jr_sess');if(sb)sb.auth.signOut().catch(()=>{});bye()}
 function bye(){if(NATIVE){try{NATIVE.setSession('','','','');NATIVE.meshStop()}catch(e){}}me=null;msgs=[];P={};cur=null;myKey=null;sessionOK=false;opened.clear();blocks={by:new Set(),me:new Set()};if(sb)[ch,ch2,pch].forEach(c=>c&&sb.removeChannel(c));ch=ch2=pch=null;closeAll();$('#app').classList.remove('on','chat');$('#ses').style.display='none';$('#auth').style.display='flex'}
@@ -326,7 +338,7 @@ async function pull(full){if(!me||!sb)return;if(pulling){pullAgain=true;return}p
     else{for(let i=0;i<8;i++){const r=await sb.from('messages').select('*').or(q0).gte('updated_at',since).order('updated_at').limit(500);if(r.error)throw r.error;rows.push(...r.data);if(r.data.length<500)break;since=r.data[r.data.length-1].updated_at}}
     const need=[...new Set(rows.map(r=>r.sender===me.id?r.receiver:r.sender))].filter(i=>!P[i]);if(need.length)await loadPeers(need);
     const idx=new Map(msgs.map((m,i)=>[m.id,i])),fresh=!ld(sinceK(),null);let mx=ld(sinceK(),'')||'';
-    let needG=false;for(const r of rows){if(r.updated_at&&r.updated_at>mx)mx=r.updated_at;if(r.gid&&r.sender===me.id&&r.receiver!==me.id)continue;if(r.gid&&!P['g:'+r.gid])needG=true;await decMsg(r);const i=idx.get(r.id);
+    let needG=false;for(const r of rows){if(r.updated_at&&r.updated_at>mx)mx=r.updated_at;if(r.gid&&r.sender===me.id&&r.receiver!==me.id)continue;if(r.gid&&!P['g:'+r.gid])needG=true;await decMsg(r);if(r._p===null&&!r.gid){const o=r.sender===me.id?r.receiver:r.sender;if(P[o]){P[o]._kt=0;await freshKey(o);r._p=undefined;await decMsg(r)}}const i=idx.get(r.id);
       if(i!==undefined){const o=msgs[i];if(o._t||o._f||JSON.stringify([o.read_at,o.deleted,o.body,o.reactions,o.edited_at])!==JSON.stringify([r.read_at,r.deleted,r.body,r.reactions,r.edited_at])||o._t){msgs[i]=r;changed=true}}
       else{msgs.push(r);idx.set(r.id,msgs.length-1);changed=true;if(!fresh&&r.sender!==me.id&&!r.deleted)notify(r)}}
     if(mx&&!noUpd)lsv(sinceK(),mx);if(needG)loadGroups();if(NATIVE){const inc=rows.filter(r=>r.receiver===me.id&&r.sender!==me.id).map(r=>r.created_at).sort().pop();if(inc)NATIVE.markSeen(inc)}
@@ -345,7 +357,7 @@ async function flush(){if(flushing||!me||!sb||!navigator.onLine)return;flushing=
     setOut(outbox().filter(x=>x.id!==r.id));if(_k)bDel(_k);const m=msgs.find(x=>x.id===r.id);if(m)delete m._t;bcast(row.receiver,'m',{id:row.id})}}
   catch(e){}finally{flushing=false}if(cur)draw();renderList();saveCache();banner()}
 async function enqueue(o,blob,to){to=to||cur;if(!to||!me)return;if(to==='bot'){if(o.text)botUser(o.text);return}if(isG(to))return enqueueGroup(o,blob,to);
-  if(!P[to]||!P[to].pubkey)return toast('هذا الشخص ما فعّل التشفير بعد. لازم يسجّل دخول بالنسخة الجديدة');
+  await freshKey(to);if(!P[to]||!P[to].pubkey)return toast('هذا الشخص ما فعّل التشفير بعد. لازم يسجّل دخول بالنسخة الجديدة');
   const row={id:uuid(),sender:me.id,receiver:to,kind:o.kind||'text',created_at:new Date().toISOString(),body:o.text?await encT(to,o.text):''};if(rp&&to===cur)row.reply_to=rp.id;if(o.fwd)row.fwd=true;{const ex=expiryFor(to);if(ex)row.expires_at=ex}let e={...row};
   if(blob){row.media=me.id+'/'+row.id+(o.tag?'_'+o.tag:'')+'.'+o.ext;e={...row,_k:'b'+row.id};await bPut(e._k,new Blob([await encB(to,new Uint8Array(await blob.arrayBuffer()))]));murl[row.media]=URL.createObjectURL(blob)}
   setOut([...outbox(),e]);msgs.push({...row,_t:1,_p:o.text||''});if(to===cur){rp=null;bar();draw()}renderList();banner();flush();lpush(to,e);if(meshOn()&&!blob&&(row.kind==='text'||row.kind==='loc'))meshOut(row,o.text)}
@@ -404,17 +416,16 @@ function setBotProfile(){P.bot={id:'bot',name:cfg.name||'امبد',username:'emb
 function applyCfg(){const n=$('#nt'),t=(cfg.maintenance?'المنصة تحت الصيانة حاليًا، قد تتأخر الرسائل. ':'')+(cfg.notice||'');n.textContent=t;n.style.display=t?'block':'none'}
 async function loadCfg(){try{const{data}=await sb.from('bot_config').select('*').eq('id',1).maybeSingle();if(data){cfg=data;lsv('jr_cfg',cfg);setBotProfile();applyCfg();renderList();if(cur==='bot')renderMain()}}catch(e){}}
 const fillName=t=>String(t).replace(/\{name\}/g,me?me.name:'');
-function botSay(text,id,at){const m={id:id||'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:text,created_at:at||new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:fillName(text)};msgs.push(m);saveBot();if(!at)notify(m);if(cur==='bot'){draw();markRead()}renderList()}
-function botUser(text){const t=new Date().toISOString();msgs.push({id:'u'+uuid(),sender:me.id,receiver:'bot',kind:'text',body:text,created_at:t,read_at:t,_bot:1,_l:1,_p:text});saveBot();if(cur==='bot')draw();renderList();botReply(text)}
+function botSay(text,id,at){const m={id:id||'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:text,created_at:at||new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:fillName(text)};msgs.push(m);saveBot();bsPush(m);if(!at)notify(m);if(cur==='bot'){draw();markRead()}renderList()}
+function botUser(text){const t=new Date().toISOString();{const um={id:'u'+uuid(),sender:me.id,receiver:'bot',kind:'text',body:text,created_at:t,read_at:t,_bot:1,_l:1,_p:text};msgs.push(um);saveBot();bsPush(um)}if(cur==='bot')draw();renderList();botReply(text)}
 const adm=()=>!!(me&&me.is_admin),BOTM='\u2063B\u2063';
 const DEF_KB='معلومات تعليمية (أنت تعلّم الناس): 1) التبييض (Cleaning) بتطبيق ibis Paint X: استورد صفحة المانهوا، اعمل طبقة جديدة للتنظيف، حدد فقاعة الكلام بأداة التحديد أو الليزو أو العصا السحرية، واملأها بالأبيض أو بلون الخلفية؛ للخلفيات المنقّطة أو المتدرجة استعمل القطارة لأخذ اللون واستعمل الفرشاة بثبات عالٍ، وكبّر الصورة عند الحواف. 2) التحرير والتنضيد (Typesetting): أضف النص بأداة النص، اختر خط عربي واضح (مثل Tajawal أو Cairo أو Amiri)، رتّب الأسطر داخل الفقاعة متوازنة ومن اليمين لليسار، وحافظ على حجم خط ثابت، وللمؤثرات الصوتية استعمل حدودًا بيضاء أو ملونة. 3) الترجمة بالذكاء الاصطناعي: استخرج النص من الصورة (OCR) بأي أداة، ثم ترجمه بنموذج ذكاء اصطناعي مع إعطائه السياق (اسم العمل والشخصيات ونبرة الحوار)، وصحّح اللهجة والمصطلحات بقاموس أسماء ثابت، وراجع الجمل مرة ثانية يدويًا لأن الترجمة الآلية قد تخطئ. 4) الأدوار: مترجم، منظّف، منضّد، مدقق. 5) التصدير: احفظ الصفحات بنفس ترتيبها وبصيغة PNG أو JPG بجودة عالية.';
 function botAnswer(t){if(!adm())return null;const n=nz(t)+' ',rules=[...(cfg.rules||[]).map(r=>[String(r.q).split(/[,،|]/).map(nz).filter(Boolean),r.a]),...FAQ.map(r=>[r[0].map(nz),r[1]])];
   for(const[k,a]of rules)if(k.some(x=>x&&n.includes(x)))return a;return null}
 function botRule(t){const n=nz(t)+' ';for(const r of cfg.rules||[]){const k=String(r.q).split(/[,،|]/).map(nz).filter(Boolean);if(k.some(x=>x&&n.includes(x)))return r.a}return null}
-function botSys(){const kb=cfg.kb||DEF_KB;let s='أنت «'+(cfg.name||'امبد')+'»، مساعد ذكي ودود داخل تطبيق المراسلة «جيرون». تحجي بلهجة عراقية بسيطة وطبيعية، وردودك قصيرة (جملتين إلى أربع) إلا إذا انطلب غير هذا. إذا المستخدم يحجي بلغة ثانية رد بلغته. اسم المستخدم: '+me.name+'. تقدر تحجي بأي موضوع وتساعد وتعلّم. صانعك هو جيري. ';
+function botSys(extra){const kb=cfg.kb||DEF_KB;let s='أنت «'+(cfg.name||'امبد')+'»، مساعد ذكي ودود داخل تطبيق المراسلة «جيرون». تحجي بلهجة عراقية بسيطة وطبيعية، وردودك قصيرة (جملتين إلى أربع) إلا إذا انطلب غير هذا. إذا المستخدم يحجي بلغة ثانية رد بلغته. اسم المستخدم: '+me.name+'. تقدر تحجي بأي موضوع وتساعد وتعلّم. صانعك هو جيري. ';
   s+=adm()?'المستخدم مشرف، تقدر تشرح له التطبيق: رسائل مشفرة من طرف لطرف؛ ضغطة مطولة لتحديد الرسائل؛ سحب للرد؛ مجموعات وملصقات وستريك؛ إعدادات؛ «فحص» لفحص التطبيق؛ ولوحة الإدارة. ':'ممنوع منعًا باتًا أن تذكر أو تشرح أي تفاصيل داخلية عن التطبيق أو قاعدة البيانات أو الإعدادات التقنية أو الإدارة أو كيف يشتغل من الداخل؛ إذا سُئلت عن هذا قل بلطف إن هذي معلومات للإدارة فقط. ';
-  return s+'\n'+kb}
-async function botAI(t){const hist=thread('bot').slice(-9,-1).map(m=>({role:m.sender==='bot'?'assistant':'user',content:m._p||''})).filter(x=>x.content);return aiAsk([{role:'system',content:botSys()},...hist,{role:'user',content:t}])}
+  return s+'\n'+kb+(extra?'\n'+extra:'')}
 let noClaim=false,aiBusy=false,aiBuf=[];
 async function groupBot(text,to){const g=P[to];if(!g||setg().ai===0||!navigator.onLine)return;const q=text.replace(/@(امبد|embed)/ig,'').trim();const hist=thread(to).slice(-14).map(m=>(P[m.sender]||{name:'؟'}).name+': '+(m._p||'')).join('\n');
   const gsys='أنت «'+(cfg.name||'امبد')+'» مساعد داخل مجموعة دردشة اسمها «'+g.name+'». رد بلهجة عراقية مختصرة وودية. إذا طُلب تلخيص النقاش فلخّصه بنقاط قصيرة. لا تذكر تفاصيل التطبيق الداخلية.\n'+(cfg.kb||DEF_KB),gq='آخر الرسائل بالمجموعة:\n'+hist+'\n\nالمطلوب منك: '+(q||'لخّص النقاش');
@@ -427,6 +438,7 @@ async function botReply(t){typ.bot=Date.now();upStat();const iv=setInterval(()=>
   if(/^(مساعده|help|\?)$/.test(n))return botSay(adm()?HELP:'أكدر أسولف وياك بأي موضوع، أذكّرك بمواعيدك (ذكرني بعد 10 دقائق ...)، أسجّل مهامك (مهمة: ...)، وأعلّمك التبييض والتحرير والترجمة للمانهوا.');
   if(/^(فحص|افحص|اصلاح|اصلح)/.test(n)){botSay('جاري الفحص…');const r=await heal(true);return botSay(adm()?(r.length?r.map(x=>'• '+x).join('\n'):'فحصت الجلسة والاتصال والرسائل والتشفير والتخزين وقاعدة البيانات، وكلشي سليم.'):'فحصت حسابك وأصلحت اللازم.')}
   if(/^(اداره|لوحه الاداره)/.test(n)&&adm())return openAdmin();
+  if(adm()){if(ld('jr_teach_'+me.id,null))return teachStep(t);const ac=await adminCmd(t,n);if(ac!==null)return botSay(ac)}
   const sup=ld('jr_sup_'+me.id,null);if(sup==='await'){lsv('jr_sup_'+me.id,null);return supportSend(t)}
   const rt=t.match(/^\s*تقييم\s*([1-5])/),pr=ld('jr_rate_'+me.id,null);if(rt&&pr&&sb){await sb.rpc('ticket_rate',{tid:pr,r:+rt[1]});lsv('jr_rate_'+me.id,null);return botSay('شكرًا لتقييمك، يساعدنا نتحسن.')}
   if(flagOn('support')&&/^(دعم|الدعم|ابي دعم|اريد دعم|مشكله|عندي مشكله|ابلاغ عن مشكله|مساعده فنيه|اتصل بالدعم)/.test(n)){lsv('jr_sup_'+me.id,'await');return botSay('تمام، شنو المشكلة؟ اكتبها برسالة وحدة بالتفصيل وأوصلها للدعم الفني.')}
@@ -434,15 +446,16 @@ async function botReply(t){typ.bot=Date.now();upStat();const iv=setInterval(()=>
   const tr=t.match(/^\s*ترجم\s*[:：]?\s*(.+)$/s);if(tr){const o=await translateText(tr[1],scriptOf(tr[1])==='ar'?'en':'ar');return botSay(o||'ما كدرت أترجم هسه، جرّب بعد شوي.')}
   const r1=botRule(t);if(r1)return botSay(r1);
   if(setg().ai!==0&&await botLocal(t))return;
-  if(setg().ai!==0&&flagOn('ai')&&navigator.onLine){if(aiBusy){aiBuf.push(t);return}aiBusy=true;try{let q=t,a=await botAI(q);while(true){if(a)botSay(a);if(!aiBuf.length)break;q=aiBuf.splice(0).join('\n');a=await botAI(q)}if(a)return}finally{aiBusy=false}}
-  botSay(botAnswer(t)||(navigator.onLine?'انشغلت شوي، جرّب ترسل مرة ثانية.':'ما أكدر أفكر بدون نت، بس أنفّذ التذكيرات والمهام. اكتب «مساعدة».'))}finally{clearInterval(iv);typ.bot=0;upStat()}}
+  if(setg().ai!==0&&flagOn('ai')){if(aiBusy){aiBuf.push(t);return}aiBusy=true;try{let q=t,a=await botAI(q);while(true){if(a)botSay(a);else{const fb=botAnswer(q);if(fb)botSay(fb);else queueBot(q)}if(!aiBuf.length)break;q=aiBuf.splice(0).join('\n');a=await botAI(q)}return}finally{aiBusy=false}}
+  botSay(botAnswer(t)||'الذكاء الاصطناعي متوقف حاليًا. اكتب «مساعدة» لأشوف شنو أكدر أسوي.')}finally{clearInterval(iv);typ.bot=0;upStat()}}
 function welcome(){if(ld('jr_wel_'+me.id,0)||me.welcomed)return;lsv('jr_wel_'+me.id,1);botSay(cfg.welcome||DEF_WELCOME);if(sb&&navigator.onLine)sb.from('profiles').update({welcomed:true}).eq('id',me.id).then(()=>{})}
 function addAnn(r){const id='ann_'+r.id;if(msgs.some(m=>m.id===id))return;botSay(r.body,id,r.created_at);const m=msgs.find(x=>x.id===id);if(m&&Date.now()-new Date(r.created_at)<60000)notify(m)}
 async function syncAnn(){try{const{data}=await sb.from('announcements').select('*').order('created_at',{ascending:false}).limit(5);(data||[]).reverse().forEach(addAnn)}catch(e){}}
 async function schemaCheck(){const miss=[],t=async(n,q)=>{try{const r=await q;if(r.error)miss.push(n)}catch(e){miss.push(n)}};
   await t('bot_config',sb.from('bot_config').select('id').limit(1));await t('key_backups',sb.from('key_backups').select('user_id').limit(1));await t('reports',sb.from('reports').select('id').limit(1));await t('announcements',sb.from('announcements').select('id').limit(1));
   await t('أعمدة profiles',sb.from('profiles').select('banner,status,verified,is_admin,banned,welcomed,pubkey').limit(1));await t('أعمدة messages',sb.from('messages').select('updated_at,reactions,kind,reply_to,edited_at,fwd').limit(1));
-  try{const r=await sb.rpc('claim_admin',{p:'x'});if(r.error)miss.push('claim_admin')}catch(e){miss.push('claim_admin')}return miss}
+  try{const r=await sb.rpc('claim_admin',{p:'x'});if(r.error)miss.push('claim_admin')}catch(e){miss.push('claim_admin')}
+  if(adm()){try{const path=me.id+'/_probe.txt',u=await sb.storage.from('media').upload(path,new Blob(['x']),{contentType:'text/plain',upsert:false});if(u.error&&!/exists|duplicate/i.test(u.error.message))miss.push('تخزين الوسائط ('+u.error.message+')')}catch(e){miss.push('تخزين الوسائط')}}return miss}
 let schemaDone=false;
 async function heal(manual){const out=[],fix=t=>out.push(t);if(!me)return out;
   try{if(localStorage.getItem(ckey())&&ld(ckey(),null)===null){localStorage.removeItem(ckey());fix('الكاش كان تالف، حذفته وسأعيد بناءه')}}catch(e){}
@@ -536,11 +549,11 @@ function renderMain(){const M=$('#main');M.innerHTML='';if(!cur||!P[cur]){const 
   const rb2=el('div','rpb');rb2.id='rpb';const rpt=el('span');rpt.id='rpt';const rx=ib('x',18);rx.onclick=()=>{if(ed)$('#txt').value='';rp=ed=null;bar();sIcon()};rb2.append(rpt,rx);
   const pmb=el('div','pmb');pmb.id='pmb';pmb.style.display='none';pmb.innerHTML=ic('pin',16)+'<span id="pmt"></span>';const mnt=el('div','mnt');mnt.id='mnt';mnt.style.display='none';const comp=el('div','comp'),pill=el('div','pill');pill.id='pl';const att=ib('clip',22);const noBot=()=>cur==='bot'&&(toast('امبد يفهم النص فقط'),true);
   const am=el('div','dd am');const ai=(i,t,f)=>{const b=el('button','mi');b.innerHTML='<span class="ico">'+ic(i,20)+'</span>'+t;b.onclick=()=>{am.classList.remove('on');if(!noBot())f()};am.appendChild(b)};
-  if(flagOn('media')){ai('image','الصور',()=>$('#file').click());ai('camera','الكاميرا',()=>$('#fcam').click());ai('file','مستند',()=>$('#fdoc').click())}ai('sticker','ملصق',()=>openStickers());ai('chart','استطلاع',newPoll);if(flagOn('location'))ai('pin','الموقع',sendLoc);att.onclick=e=>{e.stopPropagation();am.classList.toggle('on')};
+  if(flagOn('media')){ai('camera','الكاميرا',()=>$('#fcam').click());ai('file','مستند',()=>$('#fdoc').click())}ai('chart','استطلاع',newPoll);if(flagOn('location'))ai('pin','الموقع',sendLoc);att.onclick=e=>{e.stopPropagation();am.classList.toggle('on')};
   const ta=document.createElement('textarea');ta.id='txt';ta.placeholder='اكتب رسالة';ta.rows=1;ta.maxLength=lim('maxText',1400);const dr0=ld('jr_dr_'+me.id,{});if(dr0[cur])ta.value=dr0[cur];
   ta.oninput=()=>{ta.style.height='44px';ta.style.height=Math.min(ta.scrollHeight,120)+'px';sIcon();mentionUi(ta);const d=ld('jr_dr_'+me.id,{});if(ta.value&&!ed)d[cur]=ta.value;else delete d[cur];lsv('jr_dr_'+me.id,d);if(Date.now()-tLast>2500&&ta.value&&cur!=='bot'&&sb&&!setg().stealth&&!isG(cur)){tLast=Date.now();bcast(cur,'t',{from:me.id})}};
   ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!/Mobi|Android/i.test(navigator.userAgent)){e.preventDefault();sendText()}};
-  ta.onpaste=e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'));if(f){e.preventDefault();pick(f)}};pill.append(att,ta);
+  ta.onpaste=e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'));if(f){e.preventDefault();pick(f)}};const stkB=ib('sticker',22),imgB=ib('image',22);stkB.onclick=()=>{if(!noBot())openStickers()};imgB.onclick=()=>$('#file').click();pill.append(att,ta);if(flagOn('stickers'))pill.appendChild(stkB);if(flagOn('media'))pill.appendChild(imgB);
   const rb=el('div','pill');rb.id='rb';const rt=el('span');rt.id='rt';const rc=ib('x',20);rc.onclick=()=>recStop(true);rb.append(rt,rc);
   const sd=el('button','snd');sd.id='sd';sd.onclick=()=>rec?recStop():($('#txt').value.trim()?sendText():noBot()||recStart());comp.append(am,pill,rb,sd);M.append(hd,sbar,rxb,cs,pmb,wrap,rb2,mnt,comp);sIcon();bar();composerLock();drawNow()}
 function gbUpd(near){const g=$('#gb');if(!g)return;g.style.display=near?'none':'flex';if(near)newCnt=0;g.querySelectorAll('b').forEach(x=>x.remove());if(!near&&newCnt){g.appendChild(el('b','',newCnt))}}
@@ -590,7 +603,7 @@ function drawNow(){const B=$('#msgs');if(!B||!cur)return;const first=!B.dataset.
   if(first&&dvEl)dvEl.scrollIntoView({block:'center'});else if(keep)B.scrollTop=B.scrollHeight;else B.scrollTop=B.scrollHeight-B.clientHeight-dist;B.dataset.i=1;gbUpd(keep||first);selUi();pmUi()}
 function mentionUi(ta){const b=$('#mnt');if(!b)return;if(!isG(cur)){b.style.display='none';return}const m=ta.value.slice(0,ta.selectionStart).match(/@([^\s@]*)$/);if(!m){b.style.display='none';return}const q=m[1].toLowerCase(),names=[...(P[cur].members||[]).filter(u=>u!==me.id&&P[u]).map(u=>P[u].name),cfg.name||'امبد','الكل','المشرفين'].filter(n=>n.toLowerCase().startsWith(q)).slice(0,6);if(!names.length){b.style.display='none';return}b.innerHTML='';names.forEach(n=>{const c=el('button','',n);c.onclick=()=>{const pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@([^\s@]*)$/,'@'+n+' ');ta.value=before+ta.value.slice(pos);ta.focus();b.style.display='none';sIcon()};b.appendChild(c)});b.style.display='flex'}
 function mediaRetry(m){const d=el('div','','تعذر تحميل الوسائط. اضغط للمحاولة');d.style.cssText='cursor:pointer;padding:20px';d.onclick=e=>{e.stopPropagation();delete murl[m.media];nodeCache.delete(m.id);draw()};return d}
-async function mediaURL(m){const key=m.media;if(murl[key])return murl[key];let ct=await bGet('m:'+key);
+async function mediaURL(m){const key=m.media;if(murl[key])return murl[key];if(m._bot){const b=await bGet('bimg:'+key);if(!b)throw 0;return murl[key]=URL.createObjectURL(b)}let ct=await bGet('m:'+key);
   if(!ct){let r=null;try{r=await fetch(URL_+'/storage/v1/object/public/media/'+key)}catch(e){}
     if(r&&r.ok)ct=new Uint8Array(await r.arrayBuffer());else if(sb){const d=await sb.storage.from('media').download(key);if(d.data)ct=new Uint8Array(await d.data.arrayBuffer())}
     if(!ct)throw 0;bPut('m:'+key,ct)}
@@ -610,16 +623,16 @@ function exportChat(){const t=thread(cur).filter(m=>!m.deleted).map(m=>'['+new D
 
 // ====== الصور السريعة + القص ======
 const loadImg=f=>new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{URL.revokeObjectURL(u);res(i)};i.onerror=rej;i.src=u});
-const bitmap=async f=>{try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){return loadImg(f)}};
+const bitmap=async f=>{try{return await createImageBitmap(f,{imageOrientation:'from-image'})}catch(e){}try{return await createImageBitmap(f)}catch(e){}try{return await loadImg(f)}catch(e){}return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=r.result};r.onerror=rej;r.readAsDataURL(f)})};
 function imgDims(buf){const v=new DataView(buf);try{if(v.getUint32(0)===0x89504E47)return[v.getUint32(16),v.getUint32(20)];if(v.getUint16(0)===0xFFD8){let o=2;while(o<v.byteLength){const m=v.getUint16(o);o+=2;if(m>=0xFFC0&&m<=0xFFCF&&m!==0xFFC4&&m!==0xFFC8&&m!==0xFFCC)return[v.getUint16(o+5),v.getUint16(o+3)];o+=v.getUint16(o)}}}catch(e){}return null}
 async function prepFast(file,max,q){max=max||1280;let d=null,bmp=null;try{d=imgDims(await file.slice(0,262144).arrayBuffer())}catch(e){}
   if(d&&Math.max(d[0],d[1])>max){try{bmp=await createImageBitmap(file,d[0]>=d[1]?{resizeWidth:max,resizeQuality:'medium',imageOrientation:'from-image'}:{resizeHeight:max,resizeQuality:'medium',imageOrientation:'from-image'})}catch(e){}}
   if(!bmp)bmp=await bitmap(file);const s=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*s),h=Math.round(bmp.height*s),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
   return new Promise((res,rej)=>c.toBlob(b=>b?res({blob:b,w,h}):rej(),'image/jpeg',q||.8))}
 $('#file').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;if(fs.length===1)return pick(fs[0]);if(!cur||cur==='bot')return;const to=cur;toast('جاري إرسال '+Math.min(fs.length,10)+' صور…');for(const f of fs.slice(0,10)){try{const{blob,w,h}=await prepFast(f);await enqueue({kind:'image',ext:'jpg',tag:w+'x'+h},blob,to)}catch(x){}}};$('#fcam').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};
-function pick(f){if(!cur||cur==='bot')return;if(!f.type.startsWith('image/'))return toast('اختر صورة فقط');pend={p:prepFast(f)};pend.p.catch(()=>{});$('#pvImg').src=URL.createObjectURL(f);$('#pvCp').value='';$('#mPv').classList.add('on')}
+function pick(f){if(!cur)return;if(!(f.type?f.type.startsWith('image/'):/\.(jpe?g|png|webp|gif|heic|bmp)$/i.test(f.name||'')))return toast('اختر صورة فقط');pend={p:prepFast(f)};pend.p.catch(()=>{});$('#pvImg').src=URL.createObjectURL(f);$('#pvCp').value='';$('#mPv').classList.add('on')}
 $('#pvNo').onclick=()=>{pend=null;closeAll()};$('#pvCp').onkeydown=e=>{if(e.key==='Enter')$('#pvGo').click()};
-$('#pvGo').onclick=async()=>{if(!pend||!cur)return;const x=pend,to=cur,cap=$('#pvCp').value.trim();pend=null;closeAll();try{const{blob,w,h}=await x.p;enqueue({kind:'image',ext:'jpg',tag:w+'x'+h,text:cap},blob,to)}catch(e){toast('تعذر معالجة الصورة')}};
+$('#pvGo').onclick=async()=>{if(!pend||!cur)return;const x=pend,to=cur,cap=$('#pvCp').value.trim();pend=null;closeAll();try{const{blob,w,h}=await x.p;if(to==='bot'){botImage(blob,w,h,cap);return}enqueue({kind:'image',ext:'jpg',tag:w+'x'+h,text:cap},blob,to)}catch(e){toast('تعذر معالجة الصورة'+(e&&e.message?': '+e.message:''))}};
 function cropper(file,o){return new Promise(async res=>{const bmp=await bitmap(file),VW=Math.min(320,innerWidth-80),VH=Math.round(VW/o.aspect),cv=$('#cv');cv.width=VW;cv.height=VH;cv.style.borderRadius=o.round?'50%':'12px';
   const base=Math.max(VW/bmp.width,VH/bmp.height);let z=1,ox=(VW-bmp.width*base)/2,oy=(VH-bmp.height*base)/2;$('#cz').value=1;$('#cTitle').textContent=o.title;
   const paint=()=>{const w=bmp.width*base*z,h=bmp.height*base*z;ox=Math.min(0,Math.max(VW-w,ox));oy=Math.min(0,Math.max(VH-h,oy));const c=cv.getContext('2d');c.fillStyle='#000';c.fillRect(0,0,VW,VH);c.drawImage(bmp,ox,oy,w,h)};
@@ -667,7 +680,7 @@ function openSettings(){closeAll();pf={avatar:undefined,banner:undefined};const 
   tog('ترجمة الرسائل الواردة تلقائيًا','trOn','يرسل نص الرسالة الواردة لخدمة ترجمة خارجية، وهذا يخرج عن التشفير الكامل لتلك الرسالة. متوقف افتراضيًا.');B.appendChild(el('div','lb','ترجم الرسائل إلى'));seg('trLang',LANGS.map(l=>[l[0],l[1]]),()=>{Object.keys(TR).forEach(k=>delete TR[k]);trTried.clear();lsv('jr_tr',TR);nodeCache.clear();draw()});
   tog('ردود امبد بالذكاء الاصطناعي','ai','يرسل نص كلامك مع امبد فقط لخدمة مجانية مفتوحة المصدر.');
   if(flagOn('llm')){H('امبد المحلي (ردود فورية بدون نت)');{const st=el('div','hint',llmText());st.id='llmSt';B.appendChild(st)}btn('تنزيل النموذج (حوالي 2.6 جيجا، يفضّل واي فاي)',()=>{if(!NATIVE)return toast('يحتاج تطبيق الأندرويد');llmDl={pct:0,state:'run'};NATIVE.llmDownload(llmUrl());toast('بدأ التنزيل');setTimeout(()=>{const e=$('#llmSt');if(e)e.textContent=llmText()},800)},1);btn('إلغاء التنزيل',()=>NATIVE&&NATIVE.llmCancel(),1);btn('حذف النموذج من الجهاز',async()=>{if(NATIVE&&await yn('حذف النموذج المحلي؟','حذف')){NATIVE.llmDelete();const e=$('#llmSt');if(e)e.textContent=llmText()}},1)}
-  H('الخصوصية');tog('وضع التخفي (بدون علامة قراءة ولا آخر ظهور ولا «يكتب»)','stealth');if(NATIVE)nt('منع لقطة الشاشة وتسجيلها','secure',v=>{setS('secure',v?1:0);applySecure()});tog('إشعار لما يصير المفضّلين متصلين','onlineNotify','يشتغل والتطبيق مفتوح');tog('إرسال علامة «تمت القراءة»','showRead');tog('إظهار حالة «متصل» و«آخر ظهور»','showOnline','يتطبق بعد إعادة فتح التطبيق');btn(localStorage.getItem('jr_pin')?'تغيير/إلغاء قفل التطبيق':'تفعيل قفل التطبيق',openLockSet,1);
+  H('الخصوصية');btn('رمز استرجاع رسائلك',makeRecovery,1);tog('وضع التخفي (بدون علامة قراءة ولا آخر ظهور ولا «يكتب»)','stealth');if(NATIVE)nt('منع لقطة الشاشة وتسجيلها','secure',v=>{setS('secure',v?1:0);applySecure()});tog('إشعار لما يصير المفضّلين متصلين','onlineNotify','يشتغل والتطبيق مفتوح');tog('إرسال علامة «تمت القراءة»','showRead');tog('إظهار حالة «متصل» و«آخر ظهور»','showOnline','يتطبق بعد إعادة فتح التطبيق');btn(localStorage.getItem('jr_pin')?'تغيير/إلغاء قفل التطبيق':'تفعيل قفل التطبيق',openLockSet,1);
   H('البيانات والإصلاح');btn('فحص وإصلاح تلقائي (امبد)',async()=>{toast('جاري الفحص…');const r=await heal(true);toast(r.length?r[0]:'كلشي سليم')},1);
   btn('مسح كاش الوسائط من الجهاز',async()=>{if(await yn('مسح الصور المخزنة محليًا؟ تنحمل من جديد عند الحاجة.','مسح')){const d=await idb;d.transaction('b','readwrite').objectStore('b').openCursor().onsuccess=e=>{const c=e.target.result;if(c){if(String(c.key).startsWith('m:'))c.delete();c.continue()}};Object.keys(murl).forEach(k=>delete murl[k]);toast('تم المسح')}},1);
   
@@ -710,7 +723,7 @@ function openAdmin(){if(!me||!me.is_admin)return;admModal('لوحة الإدار
   arow(b,'wrench','وضع الصيانة',async()=>{await saveCfg({maintenance:!cfg.maintenance});openAdmin()},cfg.maintenance?'مفعّل':'متوقف');
   arow(b,'plus','التسجيل الجديد',async()=>{await saveCfg({reg_open:cfg.reg_open===false});openAdmin()},cfg.reg_open===false?'مغلق':'مفتوح');
   arow(b,'bell','شريط إعلان أعلى القائمة',async()=>{const v=await ask('نص الشريط (فاضي لإخفائه)',cfg.notice||'',true);if(v!==null){await saveCfg({notice:v.trim()});openAdmin()}},cfg.notice?'مفعّل':'متوقف');
-  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
+  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'users','استرجاع حساب (كلمة سر مؤقتة)',adminRecover);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
   arow(b,'download','تصدير قائمة المستخدمين (نسخ)',admExport)})}
 async function admStats(){const{data,error}=await sb.rpc('admin_stats');admModal('إحصائيات المنصة',b=>{if(error)return b.appendChild(el('div','empty',error.message));
   [['المستخدمون',data.users],['الرسائل الكلية',data.messages],['رسائل آخر 24 ساعة',data.today],['المشرفون',data.admins],['المحظورون',data.banned],['البلاغات',data.reports]].forEach(([k,v])=>{const r=el('div','str');r.append(el('div','',k),el('b','',String(v)));b.appendChild(r)})},openAdmin)}
@@ -832,15 +845,15 @@ let ticketSeen=ld('jr_tk_seen',{});async function syncTickets(){if(!sb||!me||!na
 setInterval(()=>{if(me&&!document.hidden)syncTickets()},240000);
 // ====== مهام امبد: تذكيرات وقوائم ======
 const remList=()=>ld('jr_rem_'+me.id,[]),todoList=()=>ld('jr_todo_'+me.id,[]);
-function remTick(){if(!me)return;const l=remList(),now=Date.now(),due=l.filter(r=>r.at<=now);if(!due.length)return;lsv('jr_rem_'+me.id,l.filter(r=>r.at>now));due.forEach(r=>{botSay('تذكير: '+r.text)})}
+function remTick(){if(!me)return;const l=remList(),now=Date.now(),due=l.filter(r=>r.at<=now);if(!due.length)return;lsvS('jr_rem_'+me.id,l.filter(r=>r.at>now));due.forEach(r=>{botSay('تذكير: '+r.text)})}
 setInterval(remTick,20000);
 const UNIT={'دقيقه':6e4,'دقيقة':6e4,'دقائق':6e4,'دقايق':6e4,'ساعه':36e5,'ساعة':36e5,'ساعات':36e5,'يوم':864e5,'ايام':864e5,'أيام':864e5};
 function botTasks(t){let m=t.match(/ذكرني\s*(?:بعد)?\s*(\d+)\s*(دقيق[ةه]|دقائق|دقايق|ساع[ةه]|ساعات|يوم|[اأ]يام)\s*(.*)/);let n,u,tx;if(m){n=+m[1];u=m[2];tx=m[3]}else{m=t.match(/ذكرني\s+(.+?)\s+بعد\s+(\d+)\s*(دقيق[ةه]|دقائق|دقايق|ساع[ةه]|ساعات|يوم|[اأ]يام)/);if(m){tx=m[1];n=+m[2];u=m[3]}}
-  if(m){const ms=n*(UNIT[u]||6e4);if(!n||n>5000)return'حدد وقت منطقي، مثال: ذكرني بعد 10 دقائق أشرب ماي';const l=remList();l.push({id:uuid(),at:Date.now()+ms,text:(tx||'').trim()||'موعدك وصل'});lsv('jr_rem_'+me.id,l);return'تمام، راح أذكّرك بعد '+n+' '+u+'.'}
-  m=t.match(/^\s*(?:مهم[ةه]|اضف مهم[ةه]|ضيف مهم[ةه])\s*[:：]?\s*(.+)$/);if(m){const l=todoList();l.push({t:m[1].trim(),d:0});lsv('jr_todo_'+me.id,l);return'أضفت المهمة رقم '+l.length+'.'}
+  if(m){const ms=n*(UNIT[u]||6e4);if(!n||n>5000)return'حدد وقت منطقي، مثال: ذكرني بعد 10 دقائق أشرب ماي';const l=remList();l.push({id:uuid(),at:Date.now()+ms,text:(tx||'').trim()||'موعدك وصل'});lsvS('jr_rem_'+me.id,l);return'تمام، راح أذكّرك بعد '+n+' '+u+'.'}
+  m=t.match(/^\s*(?:مهم[ةه]|اضف مهم[ةه]|ضيف مهم[ةه])\s*[:：]?\s*(.+)$/);if(m){const l=todoList();l.push({t:m[1].trim(),d:0});lsvS('jr_todo_'+me.id,l);return'أضفت المهمة رقم '+l.length+'.'}
   if(/^\s*(مهامي|قائمة المهام|المهام)\s*$/.test(t)){const l=todoList();return l.length?l.map((x,i)=>(i+1)+'. '+(x.d?'✓ ':'')+x.t).join('\n'):'ماكو مهام. اكتب «مهمة: ...» لإضافة وحدة.'}
-  m=t.match(/^\s*(?:انجزت|خلصت|تمت)\s*(\d+)/);if(m){const l=todoList(),i=+m[1]-1;if(!l[i])return'ما لقيت المهمة.';l[i].d=1;lsv('jr_todo_'+me.id,l);return'ممتاز! علّمتها منجزة.'}
-  m=t.match(/^\s*(?:احذف|امسح)\s*مهم[ةه]\s*(\d+)/);if(m){const l=todoList(),i=+m[1]-1;if(!l[i])return'ما لقيت المهمة.';l.splice(i,1);lsv('jr_todo_'+me.id,l);return'حذفتها.'}
+  m=t.match(/^\s*(?:انجزت|خلصت|تمت)\s*(\d+)/);if(m){const l=todoList(),i=+m[1]-1;if(!l[i])return'ما لقيت المهمة.';l[i].d=1;lsvS('jr_todo_'+me.id,l);return'ممتاز! علّمتها منجزة.'}
+  m=t.match(/^\s*(?:احذف|امسح)\s*مهم[ةه]\s*(\d+)/);if(m){const l=todoList(),i=+m[1]-1;if(!l[i])return'ما لقيت المهمة.';l.splice(i,1);lsvS('jr_todo_'+me.id,l);return'حذفتها.'}
   return null}
 // ====== تحديد/إضافة ملصق مستلم + مجموعات (أزرار القائمة الجانبية) ======
 $('#mGrpB').onclick=openNewGroup;$('#mDiscB').onclick=openDiscover;
@@ -857,9 +870,9 @@ const llmText=()=>{const s=llmStat();if(!s)return'غير متاح (يحتاج ت
 window.__llmDl=(pct,state,err)=>{llmDl={pct,state,err};const e=$('#llmSt');if(e)e.textContent=llmText();if(state==='done')toast('تم تنزيل نموذج امبد المحلي، صار ردّه فوري');else if(state==='error')toast('فشل التنزيل: '+(err||''))};
 function llmAsk(system,history,prompt,onTok){return new Promise(res=>{const id=uuid();let out='';llmCb[id]={tok:t=>{out+=t;if(onTok)onTok(out)},done:err=>res(err?null:out.trim())};try{NATIVE.llmGenerate(id,system,JSON.stringify(history),prompt)}catch(e){delete llmCb[id];res(null)}})}
 function botDraft(){const m={id:'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:'',created_at:new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:'…'};msgs.push(m);if(cur==='bot')draw();renderList();return m}
-function botFinish(m,txt){m.body=txt;m._p=fillName(txt);saveBot();if(cur==='bot'){draw();markRead()}renderList();notify(m)}
+function botFinish(m,txt){m.body=txt;m._p=fillName(txt);saveBot();bsPush(m);if(cur==='bot'){draw();markRead()}renderList();notify(m)}
 async function botLocal(t){if(!llmReady())return false;const hist=thread('bot').slice(-9,-1).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…'),m=botDraft();
-  const out=await llmAsk(botSys(),hist,t,txt=>{m._p=txt;draw()});if(out){botFinish(m,out);return true}const i=msgs.indexOf(m);if(i>=0)msgs.splice(i,1);draw();return false}
+  const out=await llmAsk(botSys(await kbFor(t)),hist,t,txt=>{m._p=txt;draw()});if(out){botFinish(m,out);return true}const i=msgs.indexOf(m);if(i>=0)msgs.splice(i,1);draw();return false}
 function llmHint(){if(NATIVE&&!llmReady()&&!ld('jr_llm_hint',0)){lsv('jr_llm_hint',1);botSay('عشان ردودي تصير فورية وبدون إنترنت، نزّل نموذجي المحلي من الإعدادات ← امبد المحلي (حوالي 2.6 جيجا، يفضّل واي فاي).')}}
 // ----- ملصقات (شاشة مثل تيك توك) -----
 const loadImgUrl=u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u});
@@ -968,11 +981,83 @@ function meshInfo(){if(!meshOn())return null;try{return JSON.parse(NATIVE.meshSt
 
 setInterval(()=>{if(!NATIVE||!me||!meshOn())return;const pend=msgs.filter(m=>m.sender===me.id&&!m.gid&&!m._mesh&&!m._bot&&m.receiver!==me.id&&(m._t||!m.read_at)).map(m=>m.id).slice(-80);if(!pend.length)return;try{const a=JSON.parse(NATIVE.meshAckedIds(JSON.stringify(pend)));if(a.length){a.forEach(id=>{const m=msgs.find(x=>x.id===id);if(m){m._mesh=1;nodeCache.delete(id)}});draw();renderList()}}catch(e){}},15000);
 
+// ----- رمز استرجاع مفتاح التشفير (حتى ما تضيع رسائلك أبدًا) -----
+function showRecovery(rc){const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','رمز استرجاع رسائلك'));B.appendChild(el('div','hint','احفظ هذا الرمز بمكان آمن. إذا غيّرت كلمة السر أو ضاع جهازك، هو الوحيد اللي يرجّع رسائلك القديمة. وما ينسترجع لو ضاع.'));
+  const c=el('div','',rc);c.style.cssText='font:700 22px monospace;text-align:center;letter-spacing:2px;padding:16px;border:2px dashed var(--pri);border-radius:12px;margin:12px 0;direction:ltr;user-select:all';B.appendChild(c);
+  const cp=el('button','btn g','نسخ الرمز');cp.onclick=()=>copyText(rc);const ok=el('button','btn','حفظته');ok.onclick=closeAll;B.append(cp,ok);$('#mG').classList.add('on')}
+async function makeRecovery(){if(!sb||!navigator.onLine)return toast('يحتاج اتصال');const priv=ld('jr_k_'+me.id,null);if(!priv)return toast('ما لقيت المفتاح على هذا الجهاز');if(!await yn('إنشاء رمز استرجاع جديد؟ الرمز القديم (إن وُجد) يبطل.','إنشاء'))return;const rc=genRc(),r=await sb.from('key_backups').update({backup2:await wrap(priv,normRc(rc))}).eq('user_id',me.id);if(r.error)return toast(dbMsg());showRecovery(rc)}
+
+// ====== امبد الذكي: بوابة الذكاء الاصطناعي، معرفة، أوامر الإدارة، ذاكرة على السيرفر ======
+const lsvS=(k,v)=>{lsv(k,v);stateSync()};
+let gwOff=false,gwT=0,bqBusy=false,queueNoted=false;
+async function gwAsk(system,messages,images){if(!sb||!navigator.onLine)return null;if(gwOff&&Date.now()-gwT<300000)return null;
+  try{const r=await sb.functions.invoke('embed-ai',{body:{system,messages,images:images||[]}});
+    if(r.error){const st=r.error.context&&r.error.context.status;if(st===404||st===401){gwOff=true;gwT=Date.now()}return null}
+    gwOff=false;return r.data&&r.data.text?String(r.data.text).trim():null}catch(e){return null}}
+async function aiSmart(system,hist,prompt,images,patient){const t0=Date.now(),conv=hist.map(h=>({role:h.r==='u'?'user':'assistant',content:h.t}));
+  for(let i=0;i<(patient===false?1:6);i++){let a=await gwAsk(system,[...conv,{role:'user',content:prompt}],images);if(a)return a;
+    if(!images){a=await aiAsk([{role:'system',content:system},...conv.map(c=>c),{role:'user',content:prompt}],15000,true);if(a)return a}
+    if(!navigator.onLine||Date.now()-t0>50000)break;await sleep(8000)}return null}
+async function kbFor(q){if(!sb||!navigator.onLine||q.length<3)return'';try{const r=await sb.rpc('kb_search',{q});if(r.error||!r.data||!r.data.length)return'';return'معلومات من قاعدة معرفة الإدارة (اعتمد عليها بدقة، وأجب بالأقرب لسؤال المستخدم، ولا تخترع خارجها):\n'+r.data.map(k=>'• '+k.title+': '+k.body).join('\n')}catch(e){return''}}
+async function botAI(t){const hist=thread('bot').slice(-9,-1).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…');return aiSmart(botSys(await kbFor(t)),hist,t,null)}
+function queueBot(q){const l=ld('jr_botq_'+me.id,[]);l.push({t:q,at:Date.now()});lsv('jr_botq_'+me.id,l.slice(-5));if(!queueNoted){queueNoted=true;botSay('ما كدرت أوصل للذكاء الاصطناعي هسه. رسالتك محفوظة وأرد عليك تلقائيًا أول ما يرجع الاتصال.')}}
+async function procBotQueue(){if(!me||bqBusy||!navigator.onLine)return;const l=ld('jr_botq_'+me.id,[]);if(!l.length)return;bqBusy=true;try{const it=l[0],hist=thread('bot').slice(-9).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…'),a=await aiSmart(botSys(await kbFor(it.t)),hist,it.t,null,false);
+  if(a){lsv('jr_botq_'+me.id,l.slice(1));queueNoted=false;botSay('رد على رسالتك «'+it.t.slice(0,40)+'»:\n'+a)}}finally{bqBusy=false}}
+setInterval(procBotQueue,30000);window.addEventListener('online',()=>setTimeout(procBotQueue,1500));
+// ----- صور لامبد (يقرأها ويفهمها) -----
+const blobB64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(String(f.result).split(',')[1]);f.readAsDataURL(b)});
+async function botImage(blob,w,h,cap){const id=uuid(),path='bot/'+id+'_'+w+'x'+h+'.jpg';await bPut('bimg:'+path,blob);const t=new Date().toISOString();
+  msgs.push({id:'u'+id,sender:me.id,receiver:'bot',kind:'image',media:path,body:cap||'',created_at:t,read_at:t,_bot:1,_l:1,_p:cap||''});saveBot();if(cur==='bot')draw();renderList();
+  typ.bot=Date.now();upStat();const iv=setInterval(()=>{typ.bot=Date.now();upStat()},2000);
+  try{const prompt=(cap&&cap.trim())||'اوصف هذي الصورة بالتفصيل. إذا فيها نص اقراه وترجمه للعربية بشكل طبيعي، وإذا فيها صفحة مانهوا اشرح الحوار.';
+    const a=await aiSmart(botSys(await kbFor(prompt)),[],prompt,[await blobB64(blob)]);botSay(a||'ما كدرت أقرأ الصورة هسه. جرّب مرة ثانية بعد شوي أو تأكد من الاتصال.')}finally{clearInterval(iv);typ.bot=0;upStat()}}
+// ----- ذاكرة امبد على السيرفر (المحادثة، المهام، التذكيرات) -----
+function bsPush(m){if(!sb||!me||!navigator.onLine||m.id.startsWith('ann_'))return;sb.from('bot_msgs').upsert({user_id:me.id,id:m.id,role:m.sender==='bot'?'bot':'user',body:(m.kind==='image'?'[صورة] ':'')+(m.body||''),created_at:m.created_at}).then(()=>{})}
+async function bsPull(){if(!sb||!me||!navigator.onLine)return;try{const r=await sb.from('bot_msgs').select('*').order('created_at',{ascending:false}).limit(200);if(r.error||!r.data)return;let ch=false;
+  r.data.reverse().forEach(x=>{if(msgs.some(m=>m.id===x.id))return;msgs.push({id:x.id,sender:x.role==='bot'?'bot':me.id,receiver:x.role==='bot'?me.id:'bot',kind:'text',body:x.body,created_at:x.created_at,read_at:x.created_at,_bot:1,_l:1});ch=true});
+  if(ch){await decAll();saveBot();renderList();if(cur==='bot')draw()}}catch(e){}}
+let stT=0;function stateSync(){clearTimeout(stT);stT=setTimeout(()=>{if(sb&&me&&navigator.onLine)sb.from('bot_state').upsert({user_id:me.id,todo:todoList(),rem:remList(),updated_at:new Date().toISOString()}).then(()=>{})},800)}
+async function loadState(){if(!sb||!me||!navigator.onLine)return;try{const r=await sb.from('bot_state').select('*').eq('user_id',me.id).maybeSingle();if(r.data){if(!todoList().length&&(r.data.todo||[]).length)lsv('jr_todo_'+me.id,r.data.todo);if(!remList().length&&(r.data.rem||[]).length)lsv('jr_rem_'+me.id,r.data.rem)}}catch(e){}}
+// ----- مفتاح جهة الاتصال دايمًا حديث (حتى ما تصير رسائل ما تنفتح) -----
+async function freshKey(id){const p=P[id];if(!p||!sb||!navigator.onLine||id==='bot'||p._group)return;if(p._kt&&Date.now()-p._kt<300000)return;p._kt=Date.now();try{const r=await sb.from('profiles').select('pubkey').eq('id',id).maybeSingle();if(r.data&&r.data.pubkey&&r.data.pubkey!==p.pubkey){p.pubkey=r.data.pubkey;delete kcache[id]}}catch(e){}}
+// ----- أوامر الإدارة داخل امبد + وضع التعليم (للمشرفين فقط) -----
+const unameOf=s=>String(s||'').replace(/^@/,'').toLowerCase();
+async function profByUser(u){const r=await sb.from('profiles').select('id,name,username').eq('username',unameOf(u)).maybeSingle();return r.data}
+async function adminRecoverFlow(email){const f=await sb.rpc('admin_find_account',{q:email});if(f.error)return dbMsg();if(!f.data.length)return'ما لقيت حساب بهذا الإيميل.';const u=f.data[0];if(!await yn('تعيين كلمة سر مؤقتة لحساب «'+(u.name||u.username)+'» ('+u.email+')؟\nبعدها أعطها للشخص وخلّيه يغيّرها. إذا ما عنده رمز الاسترجاع، رسائله القديمة ما ترجع.','تعيين'))return'تم الإلغاء.';
+  const r=await sb.functions.invoke('admin-tools',{body:{action:'reset_password',uid:u.id}});if(r.error||!r.data||!r.data.temp)return'تعذر التعيين: تأكد إنك نشرت function باسم admin-tools.';return'كلمة السر المؤقتة لـ '+u.email+':\n'+r.data.temp+'\nأعطها للشخص، وما تنحفظ عندي ولا بأي مكان.'}
+async function adminCmd(t,n){let m;
+  if(/^(احصائيات|احصاءات)/.test(n)){const r=await sb.rpc('admin_stats');if(r.error)return dbMsg();const d=r.data;return'المستخدمون: '+d.users+'\nالرسائل الكلية: '+d.messages+'\nرسائل آخر 24 ساعة: '+d.today+'\nالمشرفون: '+d.admins+'\nالمحظورون: '+d.banned+'\nالبلاغات: '+d.reports}
+  if(/^(تذاكر|الدعم)\s*$/.test(n)){const r=await sb.from('tickets').select('subject,status,created_at').eq('status','open').order('created_at',{ascending:false}).limit(5);if(r.error)return dbMsg();return r.data.length?'تذاكر مفتوحة ('+r.data.length+'):\n'+r.data.map((x,i)=>(i+1)+'. '+x.subject).join('\n')+'\nتردّ عليها من لوحة الإدارة ← الدعم الفني.':'ماكو تذاكر مفتوحة.'}
+  if(/^بلاغات\s*$/.test(n)){const r=await sb.from('reports').select('reason').limit(20);if(r.error)return dbMsg();return r.data.length?'عندك '+r.data.length+' بلاغ. افتحها من لوحة الإدارة ← البلاغات.':'ماكو بلاغات.'}
+  if(m=t.match(/^\s*(?:اعلان|إعلان)\s*[:：]\s*([\s\S]+)/)){if(!await yn('بث هذا الإعلان لكل المستخدمين؟\n\n'+m[1].slice(0,200),'بث'))return'تم الإلغاء.';const r=await sb.from('announcements').insert({body:m[1].trim()});return r.error?dbMsg():'تم بث الإعلان.'}
+  const act=[[/^(?:وثق|وثّق)\s+(\S+)/,{verified:true},'وثّقته'],[/^(?:الغي توثيق|الغاء توثيق)\s+(\S+)/,{verified:false},'ألغيت توثيقه'],[/^(?:احظر|حظر)\s+(\S+)/,{banned:true},'حظرته'],[/^(?:فك حظر|الغي حظر)\s+(\S+)/,{banned:false,banned_until:null},'فككت حظره'],[/^(?:رقي|ترقيه)\s+(\S+)/,{is_admin:true},'رقيته لمشرف'],[/^(?:ازل مشرف|ازاله مشرف)\s+(\S+)/,{is_admin:false},'أزلت إشرافه']];
+  for(const[re,patch,say]of act){if(m=n.match(re)){const p=await profByUser(m[1]);if(!p)return'ما لقيت المستخدم @'+unameOf(m[1]);if(!await yn('تأكيد: '+say.replace('ته','')+' '+p.name+' (@'+p.username+')؟','تأكيد'))return'تم الإلغاء.';const r=await sb.from('profiles').update(patch).eq('id',p.id);if(!r.error)logAct('bot_'+Object.keys(patch)[0],p.id);return r.error?r.error.message:say+' '+p.name+'.'}}
+  if(/^(اغلق|افتح)\s+التسجيل/.test(n)){const open=n.startsWith('افتح');await saveCfg({reg_open:open});return open?'فتحت التسجيل.':'أغلقت التسجيل.'}
+  if(m=n.match(/^صيانه\s*(تشغيل|ايقاف)/)){await saveCfg({maintenance:m[1]==='تشغيل'});return'وضع الصيانة: '+m[1]}
+  if(m=t.match(/^\s*(?:ابحث (?:عن )?حساب|حساب)\s+(.+)/)){const r=await sb.rpc('admin_find_account',{q:m[1]});if(r.error)return dbMsg();return r.data.length?r.data.map(u=>'• '+(u.name||'؟')+' (@'+(u.username||'؟')+')\n  '+u.email+'\n  سجّل: '+new Date(u.created_at).toLocaleDateString(lang)+(u.banned?' • محظور':'')).join('\n'):'ما لقيت حساب.'}
+  if(m=t.match(/^\s*(?:استرجع حساب|كلمه سر مؤقته|كلمة سر مؤقتة|ارجاع حساب)\s+(\S+@\S+)/)){return adminRecoverFlow(m[1])}
+  if(/^(علمني|تعليم|تدريب|علمني شي)/.test(n)){lsv('jr_teach_'+me.id,{log:[],fixed:0});return'تمام، شنو الموضوع اللي تريد أعلّمه؟ (اكتب «خلاص» بأي وقت لإنهاء التعليم)'}
+  if(/^(المعرفه|المعلومات المحفوظه)\s*$/.test(n)){const r=await sb.from('bot_kb').select('id,title').order('created_at',{ascending:false}).limit(30);if(r.error)return dbMsg();globalThis.__kbIds=r.data.map(x=>x.id);return r.data.length?'المعرفة المحفوظة:\n'+r.data.map((x,i)=>(i+1)+'. '+x.title).join('\n')+'\nلحذف وحدة: احذف معرفة رقم':'ماكو معرفة محفوظة. اكتب «علمني».'}
+  if(m=n.match(/^(?:احذف|امسح)\s+معرفه\s+(\d+)/)){const id=(globalThis.__kbIds||[])[+m[1]-1];if(!id)return'اكتب «المعرفة» أول لأعرض القائمة.';await sb.from('bot_kb').delete().eq('id',id);return'حذفتها.'}
+  return null}
+const TEACH_Q=['شنو الشرح الأساسي للموضوع؟','شنو الخطوات بالترتيب؟','عطني مثال عملي.','شنو الأخطاء الشائعة اللي لازم أنبّه عليها؟'];
+async function teachStep(t){const k='jr_teach_'+me.id,st=ld(k,{log:[],fixed:0});
+  if(/^(خلاص|الغاء|إلغاء|انتهى|وقف)\s*$/.test(nz(t))&&!/احفظ/.test(t)){lsv(k,null);return botSay('تمام، أنهيت التعليم.')}
+  st.log.push({r:'u',t});
+  const sys='أنت «'+(cfg.name||'امبد')+'»، تتعلم من المشرف موضوعًا جديدًا لتعلّمه للمستخدمين لاحقًا بشكل صحيح ودقيق. اسأل المشرف أسئلة توضيحية قصيرة، سؤال واحد بكل مرة، عن اللي ناقص (الخطوات، أمثلة، أخطاء شائعة، المستوى المستهدف، الأدوات). لا تخمّن ولا تخترع معلومات. ردودك بلهجة عراقية قصيرة. لما تحس عندك معلومات كافية لتعلّم الموضوع بشكل ممتاز، أو إذا قال المشرف «احفظ»، اكتب سطر واحد فقط بهذا الشكل: ENTRY: {"title":"...","body":"شرح منظم ومفصل بالعربية","tags":"كلمات, مفتاحية"}';
+  const hist=st.log.slice(0,-1).map(x=>({r:x.r,t:x.t})),a=await aiSmart(sys,hist,t,null,false);
+  if(a){const m=a.match(/ENTRY:\s*(\{[\s\S]*\})/);if(m){try{const e=JSON.parse(m[1]);const r=await sb.from('bot_kb').insert({title:String(e.title||'بدون عنوان').slice(0,120),body:String(e.body||'').slice(0,6000),tags:String(e.tags||'')});lsv(k,null);return botSay(r.error?dbMsg():'حفظت: «'+e.title+'». هسه أقدر أعلّمها للمستخدمين.')}catch(e){}}
+    st.log.push({r:'m',t:a});lsv(k,st);return botSay(a)}
+  // بدون ذكاء اصطناعي: أسئلة ثابتة
+  st.fixed=(st.fixed||0);if(st.fixed<TEACH_Q.length){const q=TEACH_Q[st.fixed];st.fixed++;lsv(k,st);return botSay(q)}
+  const topic=st.log[0].t,body=st.log.slice(1).map(x=>x.t).join('\n');const r=await sb.from('bot_kb').insert({title:topic.slice(0,120),body,tags:topic});lsv(k,null);return botSay(r.error?dbMsg():'حفظت «'+topic.slice(0,40)+'».')}
+async function adminRecover(){const v=await ask('إيميل الحساب اللي تريد تسترجعه','');if(v&&v.trim()){closeAll();const r=await adminRecoverFlow(v.trim());const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','استرجاع حساب'));const d=el('div','',r);d.style.cssText='white-space:pre-wrap;user-select:all;direction:auto;line-height:1.8';B.appendChild(d);const c=el('button','btn g','إغلاق');c.style.marginTop='12px';c.onclick=closeAll;B.appendChild(c);$('#mG').classList.add('on')}}
+
 // ====== ذكاء اصطناعي مفتوح المصدر + ترجمة + لغات ======
-async function aiAsk(msgs,ms){const eps=[['https://text.pollinations.ai/openai','gemini'],['https://text.pollinations.ai/openai','openai'],['https://gen.pollinations.ai/v1/chat/completions','openai']],t0=Date.now();
+async function aiAsk(msgs,ms,once){const eps=[['https://text.pollinations.ai/openai','gemini'],['https://text.pollinations.ai/openai','openai'],['https://gen.pollinations.ai/v1/chat/completions','openai']],t0=Date.now();
   for(let round=0;round<3;round++){let wait=0;for(const[u,mod]of eps){try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),ms||25000);const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:mod,messages:msgs,temperature:.7}),signal:c.signal});clearTimeout(tm);
       if(r.status===429){wait=Math.max(wait,(+r.headers.get('retry-after')||15)*1000);continue}if(!r.ok)continue;const j=await r.json(),x=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(x&&x.trim())return x.trim()}catch(e){}}
-    if(!wait||Date.now()-t0+wait>60000)break;await sleep(wait)}return null}
+    if(once||!wait||Date.now()-t0+wait>60000)break;await sleep(wait)}return null}
 const LANGS=[['ar','العربية'],['en','English'],['fr','Français'],['tr','Türkçe'],['es','Español'],['ru','Русский'],['fa','فارسی'],['de','Deutsch'],['hi','हिन्दी'],['ur','اردو']],RTLS=['ar','fa','ur'];
 const LSCR={ar:'ar',fa:'ar',ur:'ar',en:'lat',fr:'lat',tr:'lat',es:'lat',de:'lat',ru:'cyr',hi:'dev'};
 const TR=ld('jr_tr',{}),trTried=new Set();let trBusy=false;const trQ=[];
@@ -1335,7 +1420,30 @@ create policy "m_ins" on public.messages for insert to authenticated with check(
       and not exists(select 1 from public.group_members gm where gm.group_id=gid and gm.user_id=auth.uid() and gm.muted_until>now())
       and (coalesce((select mode from public.groups where id=gid),'all')='all' or public.has_perm(gid,'post'))))
  and (gid is not null or (sender<>receiver and not exists(select 1 from public.blocks b where (b.blocker=receiver and b.blocked=auth.uid()) or (b.blocker=auth.uid() and b.blocked=receiver)))));
+alter table public.key_backups add column if not exists backup2 text;
 alter table public.bot_config add column if not exists llm_url text, add column if not exists limits jsonb not null default '{}'::jsonb;
+
+-- ===== النسخة 3.2: ذاكرة امبد على السيرفر، قاعدة معرفة، استرجاع الحسابات =====
+create table if not exists public.bot_kb(id uuid primary key default gen_random_uuid(), title text not null, body text not null, tags text, created_at timestamptz default now());
+create table if not exists public.bot_msgs(user_id uuid references public.profiles(id) on delete cascade, id text not null, role text not null, body text not null default '', created_at timestamptz default now(), primary key(user_id,id));
+create table if not exists public.bot_state(user_id uuid primary key references public.profiles(id) on delete cascade, todo jsonb not null default '[]'::jsonb, rem jsonb not null default '[]'::jsonb, updated_at timestamptz default now());
+alter table public.bot_kb enable row level security; alter table public.bot_msgs enable row level security; alter table public.bot_state enable row level security;
+drop policy if exists "kb_admin" on public.bot_kb; drop policy if exists "bm_own" on public.bot_msgs; drop policy if exists "bs_own" on public.bot_state;
+create policy "kb_admin" on public.bot_kb for all to authenticated using(public.is_admin()) with check(public.is_admin());
+create policy "bm_own" on public.bot_msgs for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create policy "bs_own" on public.bot_state for all to authenticated using(user_id=auth.uid()) with check(user_id=auth.uid());
+create or replace function public.kb_search(q text) returns table(title text, body text, score int) language sql security definer set search_path=public as $$
+ select t.title,t.body,t.sc from (
+  select k.title,k.body,(select count(*)::int from (select distinct lower(x) w from regexp_split_to_table(coalesce(q,''),'[^a-zA-Z0-9'||chr(1536)||'-'||chr(1791)||']+') x where length(x)>=3) ws
+    where lower(k.title||' '||k.body||' '||coalesce(k.tags,'')) like '%'||ws.w||'%') sc from public.bot_kb k) t
+ where t.sc>0 order by t.sc desc limit 4 $$;
+create or replace function public.admin_find_account(q text) returns table(id uuid, email text, name text, username text, created_at timestamptz, last_sign_in timestamptz, banned boolean) language plpgsql security definer set search_path=public,auth as $$
+begin if not public.is_admin() then raise exception 'forbidden'; end if;
+ return query select u.id, u.email::text, p.name, p.username, u.created_at, u.last_sign_in_at, coalesce(p.banned,false)
+  from auth.users u left join public.profiles p on p.id=u.id
+  where lower(u.email) like '%'||lower(trim(q))||'%' or lower(p.username) like '%'||lower(trim(q))||'%' or lower(p.name) like '%'||lower(trim(q))||'%'
+  order by u.created_at desc limit 15; end $$;
+grant execute on function public.kb_search(text), public.admin_find_account(text) to authenticated;
 notify pgrst, 'reload schema';
 `;
 // ====== تشغيل ======
