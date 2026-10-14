@@ -386,6 +386,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @JavascriptInterface
+        public String meshAckedIds(String idsJson) {
+            try {
+                JSONArray in = new JSONArray(idsJson);
+                List<String> ids = new ArrayList<>();
+                for (int i = 0; i < in.length(); i++) ids.add(in.getString(i));
+                return new JSONArray(MeshStore.get(MainActivity.this).ackedAmong(ids)).toString();
+            } catch (Exception e) {
+                return "[]";
+            }
+        }
+
+        @JavascriptInterface
         public String meshStatus() {
             CoreService s = CoreService.inst;
             try {

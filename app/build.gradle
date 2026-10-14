@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+}
+
+def withLlm = (project.findProperty('withLlm') ?: 'true').toString() == 'true'
+if (withLlm) {
+    apply plugin: 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -21,13 +25,24 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            java.srcDir(withLlm ? 'src/llm/java' : 'src/nollm/java')
+        }
+    }
+}
+
+if (withLlm) {
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            freeCompilerArgs.add('-Xskip-metadata-version-check')
+        }
     }
 }
 
@@ -36,7 +51,9 @@ dependencies {
     implementation 'androidx.core:core:1.12.0'
     implementation 'androidx.webkit:webkit:1.8.0'
     implementation 'com.google.android.gms:play-services-nearby:19.1.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
-    // نموذج امبد المحلي (Gemma 4) عبر LiteRT-LM الرسمي من Google
-    implementation 'com.google.ai.edge.litertlm:litertlm-android:latest.release'
+    if (withLlm) {
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
+        // نموذج امبد المحلي (Gemma 4) عبر LiteRT-LM الرسمي من Google
+        implementation 'com.google.ai.edge.litertlm:litertlm-android:latest.release'
+    }
 }

@@ -134,6 +134,12 @@ final class MeshStore {
     }
 
     /** رسالة وصلت لهذا الجهاز: تنحفظ بالوارد لين يستلمها التطبيق. ترجع true لو جديدة. */
+    synchronized List<String> ackedAmong(List<String> ids) {
+        List<String> out = new ArrayList<>();
+        for (String id : ids) if (acks.contains(id)) out.add(id);
+        return out;
+    }
+
     synchronized boolean addInbox(JSONObject env) {
         String id = env.optString("id", "");
         if (id.length() == 0 || inbox.containsKey(id)) return false;

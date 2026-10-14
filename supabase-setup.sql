@@ -281,5 +281,5 @@ create policy "m_ins" on public.messages for insert to authenticated with check(
       and not exists(select 1 from public.group_members gm where gm.group_id=gid and gm.user_id=auth.uid() and gm.muted_until>now())
       and (coalesce((select mode from public.groups where id=gid),'all')='all' or public.has_perm(gid,'post'))))
  and (gid is not null or (sender<>receiver and not exists(select 1 from public.blocks b where (b.blocker=receiver and b.blocked=auth.uid()) or (b.blocker=auth.uid() and b.blocked=receiver)))));
-alter table public.bot_config add column if not exists llm_url text;
+alter table public.bot_config add column if not exists llm_url text, add column if not exists limits jsonb not null default '{}'::jsonb;
 notify pgrst, 'reload schema';
