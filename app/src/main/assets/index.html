@@ -140,7 +140,10 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 .poll{min-width:230px}.po{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer}.po i{position:absolute;inset:0 auto 0 0;background:var(--pri);opacity:.18;transition:width .3s}.po.me{border-color:var(--pri)}.po span,.po b{position:relative}
 .gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:0;width:100%;height:100%;max-width:100vw}#auth,#lock{max-width:100vw}.dlb{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;background:var(--grad);color:#fff;font-weight:600}
 html,body,#app{height:100dvh!important}
-.alert-card{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}.alert-card b{display:block;margin-bottom:3px}.alert-card small{color:var(--sub)}</style></head><body>
+.alert-card{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}.alert-card b{display:block;margin-bottom:3px}.alert-card small{color:var(--sub)}
+.igrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:52vh;overflow-y:auto}.igrid .ic{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg2)}.igrid img{width:100%;height:100%;object-fit:cover;display:block}
+.igrid .ic.sel::after{content:"";position:absolute;inset:0;border:3px solid var(--pri);border-radius:8px;background:#0003}.igrid .ic .ck{position:absolute;top:4px;inset-inline-end:4px;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--pri);display:none;place-items:center;font-size:12px;font-weight:700}.igrid .ic.sel .ck{display:grid}
+.ihead{display:flex;gap:6px;margin-bottom:8px}.ihead button{flex:1}</style></head><body>
 <div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>مراسلة مشفرة. حساب واحد لإيميلك، وكل محادثاتك تتبعه</p>
 <div class="seg" id="aTabs" style="justify-content:center;margin-bottom:12px"><button data-m="login" class="on">دخول</button><button data-m="reg">حساب جديد</button></div>
 <input class="in" id="aName" placeholder="الاسم" maxlength="40" style="display:none">
@@ -152,6 +155,7 @@ html,body,#app{height:100dvh!important}
 <div id="app"><div id="side"><div class="hd"><button class="ib" id="bMenu"><span class="ico" data-i="menu"></span></button><div class="search"><input id="q" placeholder="بحث"></div></div>
 <div id="flt"><button data-f="all" class="on">الكل</button><button data-f="unread">غير المقروءة</button><button data-f="fav">المفضلة</button></div><div id="nb" class="nbn"></div><div id="ses" class="nbn" style="background:#fee2e2;color:#991b1b;cursor:pointer"></div><div id="nt" class="nbn" style="background:#e0f2fe;color:#075985"></div><div id="ntp" class="nbn" style="background:#fce7f3;color:#9d174d"></div><div id="list"></div><button id="fab"><span class="ico" data-i="edit" data-s="26"></span></button></div><div id="main"></div></div>
 <div id="drw"><div class="ov"></div><div class="pn"><div class="pf"><div class="av" id="dAv"></div><div class="nm" id="dNm" style="font-size:18px"></div><div class="sb" id="dMl"></div></div>
+<button class="mi" id="mImgB"><span class="ico" data-i="image"></span>مركز الصور</button>
 <button class="mi" id="mSecB"><span class="ico" data-i="shield"></span>القسم الأمني</button>
 <button class="mi" id="mFindB"><span class="ico" data-i="edit"></span>إضافة صديق</button>
 <button class="mi" id="mGrpB"><span class="ico" data-i="users"></span>مجموعة جديدة</button>
@@ -179,6 +183,7 @@ html,body,#app{height:100dvh!important}
 <div class="mod" id="mAdm"><div class="card" style="max-width:480px"><div id="admBox"></div></div></div>
 <div class="mod" id="mSql"><div class="card"><h2>SQL تحديث قاعدة البيانات</h2><p class="hint">انسخه والصقه بـ Supabase ← SQL Editor ← Run. مرة وحدة، وآمن تعيده.</p><textarea class="in" id="sqlT" rows="8" dir="ltr" readonly style="font-size:11px"></textarea><button class="btn" id="sqlCp">نسخ</button><button class="btn g" data-close>إغلاق</button></div></div>
 <div class="mod" id="mSecPw"><div class="card"><h2>القسم الأمني</h2><p class="hint">قسم محمي بكلمة سر منفصلة. يستخدم للتبليغ عن حالات فقدان ومشاركة الموقع مع من حولك.</p><input class="in" id="secPwIn" type="password" dir="ltr" placeholder="كلمة سر القسم"><div class="err" id="secErr"></div><button class="btn" id="secGo">دخول</button><button class="btn g" data-close>إلغاء</button></div></div>
+<div class="mod sh" id="mImg"><div class="card"><div id="imgBox"></div></div></div>
 <div class="mod" id="mSec"><div class="card"><div id="secBox"></div></div></div>
 <div class="mod" id="mG"><div class="card"><div id="gBox"></div></div></div>
 <div class="mod sh" id="mStk"><div class="card"><div id="stkBox"></div></div></div>
@@ -186,7 +191,7 @@ html,body,#app{height:100dvh!important}
 <div class="mod top" id="mYN"><div class="card"><p id="yT" style="margin-bottom:14px;line-height:1.7;white-space:pre-wrap"></p><button class="btn" id="yOk">تأكيد</button><button class="btn g" id="yNo">إلغاء</button></div></div>
 <div class="mod top" id="mCrop"><div class="card"><h2 id="cTitle">ضبط الصورة</h2><div style="display:flex;justify-content:center"><canvas id="cv"></canvas></div><input type="range" id="cz" min="1" max="4" step="0.01" value="1" style="width:100%;margin:14px 0"><p class="hint">اسحب الصورة لتحريكها وكبّرها بالمنزلق أو بإصبعين.</p><button class="btn" id="cOk">حفظ</button><button class="btn g" id="cNo">إلغاء</button></div></div>
 <div class="mod" id="lb"><img id="lbImg" alt=""></div><div id="toast"></div>
-<input type="file" id="file" accept="image/*" multiple hidden><input type="file" id="fdoc" hidden><input type="file" id="fcam" accept="image/*" capture="environment" hidden><input type="file" id="fpk" accept="image/*" hidden>
+<input type="file" id="file" accept="image/*" multiple hidden><input type="file" id="hubFile" accept="image/*" multiple hidden><input type="file" id="fdoc" hidden><input type="file" id="fcam" accept="image/*" capture="environment" hidden><input type="file" id="fpk" accept="image/*" hidden>
 <script>
 // ====== إعداد قاعدة البيانات الموحدة ======
 const SB_URL='https://tpnslpmstlsnwszxrpel.supabase.co';
@@ -753,9 +758,11 @@ async function admReports(){const{data,error}=await sb.from('reports').select('*
   admModal('البلاغات',b=>{if(error)return b.appendChild(el('div','empty',error.message));if(!data.length)b.appendChild(el('div','empty','ماكو بلاغات'));
     data.forEach(r=>{const w=el('div');w.style.cssText='border-bottom:1px solid var(--line);padding:8px 0';w.appendChild(el('div','',((P[r.reporter]||{}).name||'؟')+' ← '+((P[r.reported]||{}).name||'؟')));w.appendChild(el('div','sb',r.reason||'بدون سبب'));
       abtn(w,'حظر المُبلَّغ عنه',async()=>{await sb.from('profiles').update({banned:true}).eq('id',r.reported);await sb.from('reports').delete().eq('id',r.id);toast('تم');admReports()},1);abtn(w,'تجاهل',async()=>{await sb.from('reports').delete().eq('id',r.id);admReports()});b.appendChild(w)})},openAdmin)}
-async function admBroadcast(){const{data}=await sb.from('announcements').select('*').order('created_at',{ascending:false}).limit(8);
-  admModal('بث إعلان',b=>{arow(b,'megaphone','إعلان جديد',async()=>{const v=await ask('نص الإعلان (يوصل لكل المستخدمين من امبد)','',true);if(!v||!v.trim())return;const e=(await sb.from('announcements').insert({body:v.trim()})).error;toast(e?e.message:'تم البث');admBroadcast()});
-    (data||[]).forEach(a=>{const w=el('div');w.style.cssText='border-top:1px solid var(--line);padding:8px 0';w.appendChild(el('div','',a.body));w.appendChild(el('div','sb',new Date(a.created_at).toLocaleString(lang)));abtn(w,'حذف الإعلان',async()=>{await sb.from('announcements').delete().eq('id',a.id);admBroadcast()},1);b.appendChild(w)})},openAdmin)}
+async function admBroadcast(){const{data}=await sb.from('announcements').select('*,profiles:target_user(name,username)').order('created_at',{ascending:false}).limit(8);
+  admModal('بث إعلان',b=>{arow(b,'megaphone','إعلان للجميع',async()=>{const v=await ask('نص الإعلان (يوصل لكل المستخدمين من امبد)','',true);if(!v||!v.trim())return;const e=(await sb.from('announcements').insert({body:v.trim()})).error;toast(e?e.message:'تم البث');admBroadcast()});
+    arow(b,'user','رسالة لشخص واحد',admPrivateAnn);
+    (data||[]).forEach(a=>{const w=el('div');w.style.cssText='border-top:1px solid var(--line);padding:8px 0';const tag=a.target_user?('خاص بـ @'+(a.profiles&&a.profiles.username||'؟')+' • '):'للجميع • ';w.appendChild(el('div','',a.body));w.appendChild(el('div','sb',tag+new Date(a.created_at).toLocaleString(lang)));abtn(w,'حذف',async()=>{await sb.from('announcements').delete().eq('id',a.id);admBroadcast()},1);b.appendChild(w)})},openAdmin)}
+async function admPrivateAnn(){const u=await ask('يوزر الشخص (بدون @)','');if(!u||!u.trim())return;const p=await profByUser(u);if(!p)return toast('ما لقيت المستخدم');const v=await ask('نص الرسالة لـ '+p.name,'',true);if(!v||!v.trim())return;const e=(await sb.from('announcements').insert({body:v.trim(),target_user:p.id})).error;toast(e?dbMsg():'تم الإرسال لـ '+p.name);admBroadcast()}
 function admBot(){admModal('إدارة امبد',b=>{
   arow(b,'camera','تغيير صورة امبد',async()=>{const f=await pickFile();if(!f)return;const v=await cropAv(f);if(v){await saveCfg({avatar:v});admBot()}});
   arow(b,'image','تغيير بنر امبد',async()=>{const f=await pickFile();if(!f)return;const v=await cropBn(f);if(v){await saveCfg({banner:v});admBot()}});
@@ -846,7 +853,7 @@ function stickerCompose(img,o){const S=256,tmp=document.createElement('canvas');
   if(o.outline){const sil=document.createElement('canvas');sil.width=sil.height=S;const s=sil.getContext('2d');s.drawImage(tmp,0,0);s.globalCompositeOperation='source-in';s.fillStyle='#fff';s.fillRect(0,0,S,S);for(let a=0;a<16;a++)x.drawImage(sil,Math.cos(a*Math.PI/8)*7,Math.sin(a*Math.PI/8)*7)}
   x.drawImage(tmp,0,0);return out}
 // ====== الستريك ======
-function streakOf(id){if(id==='bot'||isG(id))return{n:0};const mine=new Set(),their=new Set();thread(id).forEach(m=>{if(m.deleted)return;(m.sender===me.id?mine:their).add(new Date(m.created_at).toDateString())});
+function streakOf(id){if(id==='bot'||isG(id)||!flagOn('streak'))return{n:0};const mine=new Set(),their=new Set();thread(id).forEach(m=>{if(m.deleted)return;(m.sender===me.id?mine:their).add(new Date(m.created_at).toDateString())});
   const ok=d=>mine.has(d.toDateString())&&their.has(d.toDateString());let n=0;const d=new Date(),today=ok(d);if(!today)d.setDate(d.getDate()-1);while(ok(d)){n++;d.setDate(d.getDate()-1)}return{n,today}}
 function streakBadge(id){const s=streakOf(id);if(s.n<2)return null;const e=el('span','stk-b');e.innerHTML=ic('flame',14)+s.n;if(!s.today)e.style.opacity='.55';e.title=s.today?'ستريك':'راسل اليوم حتى ما ينقطع الستريك';return e}
 // ====== قائمة المحادثة (ضغطة مطولة) + تثبيت الرسائل ======
@@ -1011,7 +1018,7 @@ let gwOff=false,gwT=0,bqBusy=false,queueNoted=false;
 async function gwAsk(system,messages,images){if(!sb||!navigator.onLine)return null;if(gwOff&&Date.now()-gwT<300000)return null;
   try{const r=await sb.functions.invoke('embed-ai',{body:{system,messages,images:images||[]}});
     if(r.error){const st=r.error.context&&r.error.context.status;if(st===404||st===401){gwOff=true;gwT=Date.now()}return null}
-    gwOff=false;return r.data&&r.data.text?String(r.data.text).trim():null}catch(e){return null}}
+    gwOff=false;const t=r.data&&r.data.text?String(r.data.text).trim():null;return okAnswer(t)?t:null}catch(e){return null}}
 async function aiSmart(system,hist,prompt,images,patient){if(!images&&llmReady()){const a=await llmAsk(system,hist,prompt);if(a)return a}
   const t0=Date.now(),conv=hist.map(h=>({role:h.r==='u'?'user':'assistant',content:h.t}));
   for(let i=0;i<(patient===false?1:6);i++){let a=await gwAsk(system,[...conv,{role:'user',content:prompt}],images);if(a)return a;
@@ -1105,10 +1112,32 @@ async function listAlerts(){const B=$('#secBox');B.innerHTML='';B.appendChild(el
   try{const loc=await getLoc();st.textContent='بنطاق 50 كم من موقعك:';const r=await sb.rpc('safety_nearby',{p_lat:loc[0],p_lon:loc[1],p_km:50});if(r.error)return L.appendChild(el('div','empty',dbMsg()));if(!r.data.length)L.appendChild(el('div','empty','ماكو بلاغات قريبة منك حاليًا، الحمد لله'));r.data.forEach(a=>L.appendChild(alertCard(a,km(loc,[a.lat,a.lon]))))}
   catch(e){st.textContent='';L.appendChild(el('div','empty','تعذر تحديد موقعك، اسمح بإذن الموقع وحاول مرة ثانية'))}}
 
+// ====== مركز الصور: كل صور محادثاتك بمكان واحد + رفع ومشاركة بدون فتح محادثة أول ======
+$('#mImgB').onclick=openImgHub;
+function allImages(){const hid=HID.get();return msgs.filter(m=>m.kind==='image'&&m.media&&!m.deleted&&!hid.includes(m.id)&&!m._t&&!m._f).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))}
+function openImgHub(){closeAll();const B=$('#imgBox');B.innerHTML='';B.appendChild(el('h2','','مركز الصور'));
+  const hd=el('div','ihead');const up=el('button','btn','رفع صور لمحادثة');up.onclick=()=>$('#hubFile').click();const cl0=el('button','btn g','إغلاق');cl0.onclick=closeAll;hd.append(up,cl0);B.appendChild(hd);
+  const sel=new Set(),ims=allImages();if(!ims.length)B.appendChild(el('div','empty','ماكو صور بعد بأي محادثة'));
+  const grid=el('div','igrid');ims.forEach(m=>{const c=el('div','ic');const im=document.createElement('img');c.append(im,Object.assign(el('div','ck'),{textContent:'✓'}));
+    mediaURL(m).then(u=>im.src=u).catch(()=>{});c.onclick=()=>{if(sel.has(m.id))sel.delete(m.id);else sel.add(m.id);c.classList.toggle('sel');selBar()};grid.appendChild(c)});B.appendChild(grid);
+  const bar=el('div','ihead');bar.id='imgSelBar';bar.style.display='none';const fw=el('button','btn','توجيه المحدد'),sv=el('button','btn g','حفظ بالجهاز'),dl=el('button','btn g','حذف عندي');bar.append(fw,sv,dl);B.appendChild(bar);
+  function selBar(){$('#imgSelBar').style.display=sel.size?'flex':'none'}
+  fw.onclick=()=>{const ms=[...sel].map(id=>ims.find(m=>m.id===id)).filter(Boolean);if(!ms.length)return;closeAll();openFwd(ms)};
+  sv.onclick=async()=>{for(const id of sel){const m=ims.find(x=>x.id===id);if(m)await saveMedia(m)}toast('تم الحفظ')};
+  dl.onclick=async()=>{if(!await yn('حذف الصور المحددة من جهازك فقط؟','حذف'))return;sel.forEach(id=>HID.tog(id));sel.clear();openImgHub()};
+  $('#mImg').classList.add('on')}
+$('#hubFile').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;closeAll();pickChatThenSend(fs)};
+function pickChatThenSend(files){const ids=[...new Set([...msgs.map(other),...opened])].filter(i=>i!=='bot'&&P[i]&&!blocks.by.has(i)),B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','أرسل الصور إلى'));
+  if(!ids.length)B.appendChild(el('div','empty','ماكو محادثات، ابدأ وحدة أول'));
+  ids.forEach(id=>{const r=el('div','rs');r.appendChild(avatar(P[id],40));r.appendChild(el('div','nm',P[id].name));r.onclick=async()=>{closeAll();selectChat(id);toast('جاري إرسال '+Math.min(files.length,10)+' صورة…');if(files.length===1)pick(files[0]);else await procImages(files,id)};B.appendChild(r)});
+  const cn=el('button','btn g','إلغاء');cn.onclick=closeAll;B.appendChild(cn);$('#mG').classList.add('on')}
+
 // ====== ذكاء اصطناعي مفتوح المصدر + ترجمة + لغات ======
+const REFUSE=/^(i'?m sorry|i am sorry|sorry,? but|i can'?t help|i cannot help|as an ai|لا أستطيع المساعدة|عذرا،? لا أستطيع|آسف،? لا أستطيع)/i;
+const okAnswer=t=>t&&t.trim().length>1&&!REFUSE.test(t.trim());
 async function aiAsk(msgs,ms,once){const eps=[['https://text.pollinations.ai/openai','gemini'],['https://text.pollinations.ai/openai','openai'],['https://gen.pollinations.ai/v1/chat/completions','openai']],t0=Date.now();
   for(let round=0;round<3;round++){let wait=0;for(const[u,mod]of eps){try{const c=new AbortController(),tm=setTimeout(()=>c.abort(),ms||25000);const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:mod,messages:msgs,temperature:.7}),signal:c.signal});clearTimeout(tm);
-      if(r.status===429){wait=Math.max(wait,(+r.headers.get('retry-after')||15)*1000);continue}if(!r.ok)continue;const j=await r.json(),x=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(x&&x.trim())return x.trim()}catch(e){}}
+      if(r.status===429){wait=Math.max(wait,(+r.headers.get('retry-after')||15)*1000);continue}if(!r.ok)continue;const j=await r.json(),x=j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;if(okAnswer(x))return x.trim()}catch(e){}}
     if(once||!wait||Date.now()-t0+wait>60000)break;await sleep(wait)}return null}
 const LANGS=[['ar','العربية'],['en','English'],['fr','Français'],['tr','Türkçe'],['es','Español'],['ru','Русский'],['fa','فارسی'],['de','Deutsch'],['hi','हिन्दी'],['ur','اردو']],RTLS=['ar','fa','ur'];
 const LSCR={ar:'ar',fa:'ar',ur:'ar',en:'lat',fr:'lat',tr:'lat',es:'lat',de:'lat',ru:'cyr',hi:'dev'};
@@ -1500,7 +1529,9 @@ notify pgrst, 'reload schema';
 `;
 // منع انزياح الواجهة (لما تطلع الكيبورد أو يرجع منتقي الصور)
 (function(){const roots=['HTML','BODY'],reset=()=>{window.scrollTo(0,0);for(const q of['#app','#main','#side','#auth']){const e=document.querySelector(q);if(e&&(e.scrollTop||e.scrollLeft)){e.scrollTop=0;e.scrollLeft=0}}document.documentElement.scrollLeft=0;document.body.scrollLeft=0;document.body.scrollTop=0};
-  window.addEventListener('scroll',reset,true);window.addEventListener('resize',reset);if(window.visualViewport)window.visualViewport.addEventListener('resize',reset);document.addEventListener('focusin',()=>setTimeout(reset,50));window.addEventListener('focus',()=>setTimeout(reset,50))})();
+  const softReset=()=>{if(document.documentElement.scrollLeft||document.body.scrollLeft||window.scrollX)reset()};
+  window.addEventListener('scroll',softReset,true);window.addEventListener('resize',reset);if(window.visualViewport)window.visualViewport.addEventListener('resize',reset);
+  document.addEventListener('focusin',e=>{if(e.target&&(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'))return;setTimeout(reset,50)})})();
 // ====== تشغيل ======
 (async()=>{const uid=ld('jr_uid',null),fastOK=uid&&ld('jr_c_'+uid,null)&&ld('jr_k_'+uid,null);if(fastOK)$('#auth').style.display='none';
   if(localStorage.getItem('jr_pin'))lockNow();let ok=false;if(fastOK)ok=await boot({id:uid},true);
