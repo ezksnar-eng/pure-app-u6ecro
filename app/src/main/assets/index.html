@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ec4899"><title>جيرون</title>
 <style>
 :root{--bg:#fff;--bg2:#fff1f7;--txt:#2a1620;--sub:#a07a8d;--line:#f7e1ec;--pri:#ec4899;--grad:linear-gradient(135deg,#ff7ac0,#ec4899 55%,#d6338a);--out:#ffe0ef;--in:#fff;--tick:#d6338a;--wall:radial-gradient(#fff9 1.6px,transparent 1.7px) 0 0/24px 24px,linear-gradient(160deg,#fff0f7,#ffd9ea 55%,#ffc4de);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -138,7 +138,9 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 .stabs{display:flex;justify-content:space-around;padding:4px 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}.stabs button{width:48px;height:44px;border-radius:12px;color:var(--sub);display:grid;place-items:center}.stabs button.on{background:var(--bg2);color:var(--pri)}
 .sbody{max-height:52vh;overflow-y:auto;padding:0 6px}.egrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}.egrid button{font-size:26px;height:42px;border-radius:8px}.egrid button:active{background:var(--bg2)}
 .poll{min-width:230px}.po{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer}.po i{position:absolute;inset:0 auto 0 0;background:var(--pri);opacity:.18;transition:width .3s}.po.me{border-color:var(--pri)}.po span,.po b{position:relative}
-.gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}</style></head><body>
+.gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:0;width:100%;height:100%;max-width:100vw}#auth,#lock{max-width:100vw}.dlb{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;background:var(--grad);color:#fff;font-weight:600}
+html,body,#app{height:100dvh!important}
+.alert-card{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}.alert-card b{display:block;margin-bottom:3px}.alert-card small{color:var(--sub)}</style></head><body>
 <div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>مراسلة مشفرة. حساب واحد لإيميلك، وكل محادثاتك تتبعه</p>
 <div class="seg" id="aTabs" style="justify-content:center;margin-bottom:12px"><button data-m="login" class="on">دخول</button><button data-m="reg">حساب جديد</button></div>
 <input class="in" id="aName" placeholder="الاسم" maxlength="40" style="display:none">
@@ -150,6 +152,7 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 <div id="app"><div id="side"><div class="hd"><button class="ib" id="bMenu"><span class="ico" data-i="menu"></span></button><div class="search"><input id="q" placeholder="بحث"></div></div>
 <div id="flt"><button data-f="all" class="on">الكل</button><button data-f="unread">غير المقروءة</button><button data-f="fav">المفضلة</button></div><div id="nb" class="nbn"></div><div id="ses" class="nbn" style="background:#fee2e2;color:#991b1b;cursor:pointer"></div><div id="nt" class="nbn" style="background:#e0f2fe;color:#075985"></div><div id="ntp" class="nbn" style="background:#fce7f3;color:#9d174d"></div><div id="list"></div><button id="fab"><span class="ico" data-i="edit" data-s="26"></span></button></div><div id="main"></div></div>
 <div id="drw"><div class="ov"></div><div class="pn"><div class="pf"><div class="av" id="dAv"></div><div class="nm" id="dNm" style="font-size:18px"></div><div class="sb" id="dMl"></div></div>
+<button class="mi" id="mSecB"><span class="ico" data-i="shield"></span>القسم الأمني</button>
 <button class="mi" id="mFindB"><span class="ico" data-i="edit"></span>إضافة صديق</button>
 <button class="mi" id="mGrpB"><span class="ico" data-i="users"></span>مجموعة جديدة</button>
 <button class="mi" id="mDiscB"><span class="ico" data-i="users"></span>اكتشاف المجموعات</button>
@@ -175,6 +178,8 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 <div class="mod" id="mSet"><div class="card" style="max-width:440px"><div id="stBox"></div><button class="btn g" data-close>إغلاق</button></div></div>
 <div class="mod" id="mAdm"><div class="card" style="max-width:480px"><div id="admBox"></div></div></div>
 <div class="mod" id="mSql"><div class="card"><h2>SQL تحديث قاعدة البيانات</h2><p class="hint">انسخه والصقه بـ Supabase ← SQL Editor ← Run. مرة وحدة، وآمن تعيده.</p><textarea class="in" id="sqlT" rows="8" dir="ltr" readonly style="font-size:11px"></textarea><button class="btn" id="sqlCp">نسخ</button><button class="btn g" data-close>إغلاق</button></div></div>
+<div class="mod" id="mSecPw"><div class="card"><h2>القسم الأمني</h2><p class="hint">قسم محمي بكلمة سر منفصلة. يستخدم للتبليغ عن حالات فقدان ومشاركة الموقع مع من حولك.</p><input class="in" id="secPwIn" type="password" dir="ltr" placeholder="كلمة سر القسم"><div class="err" id="secErr"></div><button class="btn" id="secGo">دخول</button><button class="btn g" data-close>إلغاء</button></div></div>
+<div class="mod" id="mSec"><div class="card"><div id="secBox"></div></div></div>
 <div class="mod" id="mG"><div class="card"><div id="gBox"></div></div></div>
 <div class="mod sh" id="mStk"><div class="card"><div id="stkBox"></div></div></div>
 <div class="mod top" id="mAsk"><div class="card"><h2 id="kT"></h2><textarea class="in" id="kV" rows="3"></textarea><button class="btn" id="kOk">حفظ</button><button class="btn g" id="kNo">إلغاء</button></div></div>
@@ -222,6 +227,9 @@ const prev=m=>m.deleted?'رسالة محذوفة':m.kind==='audio'?'رسالة �
 const uuid=()=>crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:r&3|8).toString(16)});
 const isNet=e=>!navigator.onLine||(e&&!e.code&&/fetch|network|load failed|timeout/i.test(e.message||''));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const withTO=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('انتهت المهلة')),ms))]);
+let lastErr='';function logErr(tag,e){const m=(e&&(e.message||String(e)))||'خطأ';lastErr=m;try{const l=ld('jr_errs',[]);l.unshift({t:Date.now(),tag,m:String(m).slice(0,200)});lsv('jr_errs',l.slice(0,40))}catch(x){}}
+window.addEventListener('error',e=>logErr('js',e.error||e.message));window.addEventListener('unhandledrejection',e=>logErr('promise',e.reason));
 const nz=s=>String(s||'').toLowerCase().replace(/[\u064B-\u065F\u0670]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/\s+/g,' ').trim();
 function avatar(p,sz){const a=el('div','av',(p.name||'?').trim().charAt(0).toUpperCase());let h=0;for(const c of p.id)h=(h*31+c.charCodeAt(0))>>>0;
   a.style.cssText=`width:${sz}px;height:${sz}px;font-size:${sz*.42}px;background:linear-gradient(${G[h%G.length]})`;if(p.avatar){a.textContent='';a.style.background=`url(${p.avatar}) center/cover`}return a}
@@ -306,7 +314,7 @@ async function boot(u,fast){booting=true;try{let p=null;const c=ld('jr_c_'+u.id,
   setBotProfile();msgs.push(...ld('jr_bot_'+me.id,[]));
   for(const r of outbox())if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_t:1});
   for(const r of ld('jr_fail_'+me.id,[]))if(!msgs.some(m=>m.id===r.id))msgs.push({...r,_f:1});
-  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();if(window.__newRc){showRecovery(window.__newRc);window.__newRc=null}remTick();applySecure();if(NATIVE){$('#mNetB').style.display='none';if(ld('jr_set2',{}).mesh===undefined){setS('mesh',1);NATIVE.requestPermissions('mesh')}}setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets();syncDevices();llmHint()},1500);return true}finally{booting=false}}
+  $('#auth').style.display='none';$('#app').classList.add('on');fillMe();applyCfg();await decAll();renderList();renderMain();banner();ntBar();welcome();connectBg();if(window.__newRc){showRecovery(window.__newRc);window.__newRc=null}remTick();applySecure();if(NATIVE){$('#mNetB').style.display='none';if(ld('jr_set2',{}).mesh===undefined){setS('mesh',1);NATIVE.requestPermissions('mesh')}}setTimeout(()=>{meshPullAll();if(meshOn())meshStartNow();loadGroups();syncTickets();syncDevices();llmHint();retryDecrypts()},1500);return true}finally{booting=false}}
 async function connectBg(){if(connecting||!me)return;connecting=true;try{if(!await needSB())return;
   let{data:{session}}=await sb.auth.getSession();
   if(!session){const j=ld('jr_sess',null);if(j){try{const r=await sb.auth.setSession({access_token:j.a,refresh_token:j.r});session=r.data&&r.data.session}catch(e){}}}
@@ -332,7 +340,8 @@ async function loadPeers(ids){ids=(ids||[...new Set([...msgs.map(other),...block
 async function bcast(to,ev,payload){try{if(!tok){const{data:{session}}=await sb.auth.getSession();tok=session&&session.access_token}
   await fetch(URL_+'/realtime/v1/api/broadcast',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({messages:[{topic:'inbox:'+to,event:ev,payload:payload||{},private:false}]})})}catch(e){}}
 // سحب تزايدي: يجيب فقط الرسائل اللي تغيّرت (يتحمل آلاف المستخدمين)
-async function pull(full){if(!me||!sb)return;if(pulling){pullAgain=true;return}pulling=true;let changed=false;const q0=`sender.eq.${me.id},receiver.eq.${me.id}`;
+async function fullSync(){if(!me||!sb)return;lsv(sinceK(),null);return pull(true)}
+async function pull(full){if(!me||!sb)return;if(!full&&!ld('jr_fs_'+me.id,0)){lsv('jr_fs_'+me.id,1);full=true}if(pulling){pullAgain=true;return}pulling=true;let changed=false;const q0=`sender.eq.${me.id},receiver.eq.${me.id}`;
   try{let since=full||noUpd?null:ld(sinceK(),null),rows=[];
     if(!since){const r=await sb.from('messages').select('*').or(q0).order('created_at',{ascending:false}).limit(1500);if(r.error)throw r.error;rows=r.data.reverse()}
     else{for(let i=0;i<8;i++){const r=await sb.from('messages').select('*').or(q0).gte('updated_at',since).order('updated_at').limit(500);if(r.error)throw r.error;rows.push(...r.data);if(r.data.length<500)break;since=r.data[r.data.length-1].updated_at}}
@@ -583,7 +592,7 @@ function mkBubble(m){const mine=m.sender===me.id,b=el('div','b'+(mine?' me':'')+
       else{const d=(m.media.match(/_(\d+)x(\d+)\./)||[]),w=el('div','imw');if(d[1]){w.style.aspectRatio=d[1]+'/'+d[2]}const im=document.createElement('img');w.appendChild(im);b.appendChild(w);
         mediaURL(m).then(u=>{im.src=u;im.onload=()=>w.classList.add('ld');im.onclick=e=>{e.stopPropagation();if(Date.now()-lpT<700||sel.size)return;$('#lbImg').src=u;$('#lb').classList.add('on')}}).catch(()=>w.replaceWith(mediaRetry(m)))}}
     if(m.kind==='loc'&&m._p){const c=(m._p||'').split(','),a=el('a','fc');a.href='https://www.openstreetmap.org/?mlat='+c[0]+'&mlon='+c[1]+'#map=16/'+c[0]+'/'+c[1];a.target='_blank';a.rel='noopener';a.style.cssText='color:inherit;text-decoration:none';a.innerHTML=ic('pin',26);const w=el('div');w.append(el('div','nm','موقعي الحالي'),el('div','sb',m._p));a.appendChild(w);b.appendChild(a)}
-    else if(m.kind!=='file'&&m.kind!=='sticker'&&m.kind!=='poll'&&m._p){let txt=m._p,tr=TR[m.id];if(txt.startsWith(BOTM))txt=txt.slice(BOTM.length);if(tr&&!showOrig.has(m.id))txt=tr;const t=el('div');t.appendChild(fmt(txt));if(EMO.test(txt)&&!/\d/.test(txt))t.style.fontSize='34px';b.appendChild(t);
+    else if(m.kind!=='file'&&m.kind!=='sticker'&&m.kind!=='poll'&&m._p){let txt=m._p,tr=TR[m.id];if(txt.startsWith(BOTM))txt=txt.slice(BOTM.length);const wantDl=txt.startsWith(DLM);if(wantDl)txt=txt.slice(DLM.length);if(tr&&!showOrig.has(m.id))txt=tr;const t=el('div');t.appendChild(fmt(txt));if(EMO.test(txt)&&!/\d/.test(txt))t.style.fontSize='34px';b.appendChild(t);if(wantDl){const d=el('button','dlb','تنزيل النموذج الآن');d.onclick=e=>{e.stopPropagation();startLlmDownload()};b.appendChild(d)}
       if(tr){const tg=el('div','trt',showOrig.has(m.id)?'عرض الترجمة':'مترجمة • اضغط لعرض الأصل');tg.onclick=e=>{e.stopPropagation();showOrig.has(m.id)?showOrig.delete(m.id):showOrig.add(m.id);nodeCache.delete(m.id);draw()};b.appendChild(tg)}}
     else if(m._p===null)b.appendChild(el('div','','تعذر فك تشفير الرسالة'));
     const rxs=m.reactions||{},cnt={};Object.values(rxs).forEach(e=>cnt[e]=(cnt[e]||0)+1);if(Object.keys(cnt).length){const r=el('div','rxc');for(const e in cnt){const c=el('span','rx'+(rxs[me.id]===e?' mine':''),e+(cnt[e]>1?' '+cnt[e]:''));c.onclick=ev=>{ev.stopPropagation();react(m,e)};r.appendChild(c)}b.appendChild(r)}}
@@ -629,8 +638,14 @@ async function prepFast(file,max,q){max=max||1280;let d=null,bmp=null;try{d=imgD
   if(d&&Math.max(d[0],d[1])>max){try{bmp=await createImageBitmap(file,d[0]>=d[1]?{resizeWidth:max,resizeQuality:'medium',imageOrientation:'from-image'}:{resizeHeight:max,resizeQuality:'medium',imageOrientation:'from-image'})}catch(e){}}
   if(!bmp)bmp=await bitmap(file);const s=Math.min(1,max/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*s),h=Math.round(bmp.height*s),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(bmp,0,0,w,h);if(bmp.close)bmp.close();
   return new Promise((res,rej)=>c.toBlob(b=>b?res({blob:b,w,h}):rej(),'image/jpeg',q||.8))}
-$('#file').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;if(fs.length===1)return pick(fs[0]);if(!cur||cur==='bot')return;const to=cur;toast('جاري إرسال '+Math.min(fs.length,10)+' صور…');for(const f of fs.slice(0,10)){try{const{blob,w,h}=await prepFast(f);await enqueue({kind:'image',ext:'jpg',tag:w+'x'+h},blob,to)}catch(x){}}};$('#fcam').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};
-function pick(f){if(!cur)return;if(!(f.type?f.type.startsWith('image/'):/\.(jpe?g|png|webp|gif|heic|bmp)$/i.test(f.name||'')))return toast('اختر صورة فقط');pend={p:prepFast(f)};pend.p.catch(()=>{});$('#pvImg').src=URL.createObjectURL(f);$('#pvCp').value='';$('#mPv').classList.add('on')}
+async function prepSimple(file,max,q){max=max||1280;const img=await loadImg(file),s=Math.min(1,max/Math.max(img.width,img.height)),w=Math.round(img.width*s),h=Math.round(img.height*s),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(img,0,0,w,h);
+  return new Promise((res,rej)=>c.toBlob(b=>b?res({blob:b,w,h}):rej(new Error('toBlob')),'image/jpeg',q||.8))}
+async function prepSafe(file){try{return await withTO(prepFast(file),7000)}catch(e){logErr('prepFast',e)}return withTO(prepSimple(file),20000)}
+let keepT=0;const toastKeep=t=>{toast(t);clearTimeout(toast.t);toast.t=setTimeout(()=>{$('#toast').style.display='none'},60000)};
+async function procImages(fs,to){const n=Math.min(fs.length,10);let ok=0,bad=0;for(let i=0;i<n;i++){toastKeep('جاري تجهيز الصور '+(i+1)+'/'+n+'…');try{const{blob,w,h}=await prepSafe(fs[i]);await withTO(enqueue({kind:'image',ext:'jpg',tag:w+'x'+h},blob,to),20000);ok++}catch(e){bad++;logErr('img',e)}}toast(ok?('تم تجهيز '+ok+' صورة'+(bad?' وفشلت '+bad:'')):'فشلت معالجة الصور: '+lastErr)}
+$('#file').onchange=async e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;if(fs.length===1)return pick(fs[0]);if(!cur||cur==='bot')return toast('اختر صورة وحدة لامبد');procImages(fs,cur)};
+$('#fcam').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)pick(f)};
+function pick(f){if(!cur)return;logErr('pick',new Error('اختيار صورة: '+(f.type||'?')+' '+Math.round((f.size||0)/1024)+'KB'));if(!(f.type?f.type.startsWith('image/'):/\.(jpe?g|png|webp|gif|heic|bmp)$/i.test(f.name||'')))return toast('اختر صورة فقط');pend={p:prepSafe(f)};pend.p.catch(()=>{});$('#pvImg').src=URL.createObjectURL(f);$('#pvCp').value='';$('#mPv').classList.add('on')}
 $('#pvNo').onclick=()=>{pend=null;closeAll()};$('#pvCp').onkeydown=e=>{if(e.key==='Enter')$('#pvGo').click()};
 $('#pvGo').onclick=async()=>{if(!pend||!cur)return;const x=pend,to=cur,cap=$('#pvCp').value.trim();pend=null;closeAll();try{const{blob,w,h}=await x.p;if(to==='bot'){botImage(blob,w,h,cap);return}enqueue({kind:'image',ext:'jpg',tag:w+'x'+h,text:cap},blob,to)}catch(e){toast('تعذر معالجة الصورة'+(e&&e.message?': '+e.message:''))}};
 function cropper(file,o){return new Promise(async res=>{const bmp=await bitmap(file),VW=Math.min(320,innerWidth-80),VH=Math.round(VW/o.aspect),cv=$('#cv');cv.width=VW;cv.height=VH;cv.style.borderRadius=o.round?'50%':'12px';
@@ -723,7 +738,8 @@ function openAdmin(){if(!me||!me.is_admin)return;admModal('لوحة الإدار
   arow(b,'wrench','وضع الصيانة',async()=>{await saveCfg({maintenance:!cfg.maintenance});openAdmin()},cfg.maintenance?'مفعّل':'متوقف');
   arow(b,'plus','التسجيل الجديد',async()=>{await saveCfg({reg_open:cfg.reg_open===false});openAdmin()},cfg.reg_open===false?'مغلق':'مفتوح');
   arow(b,'bell','شريط إعلان أعلى القائمة',async()=>{const v=await ask('نص الشريط (فاضي لإخفائه)',cfg.notice||'',true);if(v!==null){await saveCfg({notice:v.trim()});openAdmin()}},cfg.notice?'مفعّل':'متوقف');
-  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'users','استرجاع حساب (كلمة سر مؤقتة)',adminRecover);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
+  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'users','استرجاع حساب (كلمة سر مؤقتة)',adminRecover);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'alert','سجل الأخطاء',admErrs);
+arow(b,'shield','كلمة سر القسم الأمني',async()=>{const v=await ask('كلمة سر جديدة للقسم الأمني',cfg.sec_pw||'امني برو تايم');if(v&&v.trim()){await saveCfg({sec_pw:v.trim()});openAdmin()}});arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
   arow(b,'download','تصدير قائمة المستخدمين (نسخ)',admExport)})}
 async function admStats(){const{data,error}=await sb.rpc('admin_stats');admModal('إحصائيات المنصة',b=>{if(error)return b.appendChild(el('div','empty',error.message));
   [['المستخدمون',data.users],['الرسائل الكلية',data.messages],['رسائل آخر 24 ساعة',data.today],['المشرفون',data.admins],['المحظورون',data.banned],['البلاغات',data.reports]].forEach(([k,v])=>{const r=el('div','str');r.append(el('div','',k),el('b','',String(v)));b.appendChild(r)})},openAdmin)}
@@ -774,6 +790,8 @@ async function admDb(){admModal('قاعدة البيانات',b=>{arow(b,'db','�
 async function admDaily(){const{data,error}=await sb.rpc('admin_daily');admModal('النشاط',b=>{if(error)return b.appendChild(el('div','empty',error.message));b.appendChild(el('div','sh2','رسائل آخر 7 أيام'));const mx=Math.max(1,...(data.days||[]).map(x=>x.c));
   (data.days||[]).forEach(x=>{const r=el('div','str'),bar=el('div');bar.style.cssText='height:10px;border-radius:5px;background:var(--grad);width:'+Math.round(x.c/mx*60)+'%';r.append(el('div','',x.d),bar,el('b','',String(x.c)));b.appendChild(r)});b.appendChild(el('div','sh2','أكثر المستخدمين نشاطًا'));(data.top||[]).forEach(x=>{const r=el('div','str');r.append(el('div','','@'+x.u),el('b','',String(x.c)));b.appendChild(r)})},openAdmin)}
 async function admLog(){const{data,error}=await sb.from('admin_log').select('*').order('created_at',{ascending:false}).limit(30);admModal('سجل الإجراءات',b=>{if(error)return b.appendChild(el('div','empty',error.message));if(!data.length)b.appendChild(el('div','empty','فاضي'));data.forEach(x=>{const r=el('div','str');r.append(el('div','',x.action),el('small','',new Date(x.created_at).toLocaleString(lang)));b.appendChild(r)})},openAdmin)}
+
+function admErrs(){const l=ld('jr_errs',[]);admModal('سجل الأخطاء (هذا الجهاز)',b=>{if(!l.length)b.appendChild(el('div','empty','ماكو أخطاء مسجلة'));l.forEach(x=>{const r=el('div');r.style.cssText='border-bottom:1px solid var(--line);padding:6px 0;font-size:13px;direction:ltr;text-align:left';r.textContent=new Date(x.t).toLocaleTimeString(lang)+' ['+x.tag+'] '+x.m;b.appendChild(r)});arow(b,'copy','نسخ كل السجل',()=>copyText(l.map(x=>new Date(x.t).toISOString()+' ['+x.tag+'] '+x.m).join('\n')));arow(b,'trash','مسح السجل',()=>{lsv('jr_errs',[]);admErrs()})},openAdmin)}
 
 // ====== جسر الأندرويد (Mesh + إشعارات حقيقية) ======
 const meshOn=()=>NATIVE&&setg().mesh&&flagOn('mesh');
@@ -867,13 +885,13 @@ function llmStat(){if(!NATIVE||!NATIVE.llmStatus)return null;try{return JSON.par
 const llmReady=()=>{if(!flagOn('llm'))return false;const s=llmStat();return !!(s&&s.ready)};
 const llmCb={};window.__llmTok=(id,t)=>{const c=llmCb[id];if(c)c.tok(t)};window.__llmDone=(id,err)=>{const c=llmCb[id];if(c){delete llmCb[id];c.done(err)}};
 const llmText=()=>{const s=llmStat();if(!s)return'غير متاح (يحتاج تطبيق الأندرويد)';if(s.ready)return'جاهز ('+Math.round(s.size/1048576)+' MB)';if(s.downloading||llmDl.state==='run')return'جاري التنزيل '+(s.pct||llmDl.pct)+'%';return'غير منزّل'};
-window.__llmDl=(pct,state,err)=>{llmDl={pct,state,err};const e=$('#llmSt');if(e)e.textContent=llmText();if(state==='done')toast('تم تنزيل نموذج امبد المحلي، صار ردّه فوري');else if(state==='error')toast('فشل التنزيل: '+(err||''))};
+window.__llmDl=(pct,state,err)=>{llmDl={pct,state,err};const e=$('#llmSt');if(e)e.textContent=llmText();if(dlMsg){if(state==='run'){if(pct%5===0||pct>=99){dlMsg._p='جاري تنزيل النموذج '+pct+'%… (تقدر تكمل استخدام التطبيق)';if(cur==='bot')draw()}}else if(state==='done'){botFinish(dlMsg,'تم تنزيل النموذج! اسألني الحين وأرد عليك فورًا.');dlMsg=null;procBotQueue()}else if(state==='error'){botFinish(dlMsg,'فشل التنزيل: '+(err||'')+'. تأكد من الاتصال والمساحة وجرّب من الإعدادات.');dlMsg=null}}else if(state==='done')toast('تم تنزيل نموذج امبد المحلي، صار ردّه فوري');else if(state==='error')toast('فشل التنزيل: '+(err||''))};
 function llmAsk(system,history,prompt,onTok){return new Promise(res=>{const id=uuid();let out='';llmCb[id]={tok:t=>{out+=t;if(onTok)onTok(out)},done:err=>res(err?null:out.trim())};try{NATIVE.llmGenerate(id,system,JSON.stringify(history),prompt)}catch(e){delete llmCb[id];res(null)}})}
 function botDraft(){const m={id:'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:'',created_at:new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:'…'};msgs.push(m);if(cur==='bot')draw();renderList();return m}
 function botFinish(m,txt){m.body=txt;m._p=fillName(txt);saveBot();bsPush(m);if(cur==='bot'){draw();markRead()}renderList();notify(m)}
 async function botLocal(t){if(!llmReady())return false;const hist=thread('bot').slice(-9,-1).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…'),m=botDraft();
   const out=await llmAsk(botSys(await kbFor(t)),hist,t,txt=>{m._p=txt;draw()});if(out){botFinish(m,out);return true}const i=msgs.indexOf(m);if(i>=0)msgs.splice(i,1);draw();return false}
-function llmHint(){if(NATIVE&&!llmReady()&&!ld('jr_llm_hint',0)){lsv('jr_llm_hint',1);botSay('عشان ردودي تصير فورية وبدون إنترنت، نزّل نموذجي المحلي من الإعدادات ← امبد المحلي (حوالي 2.6 جيجا، يفضّل واي فاي).')}}
+function llmHint(){if(NATIVE&&llmSupported()&&flagOn('llm')&&!llmReady()&&!ld('jr_llm_hint',0)){lsv('jr_llm_hint',1);botSay(DLM+'هلا! عشان أرد عليك فورًا بدون انتظار، وبدون إنترنت وبدون أي مفتاح، نزّل نموذجي المحلي (حوالي 2.6 جيجا، مرة وحدة، يفضّل واي فاي).')}}
 // ----- ملصقات (شاشة مثل تيك توك) -----
 const loadImgUrl=u=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=u});
 const stickList=()=>ld('jr_stk_'+me.id,[]),stkRec=()=>ld('jr_stkrec_'+me.id,[]),stkFav=()=>ld('jr_stkfav_'+me.id,[]);
@@ -994,13 +1012,17 @@ async function gwAsk(system,messages,images){if(!sb||!navigator.onLine)return nu
   try{const r=await sb.functions.invoke('embed-ai',{body:{system,messages,images:images||[]}});
     if(r.error){const st=r.error.context&&r.error.context.status;if(st===404||st===401){gwOff=true;gwT=Date.now()}return null}
     gwOff=false;return r.data&&r.data.text?String(r.data.text).trim():null}catch(e){return null}}
-async function aiSmart(system,hist,prompt,images,patient){const t0=Date.now(),conv=hist.map(h=>({role:h.r==='u'?'user':'assistant',content:h.t}));
+async function aiSmart(system,hist,prompt,images,patient){if(!images&&llmReady()){const a=await llmAsk(system,hist,prompt);if(a)return a}
+  const t0=Date.now(),conv=hist.map(h=>({role:h.r==='u'?'user':'assistant',content:h.t}));
   for(let i=0;i<(patient===false?1:6);i++){let a=await gwAsk(system,[...conv,{role:'user',content:prompt}],images);if(a)return a;
     if(!images){a=await aiAsk([{role:'system',content:system},...conv.map(c=>c),{role:'user',content:prompt}],15000,true);if(a)return a}
     if(!navigator.onLine||Date.now()-t0>50000)break;await sleep(8000)}return null}
 async function kbFor(q){if(!sb||!navigator.onLine||q.length<3)return'';try{const r=await sb.rpc('kb_search',{q});if(r.error||!r.data||!r.data.length)return'';return'معلومات من قاعدة معرفة الإدارة (اعتمد عليها بدقة، وأجب بالأقرب لسؤال المستخدم، ولا تخترع خارجها):\n'+r.data.map(k=>'• '+k.title+': '+k.body).join('\n')}catch(e){return''}}
 async function botAI(t){const hist=thread('bot').slice(-9,-1).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…');return aiSmart(botSys(await kbFor(t)),hist,t,null)}
-function queueBot(q){const l=ld('jr_botq_'+me.id,[]);l.push({t:q,at:Date.now()});lsv('jr_botq_'+me.id,l.slice(-5));if(!queueNoted){queueNoted=true;botSay('ما كدرت أوصل للذكاء الاصطناعي هسه. رسالتك محفوظة وأرد عليك تلقائيًا أول ما يرجع الاتصال.')}}
+const DLM='\u2063DL\u2063';let dlAsked=false,dlMsg=null;
+function llmSupported(){const s=llmStat();return !!(s&&s.supported!==false&&NATIVE&&NATIVE.llmDownload)}
+function startLlmDownload(){if(!llmSupported())return toast('هذي النسخة من التطبيق بدون النموذج المحلي');const s=llmStat();if(s&&s.ready)return toast('النموذج منزّل وجاهز');if(s&&s.downloading)return toast('التنزيل شغّال');llmDl={pct:0,state:'run'};NATIVE.llmDownload(llmUrl());dlMsg=botDraft();dlMsg._p='جاري تنزيل النموذج 0%… (تقدر تكمل استخدام التطبيق)';draw()}
+function queueBot(q){const l=ld('jr_botq_'+me.id,[]);l.push({t:q,at:Date.now()});lsv('jr_botq_'+me.id,l.slice(-5));if(!queueNoted){queueNoted=true;if(llmSupported()&&flagOn('llm')&&!llmReady())botSay(DLM+'عشان أرد عليك فورًا، بدون إنترنت وبدون أي مفتاح، نزّل نموذجي المحلي (حوالي 2.6 جيجا، يفضّل واي فاي). رسالتك محفوظة وأجاوبك أول ما يخلص.');else botSay('ما كدرت أوصل للذكاء الاصطناعي هسه. رسالتك محفوظة وأرد عليك تلقائيًا أول ما يرجع الاتصال.')}}
 async function procBotQueue(){if(!me||bqBusy||!navigator.onLine)return;const l=ld('jr_botq_'+me.id,[]);if(!l.length)return;bqBusy=true;try{const it=l[0],hist=thread('bot').slice(-9).map(m=>({r:m.sender==='bot'?'m':'u',t:m._p||''})).filter(x=>x.t&&x.t!=='…'),a=await aiSmart(botSys(await kbFor(it.t)),hist,it.t,null,false);
   if(a){lsv('jr_botq_'+me.id,l.slice(1));queueNoted=false;botSay('رد على رسالتك «'+it.t.slice(0,40)+'»:\n'+a)}}finally{bqBusy=false}}
 setInterval(procBotQueue,30000);window.addEventListener('online',()=>setTimeout(procBotQueue,1500));
@@ -1052,6 +1074,36 @@ async function teachStep(t){const k='jr_teach_'+me.id,st=ld(k,{log:[],fixed:0});
   st.fixed=(st.fixed||0);if(st.fixed<TEACH_Q.length){const q=TEACH_Q[st.fixed];st.fixed++;lsv(k,st);return botSay(q)}
   const topic=st.log[0].t,body=st.log.slice(1).map(x=>x.t).join('\n');const r=await sb.from('bot_kb').insert({title:topic.slice(0,120),body,tags:topic});lsv(k,null);return botSay(r.error?dbMsg():'حفظت «'+topic.slice(0,40)+'».')}
 async function adminRecover(){const v=await ask('إيميل الحساب اللي تريد تسترجعه','');if(v&&v.trim()){closeAll();const r=await adminRecoverFlow(v.trim());const B=$('#gBox');B.innerHTML='';B.appendChild(el('h2','','استرجاع حساب'));const d=el('div','',r);d.style.cssText='white-space:pre-wrap;user-select:all;direction:auto;line-height:1.8';B.appendChild(d);const c=el('button','btn g','إغلاق');c.style.marginTop='12px';c.onclick=closeAll;B.appendChild(c);$('#mG').classList.add('on')}}
+
+// ====== القسم الأمني: تبليغ ومساعدة بإيجاد المفقودين عبر الموقع ======
+const SEC_DEF='امني برو تايم',secKey=()=>cfg.sec_pw||SEC_DEF;
+let secOpen=false;
+$('#mSecB').onclick=()=>{closeAll();if(secOpen)return openSecurity();$('#secErr').textContent='';$('#secPwIn').value='';$('#mSecPw').classList.add('on');setTimeout(()=>$('#secPwIn').focus(),60)};
+$('#secGo').onclick=()=>{if($('#secPwIn').value===secKey()){secOpen=true;closeAll();openSecurity()}else $('#secErr').textContent='كلمة السر غلط'};
+$('#secPwIn').onkeydown=e=>{if(e.key==='Enter')$('#secGo').click()};
+function openSecurity(){closeAll();const B=$('#secBox');B.innerHTML='';B.appendChild(el('h2','','القسم الأمني'));B.appendChild(el('div','hint','للمساعدة بإيجاد الأشخاص المفقودين. البلاغ يصل لكل مستخدمي جيرون القريبين من موقعك، ويظهر اسمك لصاحب البلاغ فقط.'));
+  const r1=el('div');r1.style.cssText='display:flex;gap:6px;margin-bottom:10px';const bNew=el('button','btn','تبليغ عن مفقود'),bList=el('button','btn g','البلاغات القريبة مني');[bNew,bList].forEach(b=>{b.style.marginBottom=0;r1.appendChild(b)});B.appendChild(r1);
+  bNew.onclick=newAlert;bList.onclick=listAlerts;const cl=el('button','btn g','إغلاق');cl.style.marginTop='10px';cl.onclick=closeAll;B.appendChild(el('div','sh2','آخر البلاغات'));const L=el('div');L.id='secRecent';B.append(L,cl);loadRecentAlerts(L)}
+function getLoc(){return new Promise((res,rej)=>{if(!navigator.geolocation)return rej(new Error('no-geo'));navigator.geolocation.getCurrentPosition(p=>res([p.coords.latitude,p.coords.longitude]),rej,{enableHighAccuracy:true,timeout:15000})})}
+function newAlert(){const B=$('#secBox');B.innerHTML='';B.appendChild(el('h2','','تبليغ عن مفقود'));
+  const nm=document.createElement('input');nm.className='in';nm.placeholder='اسم المفقود';nm.maxLength=60;B.appendChild(nm);
+  const ph=document.createElement('input');ph.className='in';ph.dir='ltr';ph.placeholder='رقم للتواصل (اختياري)';B.appendChild(ph);
+  const inf=document.createElement('textarea');inf.className='in';inf.rows=4;inf.maxLength=800;inf.placeholder='الوصف: العمر، الملابس، آخر مكان شوهد فيه، أي تفاصيل تساعد';B.appendChild(inf);
+  B.appendChild(el('div','lb','الموقع'));const locD=el('div','hint','اضغط لتحديد موقعك الحالي كمكان آخر ظهور');B.appendChild(locD);const locBtn=el('button','btn g','تحديد موقعي الحالي');let loc=null;locBtn.onclick=async()=>{locBtn.textContent='جاري التحديد…';try{loc=await getLoc();locD.textContent='تم تحديد الموقع: '+loc[0].toFixed(4)+', '+loc[1].toFixed(4)}catch(e){toast('تعذر تحديد الموقع، اسمح بإذن الموقع')}locBtn.textContent='تحديد موقعي الحالي'};B.appendChild(locBtn);
+  const er=el('div','err');B.appendChild(er);const ok=el('button','btn','نشر البلاغ');ok.onclick=async()=>{if(!nm.value.trim()||!inf.value.trim())return er.textContent='اكتب الاسم والوصف';if(!loc)return er.textContent='حدد الموقع أول';if(!sb||!navigator.onLine)return er.textContent='يحتاج اتصال';
+    const r=await sb.from('safety_alerts').insert({user_id:me.id,kind:'missing',title:nm.value.trim(),info:inf.value.trim(),phone:ph.value.trim()||null,lat:loc[0],lon:loc[1]});if(r.error)return er.textContent=dbMsg();toast('تم نشر البلاغ، نسأل الله السلامة');openSecurity()};
+  const cn=el('button','btn g','رجوع');cn.onclick=openSecurity;B.append(ok,cn)}
+function km(a,b){const R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLon=(b[1]-a[1])*Math.PI/180,x=Math.sin(dLat/2)**2+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.asin(Math.sqrt(x))}
+function alertCard(a,dist){const c=el('div','alert-card');c.appendChild(el('b',null,a.title));const d=el('div','',a.info);d.style.whiteSpace='pre-wrap';c.appendChild(d);
+  const meta=el('small','',(dist!=null?'على بعد ~'+dist.toFixed(1)+' كم • ':'')+new Date(a.created_at).toLocaleString(lang));c.appendChild(meta);
+  if(a.phone){const p=el('div','',' التواصل: '+a.phone);p.style.cssText='direction:ltr;text-align:left;margin-top:4px';c.appendChild(p)}
+  if(a.user_id===me.id){const b=el('button','ab','إغلاق البلاغ (تم العثور)');b.onclick=async()=>{await sb.from('safety_alerts').update({status:'closed'}).eq('id',a.id);toast('تم الإغلاق، الله يسلمهم');listAlerts()};c.appendChild(b)}
+  return c}
+async function loadRecentAlerts(L){L.innerHTML='';if(!sb||!navigator.onLine){L.appendChild(el('div','empty','يحتاج اتصال'));return}const r=await sb.from('safety_alerts').select('*').eq('status','open').order('created_at',{ascending:false}).limit(5);if(r.error)return L.appendChild(el('div','empty',dbMsg()));if(!r.data.length)L.appendChild(el('div','empty','ماكو بلاغات حاليًا'));r.data.forEach(a=>L.appendChild(alertCard(a)))}
+async function listAlerts(){const B=$('#secBox');B.innerHTML='';B.appendChild(el('h2','','البلاغات القريبة مني'));const st=el('div','hint','جاري تحديد موقعك…');B.appendChild(st);const L=el('div');B.appendChild(L);
+  const back=el('button','btn g','رجوع');back.onclick=openSecurity;B.appendChild(back);
+  try{const loc=await getLoc();st.textContent='بنطاق 50 كم من موقعك:';const r=await sb.rpc('safety_nearby',{p_lat:loc[0],p_lon:loc[1],p_km:50});if(r.error)return L.appendChild(el('div','empty',dbMsg()));if(!r.data.length)L.appendChild(el('div','empty','ماكو بلاغات قريبة منك حاليًا، الحمد لله'));r.data.forEach(a=>L.appendChild(alertCard(a,km(loc,[a.lat,a.lon]))))}
+  catch(e){st.textContent='';L.appendChild(el('div','empty','تعذر تحديد موقعك، اسمح بإذن الموقع وحاول مرة ثانية'))}}
 
 // ====== ذكاء اصطناعي مفتوح المصدر + ترجمة + لغات ======
 async function aiAsk(msgs,ms,once){const eps=[['https://text.pollinations.ai/openai','gemini'],['https://text.pollinations.ai/openai','openai'],['https://gen.pollinations.ai/v1/chat/completions','openai']],t0=Date.now();
@@ -1446,6 +1498,9 @@ begin if not public.is_admin() then raise exception 'forbidden'; end if;
 grant execute on function public.kb_search(text), public.admin_find_account(text) to authenticated;
 notify pgrst, 'reload schema';
 `;
+// منع انزياح الواجهة (لما تطلع الكيبورد أو يرجع منتقي الصور)
+(function(){const roots=['HTML','BODY'],reset=()=>{window.scrollTo(0,0);for(const q of['#app','#main','#side','#auth']){const e=document.querySelector(q);if(e&&(e.scrollTop||e.scrollLeft)){e.scrollTop=0;e.scrollLeft=0}}document.documentElement.scrollLeft=0;document.body.scrollLeft=0;document.body.scrollTop=0};
+  window.addEventListener('scroll',reset,true);window.addEventListener('resize',reset);if(window.visualViewport)window.visualViewport.addEventListener('resize',reset);document.addEventListener('focusin',()=>setTimeout(reset,50));window.addEventListener('focus',()=>setTimeout(reset,50))})();
 // ====== تشغيل ======
 (async()=>{const uid=ld('jr_uid',null),fastOK=uid&&ld('jr_c_'+uid,null)&&ld('jr_k_'+uid,null);if(fastOK)$('#auth').style.display='none';
   if(localStorage.getItem('jr_pin'))lockNow();let ok=false;if(fastOK)ok=await boot({id:uid},true);

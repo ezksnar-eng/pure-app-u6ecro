@@ -48,7 +48,7 @@ object LlmEngine {
     @JvmStatic
     fun status(c: Context): String {
         val f = file(c)
-        return "{\"ready\":" + ready(c) + ",\"downloading\":" + downloading + ",\"pct\":" + pct +
+        return "{\"supported\":true,\"ready\":" + ready(c) + ",\"downloading\":" + downloading + ",\"pct\":" + pct +
             ",\"loading\":" + loading + ",\"size\":" + (if (f.exists()) f.length() else 0) + "}"
     }
 

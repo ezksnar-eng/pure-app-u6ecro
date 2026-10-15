@@ -19,7 +19,7 @@ final class LlmEngine {
     private LlmEngine() {}
 
     static String status(Context c) {
-        return "{\"ready\":false,\"downloading\":false,\"pct\":0,\"loading\":false,\"size\":0}";
+        return "{\"supported\":false,\"ready\":false,\"downloading\":false,\"pct\":0,\"loading\":false,\"size\":0}";
     }
 
     static void download(Context c, String url, DlCallback cb) {
