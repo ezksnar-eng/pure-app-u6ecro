@@ -138,12 +138,19 @@ button:active,.row:active,.rs:active{transform:scale(.97)}.row,.ib,.btn,.mi,#fab
 .stabs{display:flex;justify-content:space-around;padding:4px 0 8px;border-bottom:1px solid var(--line);margin-bottom:8px}.stabs button{width:48px;height:44px;border-radius:12px;color:var(--sub);display:grid;place-items:center}.stabs button.on{background:var(--bg2);color:var(--pri)}
 .sbody{max-height:52vh;overflow-y:auto;padding:0 6px}.egrid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px}.egrid button{font-size:26px;height:42px;border-radius:8px}.egrid button:active{background:var(--bg2)}
 .poll{min-width:230px}.po{position:relative;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin-top:6px;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer}.po i{position:absolute;inset:0 auto 0 0;background:var(--pri);opacity:.18;transition:width .3s}.po.me{border-color:var(--pri)}.po span,.po b{position:relative}
-.gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}html,body{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:0;width:100%;height:100%;max-width:100vw}#auth,#lock{max-width:100vw}.dlb{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;background:var(--grad);color:#fff;font-weight:600}
-html,body,#app{height:100dvh!important}
+.gcard{align-self:stretch;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}html,body{position:fixed;inset:0;width:100%;overflow:hidden;overscroll-behavior:none}#app{position:fixed;inset:0;width:100%;max-width:100vw}#auth,#lock{max-width:100vw}.dlb{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:12px;background:var(--grad);color:#fff;font-weight:600}
+html,body,#app{height:calc(var(--app-h,100vh))!important}
 .alert-card{border:1.5px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}.alert-card b{display:block;margin-bottom:3px}.alert-card small{color:var(--sub)}
 .igrid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;max-height:52vh;overflow-y:auto}.igrid .ic{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg2)}.igrid img{width:100%;height:100%;object-fit:cover;display:block}
 .igrid .ic.sel::after{content:"";position:absolute;inset:0;border:3px solid var(--pri);border-radius:8px;background:#0003}.igrid .ic .ck{position:absolute;top:4px;inset-inline-end:4px;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--pri);display:none;place-items:center;font-size:12px;font-weight:700}.igrid .ic.sel .ck{display:grid}
-.ihead{display:flex;gap:6px;margin-bottom:8px}.ihead button{flex:1}</style></head><body>
+.ihead{display:flex;gap:6px;margin-bottom:8px}.ihead button{flex:1}
+#app,body,html{max-width:100vw;overflow-x:hidden}
+.comp{overflow:hidden;max-width:100%;box-sizing:border-box}
+.snd{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;flex:0 0 48px!important}
+.ib{width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex:0 0 42px!important}
+.pill{min-width:0;flex:1 1 auto;max-width:100%}
+.pill textarea{min-width:0;max-width:100%}
+.rb{overflow:hidden}</style></head><body>
 <div id="auth"><div class="box"><div class="logo"><span class="ico" data-i="send" data-s="52"></span></div><h1>جيرون</h1><p>مراسلة مشفرة. حساب واحد لإيميلك، وكل محادثاتك تتبعه</p>
 <div class="seg" id="aTabs" style="justify-content:center;margin-bottom:12px"><button data-m="login" class="on">دخول</button><button data-m="reg">حساب جديد</button></div>
 <input class="in" id="aName" placeholder="الاسم" maxlength="40" style="display:none">
@@ -430,7 +437,7 @@ function setBotProfile(){P.bot={id:'bot',name:cfg.name||'امبد',username:'emb
 function applyCfg(){const n=$('#nt'),t=(cfg.maintenance?'المنصة تحت الصيانة حاليًا، قد تتأخر الرسائل. ':'')+(cfg.notice||'');n.textContent=t;n.style.display=t?'block':'none'}
 async function loadCfg(){try{const{data}=await sb.from('bot_config').select('*').eq('id',1).maybeSingle();if(data){cfg=data;lsv('jr_cfg',cfg);setBotProfile();applyCfg();renderList();if(cur==='bot')renderMain()}}catch(e){}}
 const fillName=t=>String(t).replace(/\{name\}/g,me?me.name:'');
-function botSay(text,id,at){const m={id:id||'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:text,created_at:at||new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:fillName(text)};msgs.push(m);saveBot();bsPush(m);if(!at)notify(m);if(cur==='bot'){draw();markRead()}renderList()}
+function botSay(text,id,at){const lastBot=[...msgs].reverse().find(m=>m._bot&&m.sender==='bot');if(!id&&lastBot&&lastBot._p===fillName(text)&&Date.now()-new Date(lastBot.created_at)<300000)return;const m={id:id||'b'+uuid(),sender:'bot',receiver:me.id,kind:'text',body:text,created_at:at||new Date().toISOString(),read_at:null,_bot:1,_l:1,_p:fillName(text)};msgs.push(m);saveBot();bsPush(m);if(!at)notify(m);if(cur==='bot'){draw();markRead()}renderList()}
 function botUser(text){const t=new Date().toISOString();{const um={id:'u'+uuid(),sender:me.id,receiver:'bot',kind:'text',body:text,created_at:t,read_at:t,_bot:1,_l:1,_p:text};msgs.push(um);saveBot();bsPush(um)}if(cur==='bot')draw();renderList();botReply(text)}
 const adm=()=>!!(me&&me.is_admin),BOTM='\u2063B\u2063';
 const DEF_KB='معلومات تعليمية (أنت تعلّم الناس): 1) التبييض (Cleaning) بتطبيق ibis Paint X: استورد صفحة المانهوا، اعمل طبقة جديدة للتنظيف، حدد فقاعة الكلام بأداة التحديد أو الليزو أو العصا السحرية، واملأها بالأبيض أو بلون الخلفية؛ للخلفيات المنقّطة أو المتدرجة استعمل القطارة لأخذ اللون واستعمل الفرشاة بثبات عالٍ، وكبّر الصورة عند الحواف. 2) التحرير والتنضيد (Typesetting): أضف النص بأداة النص، اختر خط عربي واضح (مثل Tajawal أو Cairo أو Amiri)، رتّب الأسطر داخل الفقاعة متوازنة ومن اليمين لليسار، وحافظ على حجم خط ثابت، وللمؤثرات الصوتية استعمل حدودًا بيضاء أو ملونة. 3) الترجمة بالذكاء الاصطناعي: استخرج النص من الصورة (OCR) بأي أداة، ثم ترجمه بنموذج ذكاء اصطناعي مع إعطائه السياق (اسم العمل والشخصيات ونبرة الحوار)، وصحّح اللهجة والمصطلحات بقاموس أسماء ثابت، وراجع الجمل مرة ثانية يدويًا لأن الترجمة الآلية قد تخطئ. 4) الأدوار: مترجم، منظّف، منضّد، مدقق. 5) التصدير: احفظ الصفحات بنفس ترتيبها وبصيغة PNG أو JPG بجودة عالية.';
@@ -699,12 +706,14 @@ function openSettings(){closeAll();pf={avatar:undefined,banner:undefined};const 
   H('اللغة');B.appendChild(el('div','lb','لغة التطبيق'));const lg=el('div','seg');LANGS.forEach(([v,t])=>{const b=el('button',lang===v?'on':'',t);b.onclick=()=>{setS('lang',v);toast('جاري تغيير اللغة…');setTimeout(()=>location.reload(),600)};lg.appendChild(b)});B.appendChild(lg);
   tog('ترجمة الرسائل الواردة تلقائيًا','trOn','يرسل نص الرسالة الواردة لخدمة ترجمة خارجية، وهذا يخرج عن التشفير الكامل لتلك الرسالة. متوقف افتراضيًا.');B.appendChild(el('div','lb','ترجم الرسائل إلى'));seg('trLang',LANGS.map(l=>[l[0],l[1]]),()=>{Object.keys(TR).forEach(k=>delete TR[k]);trTried.clear();lsv('jr_tr',TR);nodeCache.clear();draw()});
   tog('ردود امبد بالذكاء الاصطناعي','ai','يرسل نص كلامك مع امبد فقط لخدمة مجانية مفتوحة المصدر.');
-  if(flagOn('llm')){H('امبد المحلي (ردود فورية بدون نت)');{const st=el('div','hint',llmText());st.id='llmSt';B.appendChild(st)}btn('تنزيل النموذج (حوالي 2.6 جيجا، يفضّل واي فاي)',()=>{if(!NATIVE)return toast('يحتاج تطبيق الأندرويد');llmDl={pct:0,state:'run'};NATIVE.llmDownload(llmUrl());toast('بدأ التنزيل');setTimeout(()=>{const e=$('#llmSt');if(e)e.textContent=llmText()},800)},1);btn('إلغاء التنزيل',()=>NATIVE&&NATIVE.llmCancel(),1);btn('حذف النموذج من الجهاز',async()=>{if(NATIVE&&await yn('حذف النموذج المحلي؟','حذف')){NATIVE.llmDelete();const e=$('#llmSt');if(e)e.textContent=llmText()}},1)}
+  if(me.is_admin&&flagOn('llm')){H('امبد المحلي (ردود فورية بدون نت) — خاص بالإدارة');{const st=el('div','hint',llmText());st.id='llmSt';B.appendChild(st)}
+    B.appendChild(el('div','lb','النموذج'));const mseg=el('div','seg');[['gemma','Gemma 4 (افتراضي)'],['qwen','Qwen2.5 (نصي)'],['custom','رابط مخصص']].forEach(([v,t])=>{const b=el('button',(cfg.llm_model||'gemma')===v?'on':'',t);b.onclick=async()=>{mseg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');if(v==='custom'){const u=await ask('رابط ملف النموذج (.litertlm)',cfg.llm_url||'');if(u===null)return;await saveCfg({llm_model:'custom',llm_url:u.trim()||null})}else await saveCfg({llm_model:v,llm_url:null})};mseg.appendChild(b)});B.appendChild(mseg);
+    B.appendChild(el('div','hint','قراءة الصور محليًا غير مدعومة بعد بأي من هذي النماذج؛ قراءة الصور تبقى عبر بوابة الإنترنت (embed-ai) لو مفعّلة.'));
+    btn('تنزيل النموذج على هذا الجهاز',()=>{if(!NATIVE)return toast('يحتاج تطبيق الأندرويد');llmDl={pct:0,state:'run'};NATIVE.llmDownload(llmUrl());toast('بدأ التنزيل');setTimeout(()=>{const e=$('#llmSt');if(e)e.textContent=llmText()},800)},1);btn('إلغاء التنزيل',()=>NATIVE&&NATIVE.llmCancel(),1);btn('حذف النموذج من هذا الجهاز',async()=>{if(NATIVE&&await yn('حذف النموذج المحلي؟','حذف')){NATIVE.llmDelete();const e=$('#llmSt');if(e)e.textContent=llmText()}},1)}
   H('الخصوصية');btn('رمز استرجاع رسائلك',makeRecovery,1);tog('وضع التخفي (بدون علامة قراءة ولا آخر ظهور ولا «يكتب»)','stealth');if(NATIVE)nt('منع لقطة الشاشة وتسجيلها','secure',v=>{setS('secure',v?1:0);applySecure()});tog('إشعار لما يصير المفضّلين متصلين','onlineNotify','يشتغل والتطبيق مفتوح');tog('إرسال علامة «تمت القراءة»','showRead');tog('إظهار حالة «متصل» و«آخر ظهور»','showOnline','يتطبق بعد إعادة فتح التطبيق');btn(localStorage.getItem('jr_pin')?'تغيير/إلغاء قفل التطبيق':'تفعيل قفل التطبيق',openLockSet,1);
-  H('البيانات والإصلاح');btn('فحص وإصلاح تلقائي (امبد)',async()=>{toast('جاري الفحص…');const r=await heal(true);toast(r.length?r[0]:'كلشي سليم')},1);
+  if(me.is_admin){H('البيانات والإصلاح — خاص بالإدارة');btn('فحص وإصلاح تلقائي (امبد)',async()=>{toast('جاري الفحص…');const r=await heal(true);toast(r.length?r[0]:'كلشي سليم')},1);
   btn('مسح كاش الوسائط من الجهاز',async()=>{if(await yn('مسح الصور المخزنة محليًا؟ تنحمل من جديد عند الحاجة.','مسح')){const d=await idb;d.transaction('b','readwrite').objectStore('b').openCursor().onsuccess=e=>{const c=e.target.result;if(c){if(String(c.key).startsWith('m:'))c.delete();c.continue()}};Object.keys(murl).forEach(k=>delete murl[k]);toast('تم المسح')}},1);
-  
-  if(me.is_admin)btn('لوحة الإدارة',()=>openAdmin());
+  btn('لوحة الإدارة',()=>openAdmin());}
   H('الحساب');btn('حذف حسابي نهائيًا',async()=>{if(!await yn('سيتم حذف حسابك ورسائلك نهائيًا ولا يمكن التراجع. متأكد؟','حذف'))return;const r=await sb.rpc('delete_me');if(r.error)return toast('تعذر الحذف: '+r.error.message);localStorage.removeItem('jr_k_'+me.id);logout()},1).style.color='#e53935';
   $('#mSet').classList.add('on')}
 $('#mSetB').onclick=openSettings;$('#sqlCp').onclick=()=>{$('#sqlT').select();copyText(SQL_SETUP)};
@@ -886,8 +895,8 @@ $('#mGrpB').onclick=openNewGroup;$('#mDiscB').onclick=openDiscover;
 // ====== النسخة 3: امبد المحلي، ملصقات، استطلاعات، مجموعات متقدمة، أمان ======
 const lim=(k,d)=>(cfg.limits&&cfg.limits[k])||d,dbMsg=()=>me&&me.is_admin?'حدّث قاعدة البيانات (SQL) أول':'الخدمة قيد التحديث، جرّب لاحقًا';
 // ----- امبد المحلي (Gemma 4 على الجهاز: رد فوري بدون نت ولا API) -----
-const LLM_URL_DEF='https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm';
-const llmUrl=()=>cfg.llm_url||LLM_URL_DEF;let llmDl={pct:0,state:''};
+const LLM_PRESETS={gemma:'https://huggingface.co/litert-community/gemma-4-E2B-it-litert-lm/resolve/main/gemma-4-E2B-it.litertlm',qwen:'https://huggingface.co/litert-community/Qwen2.5-1.5B-Instruct/resolve/main/qwen2.5-1.5b-instruct_multi-prefill-seq_q8_ekv4096.litertlm'};
+const llmUrl=()=>cfg.llm_url||LLM_PRESETS[cfg.llm_model||'gemma']||LLM_PRESETS.gemma;let llmDl={pct:0,state:''};
 function llmStat(){if(!NATIVE||!NATIVE.llmStatus)return null;try{return JSON.parse(NATIVE.llmStatus())}catch(e){return null}}
 const llmReady=()=>{if(!flagOn('llm'))return false;const s=llmStat();return !!(s&&s.ready)};
 const llmCb={};window.__llmTok=(id,t)=>{const c=llmCb[id];if(c)c.tok(t)};window.__llmDone=(id,err)=>{const c=llmCb[id];if(c){delete llmCb[id];c.done(err)}};
@@ -1528,7 +1537,9 @@ grant execute on function public.kb_search(text), public.admin_find_account(text
 notify pgrst, 'reload schema';
 `;
 // منع انزياح الواجهة (لما تطلع الكيبورد أو يرجع منتقي الصور)
-(function(){const roots=['HTML','BODY'],reset=()=>{window.scrollTo(0,0);for(const q of['#app','#main','#side','#auth']){const e=document.querySelector(q);if(e&&(e.scrollTop||e.scrollLeft)){e.scrollTop=0;e.scrollLeft=0}}document.documentElement.scrollLeft=0;document.body.scrollLeft=0;document.body.scrollTop=0};
+(function(){const setH=()=>{const h=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;document.documentElement.style.setProperty('--app-h',h+'px')};setH();
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',setH);window.visualViewport.addEventListener('scroll',setH)}window.addEventListener('resize',setH);window.addEventListener('orientationchange',()=>setTimeout(setH,200));
+  const reset=()=>{setH();window.scrollTo(0,0);for(const q of['#app','#main','#side','#auth']){const e=document.querySelector(q);if(e&&(e.scrollTop||e.scrollLeft)){e.scrollTop=0;e.scrollLeft=0}}document.documentElement.scrollLeft=0;document.body.scrollLeft=0;document.body.scrollTop=0};
   const softReset=()=>{if(document.documentElement.scrollLeft||document.body.scrollLeft||window.scrollX)reset()};
   window.addEventListener('scroll',softReset,true);window.addEventListener('resize',reset);if(window.visualViewport)window.visualViewport.addEventListener('resize',reset);
   document.addEventListener('focusin',e=>{if(e.target&&(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'))return;setTimeout(reset,50)})})();
