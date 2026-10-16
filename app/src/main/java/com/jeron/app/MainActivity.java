@@ -149,11 +149,30 @@ public class MainActivity extends AppCompatActivity {
                         c.putExtra(MediaStore.EXTRA_OUTPUT, camUri);
                         c.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivityForResult(c, RQ_FILE);
-                    } else {
-                        camUri = null;
-                        startActivityForResult(p.createIntent(), RQ_FILE);
+                        return true;
                     }
-                    return true;
+                    camUri = null;
+                    boolean multi = p.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE;
+                    // أولوية: منتقي صور النظام الحديث (ما يحتاج أي صلاحية تخزين)
+                    try {
+                        Intent pick = new Intent(android.os.Build.VERSION.SDK_INT >= 33 ? MediaStore.ACTION_PICK_IMAGES : Intent.ACTION_GET_CONTENT);
+                        pick.setType("image/*");
+                        if (multi) {
+                            pick.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                            if (android.os.Build.VERSION.SDK_INT >= 33) pick.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, 10);
+                        }
+                        startActivityForResult(pick, RQ_FILE);
+                        return true;
+                    } catch (Exception e1) {
+                        // رجوع: منتقي الملفات العام
+                        Intent open = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        open.addCategory(Intent.CATEGORY_OPENABLE);
+                        open.setType("image/*");
+                        if (multi) open.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                        open.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivityForResult(open, RQ_FILE);
+                        return true;
+                    }
                 } catch (Exception e) {
                     fileCb = null;
                     return false;

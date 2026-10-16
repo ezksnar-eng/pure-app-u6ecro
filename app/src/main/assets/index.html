@@ -162,8 +162,6 @@ html,body,#app{height:calc(var(--app-h,100vh))!important}
 <div id="app"><div id="side"><div class="hd"><button class="ib" id="bMenu"><span class="ico" data-i="menu"></span></button><div class="search"><input id="q" placeholder="بحث"></div></div>
 <div id="flt"><button data-f="all" class="on">الكل</button><button data-f="unread">غير المقروءة</button><button data-f="fav">المفضلة</button></div><div id="nb" class="nbn"></div><div id="ses" class="nbn" style="background:#fee2e2;color:#991b1b;cursor:pointer"></div><div id="nt" class="nbn" style="background:#e0f2fe;color:#075985"></div><div id="ntp" class="nbn" style="background:#fce7f3;color:#9d174d"></div><div id="list"></div><button id="fab"><span class="ico" data-i="edit" data-s="26"></span></button></div><div id="main"></div></div>
 <div id="drw"><div class="ov"></div><div class="pn"><div class="pf"><div class="av" id="dAv"></div><div class="nm" id="dNm" style="font-size:18px"></div><div class="sb" id="dMl"></div></div>
-<button class="mi" id="mImgB"><span class="ico" data-i="image"></span>مركز الصور</button>
-<button class="mi" id="mSecB"><span class="ico" data-i="shield"></span>القسم الأمني</button>
 <button class="mi" id="mFindB"><span class="ico" data-i="edit"></span>إضافة صديق</button>
 <button class="mi" id="mGrpB"><span class="ico" data-i="users"></span>مجموعة جديدة</button>
 <button class="mi" id="mDiscB"><span class="ico" data-i="users"></span>اكتشاف المجموعات</button>
@@ -752,7 +750,7 @@ function openAdmin(){if(!me||!me.is_admin)return;admModal('لوحة الإدار
   arow(b,'wrench','وضع الصيانة',async()=>{await saveCfg({maintenance:!cfg.maintenance});openAdmin()},cfg.maintenance?'مفعّل':'متوقف');
   arow(b,'plus','التسجيل الجديد',async()=>{await saveCfg({reg_open:cfg.reg_open===false});openAdmin()},cfg.reg_open===false?'مغلق':'مفتوح');
   arow(b,'bell','شريط إعلان أعلى القائمة',async()=>{const v=await ask('نص الشريط (فاضي لإخفائه)',cfg.notice||'',true);if(v!==null){await saveCfg({notice:v.trim()});openAdmin()}},cfg.notice?'مفعّل':'متوقف');
-  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'users','استرجاع حساب (كلمة سر مؤقتة)',adminRecover);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'alert','سجل الأخطاء',admErrs);
+  arow(b,'headset','الدعم الفني (التذاكر)',admTickets);arow(b,'image','مركز الصور',openImgHub);arow(b,'shield','القسم الأمني',openSecGate);arow(b,'users','استرجاع حساب (كلمة سر مؤقتة)',adminRecover);arow(b,'sticker','حزم الملصقات',admPacks);arow(b,'info','تدريب امبد (قاعدة المعرفة)',admKB);arow(b,'download','رابط نموذج امبد المحلي',async()=>{const v=await ask('رابط ملف النموذج (.litertlm). فاضي = Gemma 4 الافتراضي',cfg.llm_url||'');if(v!==null){await saveCfg({llm_url:v.trim()||null});openAdmin()}});arow(b,'gear','تشغيل/إيقاف كل المزايا',admFlags);arow(b,'wrench','حدود المنصة (طول النص، حجم الملف، حجم المجموعة)',admLimits);arow(b,'db','قاعدة البيانات: فحص ونسخ SQL',admDb);arow(b,'alert','سجل الأخطاء',admErrs);
 arow(b,'shield','كلمة سر القسم الأمني',async()=>{const v=await ask('كلمة سر جديدة للقسم الأمني',cfg.sec_pw||'امني برو تايم');if(v&&v.trim()){await saveCfg({sec_pw:v.trim()});openAdmin()}});arow(b,'chart','نشاط آخر 7 أيام وأكثر المستخدمين',admDaily);arow(b,'clock','سجل إجراءات الإدارة',admLog);
   arow(b,'download','تصدير قائمة المستخدمين (نسخ)',admExport)})}
 async function admStats(){const{data,error}=await sb.rpc('admin_stats');admModal('إحصائيات المنصة',b=>{if(error)return b.appendChild(el('div','empty',error.message));
@@ -1094,7 +1092,7 @@ async function adminRecover(){const v=await ask('إيميل الحساب الل�
 // ====== القسم الأمني: تبليغ ومساعدة بإيجاد المفقودين عبر الموقع ======
 const SEC_DEF='امني برو تايم',secKey=()=>cfg.sec_pw||SEC_DEF;
 let secOpen=false;
-$('#mSecB').onclick=()=>{closeAll();if(secOpen)return openSecurity();$('#secErr').textContent='';$('#secPwIn').value='';$('#mSecPw').classList.add('on');setTimeout(()=>$('#secPwIn').focus(),60)};
+function openSecGate(){closeAll();if(secOpen)return openSecurity();$('#secErr').textContent='';$('#secPwIn').value='';$('#mSecPw').classList.add('on');setTimeout(()=>$('#secPwIn').focus(),60)}
 $('#secGo').onclick=()=>{if($('#secPwIn').value===secKey()){secOpen=true;closeAll();openSecurity()}else $('#secErr').textContent='كلمة السر غلط'};
 $('#secPwIn').onkeydown=e=>{if(e.key==='Enter')$('#secGo').click()};
 function openSecurity(){closeAll();const B=$('#secBox');B.innerHTML='';B.appendChild(el('h2','','القسم الأمني'));B.appendChild(el('div','hint','للمساعدة بإيجاد الأشخاص المفقودين. البلاغ يصل لكل مستخدمي جيرون القريبين من موقعك، ويظهر اسمك لصاحب البلاغ فقط.'));
@@ -1122,7 +1120,7 @@ async function listAlerts(){const B=$('#secBox');B.innerHTML='';B.appendChild(el
   catch(e){st.textContent='';L.appendChild(el('div','empty','تعذر تحديد موقعك، اسمح بإذن الموقع وحاول مرة ثانية'))}}
 
 // ====== مركز الصور: كل صور محادثاتك بمكان واحد + رفع ومشاركة بدون فتح محادثة أول ======
-$('#mImgB').onclick=openImgHub;
+
 function allImages(){const hid=HID.get();return msgs.filter(m=>m.kind==='image'&&m.media&&!m.deleted&&!hid.includes(m.id)&&!m._t&&!m._f).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))}
 function openImgHub(){closeAll();const B=$('#imgBox');B.innerHTML='';B.appendChild(el('h2','','مركز الصور'));
   const hd=el('div','ihead');const up=el('button','btn','رفع صور لمحادثة');up.onclick=()=>$('#hubFile').click();const cl0=el('button','btn g','إغلاق');cl0.onclick=closeAll;hd.append(up,cl0);B.appendChild(hd);
